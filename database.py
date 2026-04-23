@@ -12,7 +12,7 @@ DB_CONFIG = {
     "host": "db.vzpamxbcdqzkenexoevm.supabase.co",
     "database": "postgres",
     "user": "postgres",
-    "password": "Gael2012!&237",
+    "password": "gassayossa2012",
     "port": 5432,
     "sslmode": "require"
 }
