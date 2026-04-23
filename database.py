@@ -5,12 +5,16 @@ from contextlib import contextmanager
 # ---------------------------------------------------------
 # PostgreSQL Konfiguration
 # ---------------------------------------------------------
+
 DB_CONFIG = {
-    "host": "localhost",
-    "database": "tickets",   # <-- Deine Datenbank
+    "host": "db.vzpamxbcdqzkenexoevm.supabase.co",
+    "database": "postgres",
     "user": "postgres",
-    "password": "gassa",
+    "password": "Gael2012!&237",
+    "port": 5432,
+    "sslmode": "require"
 }
+
 
 # ---------------------------------------------------------
 # Verbindung als Context-Manager
