@@ -1,5 +1,8 @@
 import psycopg2
 from contextlib import contextmanager
+import streamlit as st
+
+
 
 # ---------------------------------------------------------
 # Supabase PostgreSQL Verbindung
@@ -40,3 +43,10 @@ def init_db():
             );
         """)
         conn.commit()
+
+if "db_initialized" not in st.session_state:
+    try:
+        init_db()
+        st.session_state["db_initialized"] = True
+    except Exception as e:
+        st.error("Fehler bei der Datenbankverbindung.")
