@@ -8,6 +8,61 @@ st.set_page_config(page_title="Nummer ziehen", layout="centered")
 # ---------------------------------------------------------
 st.markdown("""
     <style>
+        body {
+            background-color: #f5f7fa;
+        }
+
+        .main-card {
+            background-color: #1E90FF;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            width: 80%;
+            margin: auto;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 45px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .main-text {
+            font-size: 22px;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .ticket-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-top: 20px;
+        }
+
+        .ticket-number {
+            font-size: 70px;
+            font-weight: bold;
+            color: #1E90FF;
+        }
+
+        /* Buttons */
+        .stButton>button {
+            background-color: white;
+            color: #1E90FF;
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-size: 20px;
+            border: none;
+        }
+        .stButton>button:hover {
+            background-color: #e6e6e6;
+        }
+
         /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #1E90FF;
@@ -15,55 +70,31 @@ st.markdown("""
         [data-testid="stSidebar"] * {
             color: white !important;
         }
-
-        /* Hintergrund */
-        body {
-            background-color: #f5f7fa;
-        }
-
-        /* BLAUE Karten */
-        .ticket-card {
-            background-color: #1E90FF;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        /* Nummer groß */
-        .ticket-number {
-            font-size: 70px;
-            font-weight: bold;
-            color: white;
-        }
-
-        /* Buttons */
-        .stButton>button {
-            background-color: #1E90FF;
-            color: white;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-size: 18px;
-        }
-        .stButton>button:hover {
-            background-color: #187bcd;
-        }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Inhalt
+# Inhalt in Karte
 # ---------------------------------------------------------
-st.title("🎫 Nummer ziehen")
+st.markdown('<div class="main-card">', unsafe_allow_html=True)
 
-st.write("Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.")
+st.markdown('<div class="main-title">🎫 Nummer ziehen</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-text">Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.</div>', unsafe_allow_html=True)
 
 if st.button("Nummer ziehen"):
-    nummer = create_ticket()   # z.B. "A015"
-
-    # Nummer speichern
+    nummer = create_ticket()
     st.session_state["meine_nummer"] = nummer
 
-    # Sofort weiterleiten in den Warteraum
+    st.markdown(
+        f"""
+        <div class="ticket-card">
+            <span class="ticket-number">{nummer}</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.info("Bitte warten Sie, bis Ihre Nummer aufgerufen wird.")
     st.switch_page("pages/2_Warteraum.py")
+
+st.markdown("</div>", unsafe_allow_html=True)
