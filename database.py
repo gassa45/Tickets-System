@@ -59,3 +59,20 @@ if "db_initialized" not in st.session_state:
         st.session_state["db_initialized"] = True
     except Exception as e:
         st.error(f"Datenbankfehler: {e}")
+def create_ticket():
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            # Neue Ticketnummer erzeugen (höchste Nummer + 1)
+            cur.execute("SELECT COALESCE(MAX(CAST(nummer AS INTEGER)), 0) + 1 FROM tickets;")
+            neue_nummer = cur.fetchone()[0]
+
+            # Ticket einfügen
+            cur.execute("""
+                INSERT INTO tickets (nummer, status)
+                VALUES (%s, %s)
+                RETURNING nummer;
+            """, (str(neue_nummer), "waiting"))
+
+            ticket_nummer = cur.fetchone()[0]
+            conn.commit()
+            return ticket_nummer
