@@ -57,5 +57,5 @@ if "db_initialized" not in st.session_state:
     except Exception as e:
         st.error(f"Datenbankfehler: {e}")
 
-st.title("🎫 Ticket-System mit SUPABASE und Streamlit")
+st.title("🎫 Ticket-System mit Supabase und Streamlit")
 st.write("Wähle links: Kunden, Warteraum oder Sachbearbeiter.")
