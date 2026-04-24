@@ -53,7 +53,7 @@ def create_ticket():
         )
         cur = conn.cursor()
 
-        cur.execute("SELECT MAX(nummer) FROM tikets;")
+        cur.execute("SELECT MAX(nummer) FROM tickets;")
         last = cur.fetchone()[0]
 
         if last is None:
@@ -61,7 +61,7 @@ def create_ticket():
         else:
             new_number = int(last) + 1
 
-        cur.execute("INSERT INTO tikets (nummer) VALUES (%s)", (new_number,))
+        cur.execute("INSERT INTO tickets (nummer) VALUES (%s)", (new_number,))
         conn.commit()
 
         cur.close()
