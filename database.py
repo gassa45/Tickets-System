@@ -11,11 +11,10 @@ import streamlit as st
 DB_CONFIG = {
     "host": "aws-0-eu-west-1.pooler.supabase.com",
     "database": "postgres",
-    "user": "postgres.vzpamxbcdqzkenexoevm",
+    "user": "postgres.vzpamxbcdqzkenexoem",
     "password": "gassayossa2012",
     "port": 5432,
     "sslmode": "require",
-    "sslrootcert": "system"
 }
 
 
@@ -24,7 +23,15 @@ DB_CONFIG = {
 # ---------------------------------------------------------
 @contextmanager
 def get_conn():
-    conn = psycopg2.connect(**DB_CONFIG)
+    conn = psycopg2.connect(
+        host=DB_CONFIG["host"],
+        database=DB_CONFIG["database"],
+        user=DB_CONFIG["user"],
+        password=DB_CONFIG["password"],
+        port=DB_CONFIG["port"],
+        sslmode="require",
+        sslrootcert=None  # wichtig: None = Systemzertifikate
+    )
     try:
         yield conn
     finally:
