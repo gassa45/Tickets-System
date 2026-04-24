@@ -8,8 +8,10 @@ st.title("🎫 Nummer ziehen")
 st.write("Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.")
 
 if st.button("Nummer ziehen"):
-    nummer = create_ticket()
-    st.success(f"Ihre Nummer ist: {nummer}")
+    nummer = create_ticket()              # z.B. 1, 2, 3 …
+    formatted = f"A{int(nummer):03d}"     # → A001, A002, A003 …
+
+    st.success(f"Ihre Nummer ist: {formatted}")
 
     st.markdown(
         f"""
@@ -25,7 +27,7 @@ if st.button("Nummer ziehen"):
                 font-weight: bold;
                 color: white;
             ">
-                {nummer}
+                {formatted}
             </span>
         </div>
         """,

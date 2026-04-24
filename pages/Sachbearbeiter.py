@@ -7,16 +7,18 @@ from database import (
     finish_current_ticket,
 )
 
+st.set_page_config(page_title="Sachbearbeiter", layout="centered")
+
 st.title("🧑‍💼 Sachbearbeiter")
 
 # ---------------------------------------------------------
-# Session-State für gerade abgeschlossenes Ticket
+# Session-State
 # ---------------------------------------------------------
 if "just_finished" not in st.session_state:
     st.session_state.just_finished = False
 
 # ---------------------------------------------------------
-# Wartende Tickets anzeigen (als Karten)
+# Wartende Tickets
 # ---------------------------------------------------------
 st.subheader("Wartende Tickets")
 
@@ -24,7 +26,7 @@ waiting = get_waiting_tickets()
 
 if waiting:
     for t in waiting:
-        nr = t["nummer"]
+        nr = f"A{int(t['nummer']):03d}"
         st.markdown(
             f"""
             <div style="
@@ -54,19 +56,20 @@ else:
 if st.button("Nächstes Ticket aufrufen"):
     nummer = call_next_ticket()
     if nummer:
-        st.success(f"Aufgerufen: {nummer}")
+        formatted = f"A{int(nummer):03d}"
+        st.success(f"Aufgerufen: {formatted}")
     else:
         st.warning("Keine Tickets mehr vorhanden.")
 
 # ---------------------------------------------------------
-# Aktuelles Ticket in Bearbeitung
+# Ticket in Bearbeitung
 # ---------------------------------------------------------
 in_progress = get_in_progress_tickets()
 
 st.subheader("Aktuell in Bearbeitung:")
 
 if in_progress and not st.session_state.just_finished:
-    aktuelle_nummer = in_progress[0]["nummer"]
+    aktuelle_nummer = f"A{int(in_progress[0]['nummer']):03d}"
 
     st.markdown(
         f"""
@@ -92,13 +95,14 @@ else:
     st.write("Kein Ticket in Bearbeitung.")
 
 # ---------------------------------------------------------
-# Ticket abschließen ("Fertig")
+# Ticket abschließen
 # ---------------------------------------------------------
 if st.button("Fertig"):
     nummer = finish_current_ticket()
     if nummer:
+        formatted = f"A{int(nummer):03d}"
         st.session_state.just_finished = True
-        st.success(f"Ticket {nummer} abgeschlossen.")
+        st.success(f"Ticket {formatted} abgeschlossen.")
         time.sleep(2)
         st.session_state.just_finished = False
         st.rerun()

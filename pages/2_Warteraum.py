@@ -9,7 +9,11 @@ st.title("📢 Warteraum")
 # ---------------------------------------------------------
 # Aktuelles Ticket anzeigen
 # ---------------------------------------------------------
-aktuelles_ticket = get_current_ticket()
+aktuelles_ticket = get_current_ticket()   # z.B. 1, 2, 3 …
+
+formatted_current = (
+    f"A{int(aktuelles_ticket):03d}" if aktuelles_ticket else "—"
+)
 
 st.subheader("Aktuelles Ticket")
 
@@ -27,7 +31,7 @@ st.markdown(
             font-weight: bold;
             color: white;
         ">
-            {aktuelles_ticket}
+            {formatted_current}
         </span>
     </div>
     """,
@@ -35,17 +39,18 @@ st.markdown(
 )
 
 # ---------------------------------------------------------
-# Wartende Tickets anzeigen (ALLE als Karten)
+# Wartende Tickets anzeigen
 # ---------------------------------------------------------
 st.subheader("Wartende Nummern")
 
 waiting = get_waiting_tickets()
 
-# aktuelles Ticket entfernen
-waiting = [t for t in waiting if t != aktuelles_ticket]
+# aktuelles Ticket aus Liste entfernen
+waiting = [t for t in waiting if t["nummer"] != aktuelles_ticket]
 
 if waiting:
-    for nr in waiting:
+    for t in waiting:
+        nr = f"A{int(t['nummer']):03d}"
         st.markdown(
             f"""
             <div style="
@@ -69,9 +74,8 @@ if waiting:
 else:
     st.write("Keine weiteren Tickets.")
 
-
 # ---------------------------------------------------------
-# Automatischer Refresh am ENDE
+# Automatischer Refresh
 # ---------------------------------------------------------
 time.sleep(3)
 st.rerun()

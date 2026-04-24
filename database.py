@@ -1,145 +1,198 @@
 import psycopg2
-import os
+from contextlib import contextmanager
+import streamlit as st
 
 # ---------------------------------------------------------
-# Verbindung zu Supabase Postgres (Connection Pooler)
+# PostgreSQL Konfiguration über Streamlit Secrets
 # ---------------------------------------------------------
+DB_CONFIG = {
+    "host": st.secrets["DB_HOST"],
+    "database": st.secrets["DB_NAME"],
+    "user": st.secrets["DB_USER"],
+    "password": st.secrets["DB_PASSWORD"],
+    "port": st.secrets["DB_PORT"],
+    "sslmode": "require"
+}
 
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT", "6543")
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-
+# ---------------------------------------------------------
+# Verbindung als Context-Manager
+# ---------------------------------------------------------
+@contextmanager
 def get_conn():
-    return psycopg2.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        sslmode="require"
-    )
-
-# ---------------------------------------------------------
-# Datenbank initialisieren
-# ---------------------------------------------------------
-
-def init_db():
-    with get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS tickets (
-                    id SERIAL PRIMARY KEY,
-                    nummer VARCHAR(10) NOT NULL,
-                    status VARCHAR(20) NOT NULL,
-                    created_at TIMESTAMP DEFAULT NOW()
-                );
-            """)
-            conn.commit()
-
-# ---------------------------------------------------------
-# Ticket erzeugen
-# ---------------------------------------------------------
-
-def create_ticket():
+    conn = psycopg2.connect(**DB_CONFIG)
     try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            port=DB_PORT,
-            database=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD
-        )
-        cur = conn.cursor()
-
-        cur.execute("SELECT MAX(nummer) FROM tickets;")
-        last = cur.fetchone()[0]
-
-        if last is None:
-            new_number = 1
-        else:
-            new_number = int(last) + 1
-
-        cur.execute("INSERT INTO tickets (nummer) VALUES (%s)", (new_number,))
-        conn.commit()
-
-        cur.close()
+        yield conn
+    finally:
         conn.close()
 
-        return new_number
-
-    except Exception as e:
-        # WICHTIG: Fehler sichtbar machen
-        import streamlit as st
-        st.error(f"Fehler in create_ticket(): {e}")
-        raise
-
-
 # ---------------------------------------------------------
-# Aktuelles Ticket abrufen
+# Tabelle erstellen (falls nicht vorhanden)
 # ---------------------------------------------------------
-
-def get_current_ticket():
+def init_db():
     with get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("""
-                SELECT nummer
-                FROM tickets
-                WHERE status = 'current'
-                ORDER BY created_at DESC
-                LIMIT 1;
-            """)
-            row = cur.fetchone()
-            return row[0] if row else None
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS tickets (
+                id SERIAL PRIMARY KEY,
+                nummer VARCHAR(10) NOT NULL,
+                status VARCHAR(20) NOT NULL CHECK (status IN ('waiting','in_progress','done')),
+                created_at TIMESTAMP DEFAULT NOW()
+            );
+        """)
+        conn.commit()
+        cur.close()
 
 # ---------------------------------------------------------
-# Wartende Tickets abrufen
+# Neues Ticket erstellen (A001, A002, A003 …)
 # ---------------------------------------------------------
+def create_ticket():
+    with get_conn() as conn:
+        cur = conn.cursor()
 
+        # Anzahl Tickets → nächste Nummer
+        cur.execute("SELECT COUNT(*) FROM tickets;")
+        count = cur.fetchone()[0] + 1
+
+        nummer = f"A{count:03d}"
+
+        cur.execute(
+            "INSERT INTO tickets (nummer, status) VALUES (%s, %s)",
+            (nummer, "waiting")
+        )
+        conn.commit()
+        cur.close()
+
+        return nummer
+
+# ---------------------------------------------------------
+# Wartende Tickets holen
+# ---------------------------------------------------------
 def get_waiting_tickets():
     with get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("""
-                SELECT nummer
-                FROM tickets
-                WHERE status = 'waiting'
-                ORDER BY created_at ASC;
-            """)
-            rows = cur.fetchall()
-            return [r[0] for r in rows]
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, nummer 
+            FROM tickets
+            WHERE status='waiting'
+            ORDER BY id;
+        """)
+        rows = cur.fetchall()
+        cur.close()
+        return [{"id": r[0], "nummer": r[1]} for r in rows]
 
 # ---------------------------------------------------------
-# Ticket auf "current" setzen
+# Tickets in Bearbeitung holen
 # ---------------------------------------------------------
-
-def set_current_ticket(nummer):
+def get_in_progress_tickets():
     with get_conn() as conn:
-        with conn.cursor() as cur:
-            # altes current zurücksetzen
-            cur.execute("""
-                UPDATE tickets
-                SET status = 'done'
-                WHERE status = 'current';
-            """)
-
-            # neues current setzen
-            cur.execute("""
-                UPDATE tickets
-                SET status = 'current'
-                WHERE nummer = %s;
-            """, (nummer,))
-            conn.commit()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, nummer 
+            FROM tickets
+            WHERE status='in_progress'
+            ORDER BY id;
+        """)
+        rows = cur.fetchall()
+        cur.close()
+        return [{"id": r[0], "nummer": r[1]} for r in rows]
 
 # ---------------------------------------------------------
-# Ticket löschen
+# Nächstes Ticket aufrufen
 # ---------------------------------------------------------
-
-def delete_ticket(nummer):
+def call_next_ticket():
     with get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("""
-                DELETE FROM tickets
-                WHERE nummer = %s;
-            """, (nummer,))
-            conn.commit()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT id, nummer 
+            FROM tickets
+            WHERE status='waiting'
+            ORDER BY id
+            LIMIT 1;
+        """)
+        row = cur.fetchone()
+
+        if not row:
+            cur.close()
+            return None
+
+        ticket_id, nummer = row
+
+        cur.execute("""
+            UPDATE tickets
+            SET status='in_progress'
+            WHERE id=%s;
+        """, (ticket_id,))
+
+        conn.commit()
+        cur.close()
+
+        return nummer
+
+# ---------------------------------------------------------
+# Ticket abschließen
+# ---------------------------------------------------------
+def finish_current_ticket():
+    with get_conn() as conn:
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT id, nummer 
+            FROM tickets
+            WHERE status='in_progress'
+            ORDER BY id
+            LIMIT 1;
+        """)
+        row = cur.fetchone()
+
+        if not row:
+            cur.close()
+            return None
+
+        ticket_id, nummer = row
+
+        cur.execute("""
+            UPDATE tickets
+            SET status='done'
+            WHERE id=%s;
+        """, (ticket_id,))
+
+        conn.commit()
+        cur.close()
+
+        return nummer
+
+# ---------------------------------------------------------
+# Aktuelles Ticket für Warteraum
+# ---------------------------------------------------------
+def get_current_ticket():
+    with get_conn() as conn:
+        cur = conn.cursor()
+
+        # Ticket in Bearbeitung
+        cur.execute("""
+            SELECT nummer 
+            FROM tickets
+            WHERE status='in_progress'
+            ORDER BY id
+            LIMIT 1;
+        """)
+        row = cur.fetchone()
+
+        if row:
+            cur.close()
+            return row[0]
+
+        # sonst erstes wartendes Ticket
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT nummer 
+            FROM tickets
+            WHERE status='waiting'
+            ORDER BY id
+            LIMIT 1;
+        """)
+        row = cur.fetchone()
+        cur.close()
+
+        return row[0] if row else None
