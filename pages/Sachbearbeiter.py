@@ -27,12 +27,12 @@ st.markdown("""
             background-color: #f5f7fa;
         }
 
-        /* Karten */
+        /* BLAUE Karten */
         .ticket-card {
-            background-color: #ffffff;
+            background-color: #1E90FF;
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             text-align: center;
             margin-top: 15px;
         }
@@ -41,7 +41,7 @@ st.markdown("""
         .ticket-number {
             font-size: 60px;
             font-weight: bold;
-            color: #1E90FF;
+            color: white;
         }
 
         /* Buttons */

@@ -22,12 +22,12 @@ st.markdown("""
             background-color: #f5f7fa;
         }
 
-        /* Karten */
+        /* BLAUE Karten */
         .ticket-card {
-            background-color: #ffffff;
+            background-color: #1E90FF;
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             text-align: center;
             margin-top: 15px;
         }
@@ -36,19 +36,7 @@ st.markdown("""
         .ticket-number {
             font-size: 70px;
             font-weight: bold;
-            color: #1E90FF;
-        }
-
-        /* Buttons */
-        .stButton>button {
-            background-color: #1E90FF;
             color: white;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-size: 18px;
-        }
-        .stButton>button:hover {
-            background-color: #187bcd;
         }
     </style>
 """, unsafe_allow_html=True)
