@@ -41,12 +41,11 @@ st.subheader("Wartende Nummern")
 
 waiting = get_waiting_tickets()
 
-# aktuelles Ticket aus der Liste entfernen
-waiting = [t for t in waiting if t["nummer"] != aktuelles_ticket]
+# aktuelles Ticket entfernen
+waiting = [t for t in waiting if t != aktuelles_ticket]
 
 if waiting:
-    for t in waiting:
-        nr = t["nummer"]
+    for nr in waiting:
         st.markdown(
             f"""
             <div style="
@@ -69,6 +68,7 @@ if waiting:
         )
 else:
     st.write("Keine weiteren Tickets.")
+
 
 # ---------------------------------------------------------
 # Automatischer Refresh am ENDE
