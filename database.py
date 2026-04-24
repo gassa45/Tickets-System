@@ -9,13 +9,14 @@ import streamlit as st
 # ---------------------------------------------------------
 
 DB_CONFIG = {
-    "host": "db.vzpamxbcdqzkenexoevm.supabase.co",
+    "host": "aws-0-eu-west-1.pooler.supabase.com",
     "database": "postgres",
-    "user": "postgres",
+    "user": "postgres.vzpamxbcdqzkenexoevm",
     "password": "gassayossa2012",
     "port": 5432,
     "sslmode": "require"
 }
+
 
 # ---------------------------------------------------------
 # Verbindung als Context-Manager
