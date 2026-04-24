@@ -44,7 +44,11 @@ st.markdown("""
             color: white;
         }
 
-        /* Buttons */
+        /* Buttons – Abstand nach oben */
+        .stButton {
+            margin-top: 25px;
+        }
+
         .stButton>button {
             background-color: #1E90FF;
             color: white;
