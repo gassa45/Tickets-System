@@ -58,4 +58,4 @@ if "db_initialized" not in st.session_state:
         init_db()
         st.session_state["db_initialized"] = True
     except Exception as e:
-        st.error("Fehler bei der Datenbankverbindung.")
+        st.error(f"Datenbankfehler: {e}")
