@@ -11,7 +11,7 @@ import streamlit as st
 DB_CONFIG = {
     "host": "aws-0-eu-west-1.pooler.supabase.com",
     "database": "postgres",
-    "user": "postgres.vzpamxbcdqzkenexoem",
+    "user": "postgres.vzpamxbcdqzkenexoevm",
     "password": "gassayossa2012",
     "port": 5432,
     "sslmode": "require",
