@@ -59,6 +59,19 @@ aktuelles_ticket = get_current_ticket()
 waiting = get_waiting_tickets()
 
 # ---------------------------------------------------------
+# Sound abspielen, wenn der Kunde dran ist
+# ---------------------------------------------------------
+if meine_nummer and aktuelles_ticket == meine_nummer:
+    st.markdown("""
+        <audio autoplay>
+            <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+        </audio>
+    """, unsafe_allow_html=True)
+
+    st.success("🎉 Ihre Nummer wird jetzt aufgerufen!")
+
+
+# ---------------------------------------------------------
 # Eigene Nummer anzeigen
 # ---------------------------------------------------------
 if meine_nummer:
