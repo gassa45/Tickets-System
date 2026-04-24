@@ -14,7 +14,8 @@ DB_CONFIG = {
     "user": "postgres.vzpamxbcdqzkenexoevm",
     "password": "gassayossa2012",
     "port": 5432,
-    "sslmode": "require"
+    "sslmode": "require",
+    "sslrootcert": "system"
 }
 
 
