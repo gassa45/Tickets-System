@@ -42,14 +42,39 @@ def init_db():
 # Ticket erzeugen
 # ---------------------------------------------------------
 
-def create_ticket(nummer):
-    with get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("""
-                INSERT INTO tickets (nummer, status)
-                VALUES (%s, 'waiting');
-            """, (nummer,))
-            conn.commit()
+def create_ticket():
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        )
+        cur = conn.cursor()
+
+        cur.execute("SELECT MAX(nummer) FROM tikets;")
+        last = cur.fetchone()[0]
+
+        if last is None:
+            new_number = 1
+        else:
+            new_number = int(last) + 1
+
+        cur.execute("INSERT INTO tikets (nummer) VALUES (%s)", (new_number,))
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        return new_number
+
+    except Exception as e:
+        # WICHTIG: Fehler sichtbar machen
+        import streamlit as st
+        st.error(f"Fehler in create_ticket(): {e}")
+        raise
+
 
 # ---------------------------------------------------------
 # Aktuelles Ticket abrufen
