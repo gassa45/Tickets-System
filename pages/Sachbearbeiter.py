@@ -26,7 +26,7 @@ waiting = get_waiting_tickets()
 
 if waiting:
     for t in waiting:
-        nr = f"A{int(t['nummer']):03d}"
+        nr = t["nummer"]   # bereits A001
         st.markdown(
             f"""
             <div style="
@@ -54,10 +54,9 @@ else:
 # Nächstes Ticket aufrufen
 # ---------------------------------------------------------
 if st.button("Nächstes Ticket aufrufen"):
-    nummer = call_next_ticket()
+    nummer = call_next_ticket()   # z.B. "A001"
     if nummer:
-        formatted = f"A{int(nummer):03d}"
-        st.success(f"Aufgerufen: {formatted}")
+        st.success(f"Aufgerufen: {nummer}")
     else:
         st.warning("Keine Tickets mehr vorhanden.")
 
@@ -69,7 +68,7 @@ in_progress = get_in_progress_tickets()
 st.subheader("Aktuell in Bearbeitung:")
 
 if in_progress and not st.session_state.just_finished:
-    aktuelle_nummer = f"A{int(in_progress[0]['nummer']):03d}"
+    aktuelle_nummer = in_progress[0]["nummer"]   # bereits A001
 
     st.markdown(
         f"""
@@ -98,11 +97,10 @@ else:
 # Ticket abschließen
 # ---------------------------------------------------------
 if st.button("Fertig"):
-    nummer = finish_current_ticket()
+    nummer = finish_current_ticket()   # z.B. "A001"
     if nummer:
-        formatted = f"A{int(nummer):03d}"
         st.session_state.just_finished = True
-        st.success(f"Ticket {formatted} abgeschlossen.")
+        st.success(f"Ticket {nummer} abgeschlossen.")
         time.sleep(2)
         st.session_state.just_finished = False
         st.rerun()

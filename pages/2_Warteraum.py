@@ -9,11 +9,7 @@ st.title("📢 Warteraum")
 # ---------------------------------------------------------
 # Aktuelles Ticket anzeigen
 # ---------------------------------------------------------
-aktuelles_ticket = get_current_ticket()   # z.B. 1, 2, 3 …
-
-formatted_current = (
-    f"A{int(aktuelles_ticket):03d}" if aktuelles_ticket else "—"
-)
+aktuelles_ticket = get_current_ticket()   # z.B. "A001"
 
 st.subheader("Aktuelles Ticket")
 
@@ -31,7 +27,7 @@ st.markdown(
             font-weight: bold;
             color: white;
         ">
-            {formatted_current}
+            {aktuelles_ticket if aktuelles_ticket else "—"}
         </span>
     </div>
     """,
@@ -50,7 +46,7 @@ waiting = [t for t in waiting if t["nummer"] != aktuelles_ticket]
 
 if waiting:
     for t in waiting:
-        nr = f"A{int(t['nummer']):03d}"
+        nr = t["nummer"]   # bereits A001
         st.markdown(
             f"""
             <div style="

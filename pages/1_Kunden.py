@@ -8,8 +8,8 @@ st.title("🎫 Nummer ziehen")
 st.write("Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.")
 
 if st.button("Nummer ziehen"):
-    nummer = create_ticket()              # z.B. 1, 2, 3 …
-    formatted = f"A{int(nummer):03d}"     # → A001, A002, A003 …
+    nummer = create_ticket()      # z.B. "A001"
+    formatted = nummer            # KEINE Formatierung mehr!
 
     st.success(f"Ihre Nummer ist: {formatted}")
 
