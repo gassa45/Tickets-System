@@ -9,40 +9,73 @@ from database import (
 
 st.set_page_config(page_title="Sachbearbeiter", layout="centered")
 
-st.title("🧑‍💼 Sachbearbeiter")
+# ---------------------------------------------------------
+# Styling
+# ---------------------------------------------------------
+st.markdown("""
+    <style>
+        /* Sidebar */
+        [data-testid="stSidebar"] {
+            background-color: #1E90FF;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+        }
+
+        /* Hintergrund */
+        body {
+            background-color: #f5f7fa;
+        }
+
+        /* Karten */
+        .ticket-card {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        /* Nummer groß */
+        .ticket-number {
+            font-size: 60px;
+            font-weight: bold;
+            color: #1E90FF;
+        }
+
+        /* Buttons */
+        .stButton>button {
+            background-color: #1E90FF;
+            color: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+        .stButton>button:hover {
+            background-color: #187bcd;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Session-State
+# Inhalt
 # ---------------------------------------------------------
+st.title("🧑‍💼 Sachbearbeiter")
+
 if "just_finished" not in st.session_state:
     st.session_state.just_finished = False
 
-# ---------------------------------------------------------
-# Wartende Tickets
-# ---------------------------------------------------------
 st.subheader("Wartende Tickets")
 
 waiting = get_waiting_tickets()
 
 if waiting:
     for t in waiting:
-        nr = t["nummer"]   # bereits A001
         st.markdown(
             f"""
-            <div style="
-                background-color:#e0e0e0;
-                padding: 15px;
-                border-radius: 10px;
-                text-align: center;
-                margin-top: 8px;
-            ">
-                <span style="
-                    font-size: 30px;
-                    font-weight: bold;
-                    color: #333;
-                ">
-                    {nr}
-                </span>
+            <div class="ticket-card">
+                <span class="ticket-number" style="font-size:40px;">{t['nummer']}</span>
             </div>
             """,
             unsafe_allow_html=True
@@ -50,42 +83,24 @@ if waiting:
 else:
     st.write("Keine wartenden Tickets.")
 
-# ---------------------------------------------------------
-# Nächstes Ticket aufrufen
-# ---------------------------------------------------------
 if st.button("Nächstes Ticket aufrufen"):
-    nummer = call_next_ticket()   # z.B. "A001"
+    nummer = call_next_ticket()
     if nummer:
         st.success(f"Aufgerufen: {nummer}")
     else:
         st.warning("Keine Tickets mehr vorhanden.")
 
-# ---------------------------------------------------------
-# Ticket in Bearbeitung
-# ---------------------------------------------------------
+st.subheader("Aktuell in Bearbeitung")
+
 in_progress = get_in_progress_tickets()
 
-st.subheader("Aktuell in Bearbeitung:")
-
 if in_progress and not st.session_state.just_finished:
-    aktuelle_nummer = in_progress[0]["nummer"]   # bereits A001
+    aktuelle_nummer = in_progress[0]["nummer"]
 
     st.markdown(
         f"""
-        <div style="
-            background-color:#1E90FF;
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            margin-top: 10px;
-        ">
-            <span style="
-                font-size: 60px;
-                font-weight: bold;
-                color: white;
-            ">
-                {aktuelle_nummer}
-            </span>
+        <div class="ticket-card">
+            <span class="ticket-number">{aktuelle_nummer}</span>
         </div>
         """,
         unsafe_allow_html=True
@@ -93,11 +108,8 @@ if in_progress and not st.session_state.just_finished:
 else:
     st.write("Kein Ticket in Bearbeitung.")
 
-# ---------------------------------------------------------
-# Ticket abschließen
-# ---------------------------------------------------------
 if st.button("Fertig"):
-    nummer = finish_current_ticket()   # z.B. "A001"
+    nummer = finish_current_ticket()
     if nummer:
         st.session_state.just_finished = True
         st.success(f"Ticket {nummer} abgeschlossen.")

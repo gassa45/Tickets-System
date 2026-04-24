@@ -4,65 +4,84 @@ from database import get_current_ticket, get_waiting_tickets
 
 st.set_page_config(page_title="Warteraum", layout="centered")
 
-st.title("📢 Warteraum")
+# ---------------------------------------------------------
+# Styling
+# ---------------------------------------------------------
+st.markdown("""
+    <style>
+        /* Sidebar */
+        [data-testid="stSidebar"] {
+            background-color: #1E90FF;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+        }
+
+        /* Hintergrund */
+        body {
+            background-color: #f5f7fa;
+        }
+
+        /* Karten */
+        .ticket-card {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        /* Nummer groß */
+        .ticket-number {
+            font-size: 70px;
+            font-weight: bold;
+            color: #1E90FF;
+        }
+
+        /* Buttons */
+        .stButton>button {
+            background-color: #1E90FF;
+            color: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+        .stButton>button:hover {
+            background-color: #187bcd;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Aktuelles Ticket anzeigen
+# Inhalt
 # ---------------------------------------------------------
-aktuelles_ticket = get_current_ticket()   # z.B. "A001"
+st.title("📢 Warteraum")
+
+aktuelles_ticket = get_current_ticket()
 
 st.subheader("Aktuelles Ticket")
 
 st.markdown(
     f"""
-    <div style="
-        background-color:#1E90FF;
-        padding: 40px;
-        border-radius: 15px;
-        text-align: center;
-        margin-top: 10px;
-    ">
-        <span style="
-            font-size: 80px;
-            font-weight: bold;
-            color: white;
-        ">
-            {aktuelles_ticket if aktuelles_ticket else "—"}
-        </span>
+    <div class="ticket-card">
+        <span class="ticket-number">{aktuelles_ticket if aktuelles_ticket else "—"}</span>
     </div>
     """,
     unsafe_allow_html=True
 )
 
-# ---------------------------------------------------------
-# Wartende Tickets anzeigen
-# ---------------------------------------------------------
 st.subheader("Wartende Nummern")
 
 waiting = get_waiting_tickets()
-
-# aktuelles Ticket aus Liste entfernen
 waiting = [t for t in waiting if t["nummer"] != aktuelles_ticket]
 
 if waiting:
     for t in waiting:
-        nr = t["nummer"]   # bereits A001
         st.markdown(
             f"""
-            <div style="
-                background-color:#e0e0e0;
-                padding: 20px;
-                border-radius: 12px;
-                text-align: center;
-                margin-top: 10px;
-            ">
-                <span style="
-                    font-size: 40px;
-                    font-weight: bold;
-                    color: #333;
-                ">
-                    {nr}
-                </span>
+            <div class="ticket-card">
+                <span class="ticket-number" style="font-size:45px;">{t['nummer']}</span>
             </div>
             """,
             unsafe_allow_html=True
@@ -70,8 +89,5 @@ if waiting:
 else:
     st.write("Keine weiteren Tickets.")
 
-# ---------------------------------------------------------
-# Automatischer Refresh
-# ---------------------------------------------------------
 time.sleep(3)
 st.rerun()
