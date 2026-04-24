@@ -77,3 +77,28 @@ def create_ticket():
             ticket_nummer = cur.fetchone()[0]
             conn.commit()
             return ticket_nummer
+
+def get_current_ticket():
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT nummer 
+                FROM tickets
+                WHERE status = 'in_progress'
+                ORDER BY created_at ASC
+                LIMIT 1;
+            """)
+            row = cur.fetchone()
+            return row[0] if row else None
+
+def get_waiting_tickets():
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT nummer
+                FROM tickets
+                WHERE status = 'waiting'
+                ORDER BY created_at ASC;
+            """)
+            rows = cur.fetchall()
+            return [r[0] for r in rows]
