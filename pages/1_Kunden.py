@@ -60,17 +60,10 @@ st.title("🎫 Nummer ziehen")
 st.write("Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.")
 
 if st.button("Nummer ziehen"):
-    nummer = create_ticket()   # z.B. "A001"
+    nummer = create_ticket()   # z.B. "A015"
 
-    st.success(f"Ihre Nummer ist: {nummer}")
+    # Nummer speichern
+    st.session_state["meine_nummer"] = nummer
 
-    st.markdown(
-        f"""
-        <div class="ticket-card">
-            <span class="ticket-number">{nummer}</span>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.info("Bitte warten Sie, bis Ihre Nummer aufgerufen wird.")
+    # Sofort weiterleiten in den Warteraum
+    st.switch_page("pages/2_Warteraum.py")

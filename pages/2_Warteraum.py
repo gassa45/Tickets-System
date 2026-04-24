@@ -38,6 +38,12 @@ st.markdown("""
             font-weight: bold;
             color: white;
         }
+
+        /* Info-Text */
+        .info-text {
+            font-size: 20px;
+            margin-top: 10px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -46,8 +52,29 @@ st.markdown("""
 # ---------------------------------------------------------
 st.title("📢 Warteraum")
 
-aktuelles_ticket = get_current_ticket()
+# Eigene Nummer aus Session
+meine_nummer = st.session_state.get("meine_nummer", None)
 
+aktuelles_ticket = get_current_ticket()
+waiting = get_waiting_tickets()
+
+# ---------------------------------------------------------
+# Eigene Nummer anzeigen
+# ---------------------------------------------------------
+if meine_nummer:
+    st.subheader("Ihre Nummer")
+    st.markdown(
+        f"""
+        <div class="ticket-card">
+            <span class="ticket-number">{meine_nummer}</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# ---------------------------------------------------------
+# Aktuelles Ticket anzeigen
+# ---------------------------------------------------------
 st.subheader("Aktuelles Ticket")
 
 st.markdown(
@@ -59,9 +86,23 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ---------------------------------------------------------
+# Position berechnen
+# ---------------------------------------------------------
+if meine_nummer:
+    alle = [t["nummer"] for t in waiting]
+
+    if meine_nummer in alle:
+        position = alle.index(meine_nummer) + 1
+        st.info(f"Ihre Position in der Warteschlange: **{position}**")
+    else:
+        st.success("🎉 Sie sind gleich dran oder werden bereits aufgerufen!")
+
+# ---------------------------------------------------------
+# Wartende anzeigen
+# ---------------------------------------------------------
 st.subheader("Wartende Nummern")
 
-waiting = get_waiting_tickets()
 waiting = [t for t in waiting if t["nummer"] != aktuelles_ticket]
 
 if waiting:
@@ -77,5 +118,8 @@ if waiting:
 else:
     st.write("Keine weiteren Tickets.")
 
+# ---------------------------------------------------------
+# Automatischer Refresh
+# ---------------------------------------------------------
 time.sleep(3)
 st.rerun()
