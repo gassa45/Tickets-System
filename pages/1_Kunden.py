@@ -3,37 +3,42 @@ from database import create_ticket
 
 st.set_page_config(page_title="Nummer ziehen", layout="centered")
 
-# Sidebar blau
+# ---------------------------------------------------------
+# Styling
+# ---------------------------------------------------------
 st.markdown("""
     <style>
+        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #1E90FF;
         }
         [data-testid="stSidebar"] * {
             color: white !important;
         }
-    </style>
-""", unsafe_allow_html=True)
 
-# Globales Styling
-st.markdown("""
-    <style>
+        /* Hintergrund */
         body {
             background-color: #f5f7fa;
         }
+
+        /* BLAUE Karten */
         .ticket-card {
-            background-color: #ffffff;
-            padding: 25px;
+            background-color: #1E90FF;
+            padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             text-align: center;
-            margin-top: 15px;
+            margin-top: 20px;
         }
+
+        /* Nummer groß */
         .ticket-number {
             font-size: 70px;
             font-weight: bold;
-            color: #1E90FF;
+            color: white;
         }
+
+        /* Buttons */
         .stButton>button {
             background-color: #1E90FF;
             color: white;
@@ -47,12 +52,15 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ---------------------------------------------------------
+# Inhalt
+# ---------------------------------------------------------
 st.title("🎫 Nummer ziehen")
 
 st.write("Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.")
 
 if st.button("Nummer ziehen"):
-    nummer = create_ticket()
+    nummer = create_ticket()   # z.B. "A001"
 
     st.success(f"Ihre Nummer ist: {nummer}")
 
