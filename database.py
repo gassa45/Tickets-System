@@ -59,6 +59,7 @@ if "db_initialized" not in st.session_state:
         st.session_state["db_initialized"] = True
     except Exception as e:
         st.error(f"Datenbankfehler: {e}")
+
 def create_ticket():
     with get_conn() as conn:
         with conn.cursor() as cur:
