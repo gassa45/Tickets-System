@@ -70,20 +70,22 @@ st.markdown("""
             background-color: #187bcd !important;
         }
 
-        /* INFO BOX SICHTBAR MACHEN */
+            /* INFO BOX SICHTBAR MACHEN – funktionierende Version */
         div[data-testid="stAlert"] {
-            background-color: white !important;
-            color: #1E90FF !important;
+            background-color: white !important;      /* Weißer Hintergrund */
+            color: #1E90FF !important;               /* Blaue Schrift */
             border-left: 6px solid #1E90FF !important;
             padding: 18px !important;
             font-size: 20px !important;
-            margin-top: 20px !important;
+            opacity: 1 !important;                   /* Keine Transparenz */
+            filter: none !important;                 /* Entfernt Streamlit-Filter */
         }
 
         div[data-testid="stAlert"] p {
             color: #1E90FF !important;
             font-size: 20px !important;
             margin: 0 !important;
+            padding: 0 !important;
         }
 
         /* Sidebar */
