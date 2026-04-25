@@ -1,6 +1,5 @@
 import streamlit as st
 import time
-from style import load_logo_top
 
 from database import (
     get_waiting_tickets,
@@ -9,7 +8,9 @@ from database import (
     finish_current_ticket,
 )
 
-load_logo_top()
+st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+st.image("../revolution.png", width=250)
+st.markdown("</div>", unsafe_allow_html=True)
 
 st.set_page_config(page_title="Sachbearbeiter", layout="centered")
 

@@ -1,14 +1,9 @@
 import streamlit as st
 
 
-st.markdown(
-    """
-    <div style="text-align:center;">
-        <img src="./revolution.png" width="180">
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+st.image("../revolution.png", width=250)
+st.markdown("</div>", unsafe_allow_html=True)
 
 
 st.set_page_config(page_title="Ticket-System", layout="centered")

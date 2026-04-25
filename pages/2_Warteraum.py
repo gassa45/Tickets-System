@@ -1,11 +1,10 @@
 import streamlit as st
 import time
 from database import get_current_ticket, get_waiting_tickets
-from style import load_logo_top
 
-
-load_logo_top()
-
+st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+st.image("../revolution.png", width=250)
+st.markdown("</div>", unsafe_allow_html=True)
 
 st.set_page_config(page_title="Warteraum", layout="centered")
 
