@@ -53,17 +53,17 @@ st.markdown("""
             color: #1E90FF;
         }
 
-        /* BUTTON FIX */
+        /* BUTTON FIX — breiter + kein Zeilenbruch */
         .stButton>button {
             background-color: #1E90FF !important;
             color: white !important;
             border-radius: 12px;
-            padding: 14px 20px;
-            font-size: 22px;
+            padding: 16px 25px;
+            font-size: 24px;
             border: none;
-            width: 80% !important;      /* breiter */
-            margin: 40px auto 20px auto; /* Abstand oben/unten */
-            display: block !important;   /* zentriert */
+            width: 90% !important;          /* breiter */
+            margin: 40px auto 20px auto;    /* Abstand */
+            display: block !important;
             white-space: nowrap !important; /* verhindert Zeilenbruch */
         }
 
@@ -76,9 +76,9 @@ st.markdown("""
             background-color: white !important;
             color: #1E90FF !important;
             border-left: 6px solid #1E90FF !important;
-            font-size: 18px !important;
-            padding: 15px !important;
-            margin-top: 20px !important;
+            font-size: 20px !important;
+            padding: 18px !important;
+            margin-top: 25px !important;
         }
 
         /* Sidebar */
