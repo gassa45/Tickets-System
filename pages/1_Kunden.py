@@ -57,18 +57,20 @@ st.markdown("""
             color: #1E90FF;
         }
 
-        /* Buttons */
+        /* Button – Abstand + Farbe */
         .stButton>button {
-            background-color: white;
-            color: #1E90FF;
+            background-color: #1E90FF !important;
+            color: white !important;
             border-radius: 10px;
-            padding: 12px 25px;
-            font-size: 20px;
+            padding: 14px 25px;
+            font-size: 22px;
             border: none;
             width: 60%;
+            margin-top: 40px;   /* Abstand zur Karte */
+            margin-bottom: 20px;
         }
         .stButton>button:hover {
-            background-color: #e6e6e6;
+            background-color: #187bcd !important;
         }
 
         /* Sidebar */
@@ -77,6 +79,13 @@ st.markdown("""
         }
         [data-testid="stSidebar"] * {
             color: white !important;
+        }
+
+        /* Info Box sichtbar machen */
+        .stAlert {
+            background-color: white !important;
+            color: #1E90FF !important;
+            border-left: 5px solid #1E90FF !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -91,7 +100,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Button
+# Button (jetzt mit Abstand + blau)
 if st.button("Nummer ziehen"):
     nummer = create_ticket()
     st.session_state["meine_nummer"] = nummer
