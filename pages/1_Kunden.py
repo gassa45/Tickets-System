@@ -18,25 +18,19 @@ t = translations[lang]
 BASE_URL = "https://revolution-ticketsystem.streamlit.app"
 
 # ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
-logo = Image.open(image_path)
-
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image(logo, width=250)
-
-st.sidebar.image(logo, width=150)
-
-st.set_page_config(page_title=t["pull_title"], layout="wide")
-
-# ---------------------------------------------------------
-# Styling
+# Styling (MUSS GANZ OBEN SEIN!)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
         body { background-color: #f5f7fa; }
+
+        /* Sidebar */
+        [data-testid="stSidebar"] {
+            background-color: #1E90FF !important;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+        }
 
         .main-card {
             background-color: #1E90FF;
@@ -102,6 +96,20 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
+# Logo
+# ---------------------------------------------------------
+image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+logo = Image.open(image_path)
+
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.image(logo, width=250)
+
+st.sidebar.image(logo, width=150)
+
+st.set_page_config(page_title=t["pull_title"], layout="wide")
+
+# ---------------------------------------------------------
 # Inhalt
 # ---------------------------------------------------------
 st.markdown(
@@ -145,10 +153,10 @@ if st.button(t["pull_button"]):
     # QR-Code anzeigen
     st.image(buffer.getvalue(), caption="QR-Code", width=250)
 
-    # Automatische Weiterleitung nach 30 Sekunden
+    # Automatische Weiterleitung nach 3 Sekunden (RICHTIGE URL!)
     st.markdown(
         f"""
-        <meta http-equiv="refresh" content="30; url=/pages/Warteraum?ticket={nummer}">
+        <meta http-equiv="refresh" content="3; url=https://revolution-ticketsystem.streamlit.app/pages/2_Warteraum?ticket={nummer}">
         """,
         unsafe_allow_html=True
     )
