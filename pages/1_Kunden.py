@@ -145,7 +145,9 @@ if st.button(t["pull_button"]):
     st.image(buffer.getvalue(), caption="QR-Code", width=250)
 
     # Weiterleitung in den Warteraum
-    st.switch_page(f"pages/2_Warteraum.py?ticket={nummer}")
+    st.query_params["ticket"] = nummer
+    st.switch_page("pages/2_Warteraum.py")
+
 
 # ---------------------------------------------------------
 # Info-Text immer sichtbar
