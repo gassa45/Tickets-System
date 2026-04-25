@@ -12,6 +12,7 @@ st.markdown("""
             background-color: #f5f7fa;
         }
 
+        /* Hauptkarte */
         .main-card {
             background-color: #1E90FF;
             padding: 40px;
@@ -36,16 +37,22 @@ st.markdown("""
             margin-bottom: 30px;
         }
 
-        .ticket-card {
+        /* Ticket-Karte */
+        div[data-testid="stMarkdownContainer"] .ticket-card {
             background-color: white;
             padding: 30px;
             border-radius: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
         }
 
         .ticket-number {
-            font-size: 70px;
+            font-size: clamp(40px, 8vw, 70px);
             font-weight: bold;
             color: #1E90FF;
         }
@@ -77,11 +84,14 @@ st.markdown("""
 # ---------------------------------------------------------
 # Inhalt in Karte
 # ---------------------------------------------------------
-st.markdown('<div class="main-card">', unsafe_allow_html=True)
+st.markdown("""
+<div class="main-card">
+    <div class="main-title">🎫 Nummer ziehen</div>
+    <div class="main-text">Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.</div>
+</div>
+""", unsafe_allow_html=True)
 
-st.markdown('<div class="main-title">🎫 Nummer ziehen</div>', unsafe_allow_html=True)
-st.markdown('<div class="main-text">Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.</div>', unsafe_allow_html=True)
-
+# Button
 if st.button("Nummer ziehen"):
     nummer = create_ticket()
     st.session_state["meine_nummer"] = nummer
@@ -97,5 +107,3 @@ if st.button("Nummer ziehen"):
 
     st.info("Bitte warten Sie, bis Ihre Nummer aufgerufen wird.")
     st.switch_page("pages/2_Warteraum.py")
-
-st.markdown("</div>", unsafe_allow_html=True)
