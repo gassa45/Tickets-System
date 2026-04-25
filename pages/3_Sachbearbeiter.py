@@ -11,6 +11,38 @@ from database import (
 from PIL import Image
 import os
 
+# ---------------------------------------------------------
+# LOGIN SYSTEM
+# ---------------------------------------------------------
+
+USERNAME = "admin"
+PASSWORD = "1234"
+
+if "logged_in_sach" not in st.session_state:
+    st.session_state.logged_in_sach = False
+
+def login_form():
+    st.title("🔐 Sachbearbeiter Login")
+    username = st.text_input("Benutzername")
+    password = st.text_input("Passwort", type="password")
+
+    if st.button("Login"):
+        if username == USERNAME and password == PASSWORD:
+            st.session_state.logged_in_sach = True
+            st.success("Erfolgreich eingeloggt!")
+            st.rerun()
+        else:
+            st.error("Falscher Benutzername oder Passwort")
+
+# Wenn NICHT eingeloggt → Login anzeigen und STOP
+if not st.session_state.logged_in_sach:
+    login_form()
+    st.stop()
+
+# ---------------------------------------------------------
+# AB HIER NUR SICHTBAR, WENN EINGELOGGT
+# ---------------------------------------------------------
+
 # Absoluter Pfad zum Bild
 image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
 logo = Image.open(image_path)
@@ -25,6 +57,11 @@ with col2:
 # Bild in der Sidebar ganz oben anzeigen
 st.sidebar.image(logo, width=150)
 
+# Logout-Button
+if st.sidebar.button("Logout"):
+    st.session_state.logged_in_sach = False
+    st.rerun()
+
 st.set_page_config(page_title="Sachbearbeiter", layout="centered")
 
 # ---------------------------------------------------------
@@ -32,7 +69,6 @@ st.set_page_config(page_title="Sachbearbeiter", layout="centered")
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #1E90FF;
         }
@@ -40,12 +76,10 @@ st.markdown("""
             color: white !important;
         }
 
-        /* Hintergrund */
         body {
             background-color: #f5f7fa;
         }
 
-        /* BLAUE Karten */
         .ticket-card {
             background-color: #1E90FF;
             padding: 25px;
@@ -55,14 +89,12 @@ st.markdown("""
             margin-top: 15px;
         }
 
-        /* Nummer groß */
         .ticket-number {
             font-size: 60px;
             font-weight: bold;
             color: white;
         }
 
-        /* Buttons – Abstand nach oben */
         .stButton {
             margin-top: 25px;
         }
