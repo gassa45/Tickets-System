@@ -91,6 +91,30 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+
+    /* INFO BOX SICHTBAR MACHEN – funktionierende Version */
+    div[data-testid="stAlert"] {
+        background-color: white !important;
+        color: #1E90FF !important;
+        border-left: 6px solid #1E90FF !important;
+        padding: 18px !important;
+        font-size: 20px !important;
+        opacity: 1 !important;
+    }
+
+    div[data-testid="stAlert"] p {
+        color: #1E90FF !important;
+        font-size: 20px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    </style>
+""", unsafe_allow_html=True)
+
+
 
 # ---------------------------------------------------------
 # Inhalt in Karte
