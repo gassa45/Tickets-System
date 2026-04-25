@@ -129,7 +129,7 @@ if st.button(t["pull_button"]):
     buffer = BytesIO()
     qr.save(buffer, format="PNG")
 
-    # Ticket + QR-Code anzeigen
+    # Ticket anzeigen
     st.markdown(
         f"""
         <div class="ticket-card">
@@ -142,12 +142,16 @@ if st.button(t["pull_button"]):
         unsafe_allow_html=True
     )
 
+    # QR-Code anzeigen
     st.image(buffer.getvalue(), caption="QR-Code", width=250)
 
-    # Weiterleitung in den Warteraum
-    st.query_params["ticket"] = nummer
-    st.switch_page("pages/2_Warteraum.py")
-
+    # Automatische Weiterleitung nach 3 Sekunden
+    st.markdown(
+        f"""
+        <meta http-equiv="refresh" content="3; url=/pages/2_Warteraum?ticket={nummer}">
+        """,
+        unsafe_allow_html=True
+    )
 
 # ---------------------------------------------------------
 # Info-Text immer sichtbar
