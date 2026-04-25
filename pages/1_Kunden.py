@@ -102,10 +102,18 @@ if st.button("Nummer ziehen"):
             <span class="ticket-number">{nummer}</span>
             <p style="color:#1E90FF; font-size:20px; margin-top:20px;">
                 Bitte warten Sie, bis Ihre Nummer aufgerufen wird.
-            </p>
         </div>
         """,
         unsafe_allow_html=True
     )
 
     st.switch_page("pages/2_Warteraum.py")
+
+# ---------------------------------------------------------
+# Info-Text IMMER sichtbar, NICHT in IF-Bedingung
+# ---------------------------------------------------------
+st.markdown("""
+<div class="info-visible">
+    Bitte warten Sie, bis Ihre Nummer aufgerufen wird.
+</div>
+""", unsafe_allow_html=True)
