@@ -1,9 +1,21 @@
 import streamlit as st
 
 
+import streamlit as st
+from PIL import Image
+import os
+
+# Absoluter Pfad zum Bild
+image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+
+# Bild laden
+logo = Image.open(image_path)
+
+# Zentriert anzeigen
 st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-st.image("../revolution.png", width=250)
+st.image(logo, width=250)
 st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 st.set_page_config(page_title="Ticket-System", layout="centered")
