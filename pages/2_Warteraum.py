@@ -22,20 +22,6 @@ if not meine_nummer:
     meine_nummer = st.session_state.get("meine_nummer", None)
 
 # ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
-logo = Image.open(image_path)
-
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image(logo, width=250)
-
-st.sidebar.image(logo, width=150)
-
-st.set_page_config(page_title=t["waiting_room"], layout="centered")
-
-# ---------------------------------------------------------
 # Styling
 # ---------------------------------------------------------
 st.markdown("""
@@ -63,27 +49,42 @@ st.markdown("""
             font-weight: bold;
             color: white;
         }
+
+        .small-ticket {
+            font-size: 45px;
+            font-weight: bold;
+            color: white;
+        }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Inhalt
+# Logo
+# ---------------------------------------------------------
+image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+logo = Image.open(image_path)
+st.sidebar.image(logo, width=150)
+
+# ---------------------------------------------------------
+# Titel
 # ---------------------------------------------------------
 st.title(t["waiting_room"])
 
-aktuelles_ticket = get_current_ticket()
+# ---------------------------------------------------------
+# Datenbank: aktuelles Ticket + Warteschlange
+# ---------------------------------------------------------
+aktuelles = get_current_ticket()
 waiting = get_waiting_tickets()
 
 # ---------------------------------------------------------
 # Sound abspielen, wenn der Kunde dran ist
 # ---------------------------------------------------------
-if meine_nummer and aktuelles_ticket == meine_nummer:
+if meine_nummer and aktuelles and aktuelles["nummer"] == meine_nummer:
     st.markdown("""
         <audio autoplay>
             <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
         </audio>
     """, unsafe_allow_html=True)
-
     st.success(t["called_now"])
 
 # ---------------------------------------------------------
@@ -105,24 +106,27 @@ if meine_nummer:
 # ---------------------------------------------------------
 st.subheader(t["current_ticket"])
 
-st.markdown(
-    f"""
-    <div class="ticket-card">
-        <span class="ticket-number">{aktuelles_ticket if aktuelles_ticket else "—"}</span>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+if aktuelles:
+    st.markdown(
+        f"""
+        <div class="ticket-card">
+            <span class="ticket-number">{aktuelles['nummer']}</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+else:
+    st.info("Noch kein Ticket aufgerufen.")
 
 # ---------------------------------------------------------
-# Position berechnen
+# Position in der Warteschlange
 # ---------------------------------------------------------
 if meine_nummer:
     alle = [tkt["nummer"] for tkt in waiting]
 
     if meine_nummer in alle:
-        position = alle.index(meine_nummer) + 1
-        st.info(f"{t['queue_position']} **{position}**")
+        pos = alle.index(meine_nummer) + 1
+        st.info(f"{t['queue_position']} **{pos}**")
     else:
         st.success(t["almost_called"])
 
@@ -131,20 +135,18 @@ if meine_nummer:
 # ---------------------------------------------------------
 st.subheader(t["waiting_numbers"])
 
-waiting = [tkt for tkt in waiting if tkt["nummer"] != aktuelles_ticket]
-
 if waiting:
     for tkt in waiting:
         st.markdown(
             f"""
             <div class="ticket-card">
-                <span class="ticket-number" style="font-size:45px;">{tkt['nummer']}</span>
+                <span class="small-ticket">{tkt['nummer']}</span>
             </div>
             """,
             unsafe_allow_html=True
         )
 else:
-    st.write(t["no_more_tickets"])
+    st.info(t["no_more_tickets"])
 
 # ---------------------------------------------------------
 # Automatischer Refresh

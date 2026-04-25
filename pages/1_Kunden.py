@@ -12,19 +12,13 @@ from languages import translations
 lang = st.session_state.get("lang", "de")
 t = translations[lang]
 
-# ---------------------------------------------------------
-# Basis-URL deiner App
-# ---------------------------------------------------------
 BASE_URL = "https://revolution-ticketsystem.streamlit.app"
 
 # ---------------------------------------------------------
-# Styling (MUSS GANZ OBEN SEIN!)
+# Styling
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        body { background-color: #f5f7fa; }
-
-        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #1E90FF !important;
         }
@@ -32,28 +26,7 @@ st.markdown("""
             color: white !important;
         }
 
-        .main-card {
-            background-color: #1E90FF;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            width: 100%;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .main-title {
-            font-size: 45px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .main-text {
-            font-size: 22px;
-            color: white;
-            margin-bottom: 20px;
-        }
+        body { background-color: #f5f7fa; }
 
         .ticket-card {
             background-color: white;
@@ -65,32 +38,9 @@ st.markdown("""
         }
 
         .ticket-number {
-            font-size: clamp(40px, 8vw, 70px);
+            font-size: 60px;
             font-weight: bold;
             color: #1E90FF;
-        }
-
-        .stButton>button {
-            background-color: #1E90FF !important;
-            color: white !important;
-            border-radius: 12px;
-            padding: 16px 25px;
-            font-size: 24px;
-            border: none;
-            width: 100% !important;
-            max-width: 400px;
-            margin-top: 20px;
-        }
-
-        .info-visible {
-            background-color: white;
-            color: #008000;
-            border-left: 6px solid #008000;
-            padding: 22px;
-            font-size: 26px;
-            font-weight: bold;
-            margin-top: 25px;
-            border-radius: 5px;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -100,36 +50,31 @@ st.markdown("""
 # ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
 logo = Image.open(image_path)
-
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image(logo, width=250)
-
 st.sidebar.image(logo, width=150)
 
-st.set_page_config(page_title=t["pull_title"], layout="wide")
+# ---------------------------------------------------------
+# Titel & Info
+# ---------------------------------------------------------
+st.title(t["pull_title"])
+st.write(t["pull_info"])
 
 # ---------------------------------------------------------
-# Inhalt
-# ---------------------------------------------------------
-st.markdown(
-    f"""
-    <div class="main-card">
-        <div class="main-title">{t["pull_title"]}</div>
-        <div class="main-text">{t["pull_info"]}</div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# ---------------------------------------------------------
-# Button
+# Button: Ticket ziehen
 # ---------------------------------------------------------
 if st.button(t["pull_button"]):
-    nummer = create_ticket()
-    st.session_state["meine_nummer"] = nummer
 
-    # URL erzeugen
+    # 📝 Beschreibung vom Kunden
+    beschreibung = st.text_area(
+        "📝 Kurzbeschreibung (optional):",
+        placeholder="Worum geht es? Bitte kurz beschreiben..."
+    )
+
+    # Ticket erstellen + Beschreibung speichern
+    nummer = create_ticket(beschreibung)
+    st.session_state["meine_nummer"] = nummer
+    st.session_state["beschreibung"] = beschreibung
+
+    # URL für QR-Code & Weiterleitung
     url = f"{BASE_URL}/Warteraum?ticket={nummer}"
 
     # QR-Code erzeugen
@@ -153,7 +98,7 @@ if st.button(t["pull_button"]):
     # QR-Code anzeigen
     st.image(buffer.getvalue(), caption="QR-Code", width=250)
 
-    # Automatische Weiterleitung per JavaScript (funktioniert IMMER)
+    # Automatische Weiterleitung nach 2.5 Sekunden
     st.markdown(
         f"""
         <script>
@@ -164,15 +109,3 @@ if st.button(t["pull_button"]):
         """,
         unsafe_allow_html=True
     )
-
-# ---------------------------------------------------------
-# Info-Text immer sichtbar
-# ---------------------------------------------------------
-st.markdown(
-    f"""
-    <div class="info-visible">
-        {t["pull_wait"]}
-    </div>
-    """,
-    unsafe_allow_html=True
-)

@@ -35,6 +35,7 @@ def init_db():
             CREATE TABLE IF NOT EXISTS tickets (
                 id SERIAL PRIMARY KEY,
                 nummer VARCHAR(10) NOT NULL,
+                beschreibung TEXT,
                 status VARCHAR(20) NOT NULL CHECK (status IN ('waiting','in_progress','done')),
                 created_at TIMESTAMP DEFAULT NOW()
             );
@@ -43,21 +44,20 @@ def init_db():
         cur.close()
 
 # ---------------------------------------------------------
-# Neues Ticket erstellen (A001, A002, A003 …)
+# Neues Ticket erstellen (mit Beschreibung)
 # ---------------------------------------------------------
-def create_ticket():
+def create_ticket(beschreibung=""):
     with get_conn() as conn:
         cur = conn.cursor()
 
-        # Anzahl Tickets → nächste Nummer
         cur.execute("SELECT COUNT(*) FROM tickets;")
         count = cur.fetchone()[0] + 1
 
         nummer = f"A{count:03d}"
 
         cur.execute(
-            "INSERT INTO tickets (nummer, status) VALUES (%s, %s)",
-            (nummer, "waiting")
+            "INSERT INTO tickets (nummer, beschreibung, status) VALUES (%s, %s, %s)",
+            (nummer, beschreibung, "waiting")
         )
         conn.commit()
         cur.close()
@@ -71,14 +71,14 @@ def get_waiting_tickets():
     with get_conn() as conn:
         cur = conn.cursor()
         cur.execute("""
-            SELECT id, nummer 
+            SELECT id, nummer, beschreibung
             FROM tickets
             WHERE status='waiting'
             ORDER BY id;
         """)
         rows = cur.fetchall()
         cur.close()
-        return [{"id": r[0], "nummer": r[1]} for r in rows]
+        return [{"id": r[0], "nummer": r[1], "beschreibung": r[2]} for r in rows]
 
 # ---------------------------------------------------------
 # Tickets in Bearbeitung holen
@@ -87,14 +87,14 @@ def get_in_progress_tickets():
     with get_conn() as conn:
         cur = conn.cursor()
         cur.execute("""
-            SELECT id, nummer 
+            SELECT id, nummer, beschreibung
             FROM tickets
             WHERE status='in_progress'
             ORDER BY id;
         """)
         rows = cur.fetchall()
         cur.close()
-        return [{"id": r[0], "nummer": r[1]} for r in rows]
+        return [{"id": r[0], "nummer": r[1], "beschreibung": r[2]} for r in rows]
 
 # ---------------------------------------------------------
 # Nächstes Ticket aufrufen
@@ -104,7 +104,7 @@ def call_next_ticket():
         cur = conn.cursor()
 
         cur.execute("""
-            SELECT id, nummer 
+            SELECT id, nummer, beschreibung
             FROM tickets
             WHERE status='waiting'
             ORDER BY id
@@ -116,7 +116,7 @@ def call_next_ticket():
             cur.close()
             return None
 
-        ticket_id, nummer = row
+        ticket_id, nummer, beschreibung = row
 
         cur.execute("""
             UPDATE tickets
@@ -127,7 +127,7 @@ def call_next_ticket():
         conn.commit()
         cur.close()
 
-        return nummer
+        return {"nummer": nummer, "beschreibung": beschreibung}
 
 # ---------------------------------------------------------
 # Ticket abschließen
@@ -137,7 +137,7 @@ def finish_current_ticket():
         cur = conn.cursor()
 
         cur.execute("""
-            SELECT id, nummer 
+            SELECT id, nummer
             FROM tickets
             WHERE status='in_progress'
             ORDER BY id
@@ -169,9 +169,8 @@ def get_current_ticket():
     with get_conn() as conn:
         cur = conn.cursor()
 
-        # Ticket in Bearbeitung
         cur.execute("""
-            SELECT nummer 
+            SELECT nummer, beschreibung
             FROM tickets
             WHERE status='in_progress'
             ORDER BY id
@@ -181,12 +180,11 @@ def get_current_ticket():
 
         if row:
             cur.close()
-            return row[0]
+            return {"nummer": row[0], "beschreibung": row[1]}
 
-        # sonst erstes wartendes Ticket
         cur = conn.cursor()
         cur.execute("""
-            SELECT nummer 
+            SELECT nummer, beschreibung
             FROM tickets
             WHERE status='waiting'
             ORDER BY id
@@ -195,4 +193,4 @@ def get_current_ticket():
         row = cur.fetchone()
         cur.close()
 
-        return row[0] if row else None
+        return {"nummer": row[0], "beschreibung": row[1]} if row else None
