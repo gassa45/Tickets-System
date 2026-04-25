@@ -14,7 +14,7 @@ with col2:
     st.image(logo, width=250)
 
 # Bild in der Sidebar ganz oben anzeigen
-st.sidebar.image(logo, width=150)
+st.sidebar.image(logo, width=250)
 
 
 st.set_page_config(page_title="Ticket-System", layout="centered")
