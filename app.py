@@ -16,10 +16,14 @@ st.markdown("""
             padding: 40px;
             border-radius: 30px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            width: 80%;
-            margin: auto;
-            margin-top: 60px;
-            text-align: center;
+
+            /* Karte volle Breite */
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            margin-top: 20px;
+
+            text-align: left;
         }
 
         .main-title {
