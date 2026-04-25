@@ -1,13 +1,17 @@
 import streamlit as st
+import os
 
 def load_logo_top():
+    # Absoluter Pfad zum Logo (funktioniert für /pages und Hauptordner)
+    logo_path = os.path.join(os.path.dirname(__file__), "revolution.png")
+
     # CSS für rundes Logo
     st.markdown("""
     <style>
     .logo-round {
         border-radius: 50%;
-        width: 140px;
-        height: 140px;
+        width: 150px;
+        height: 150px;
         object-fit: cover;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         display: block;
@@ -18,8 +22,8 @@ def load_logo_top():
     </style>
     """, unsafe_allow_html=True)
 
-    # Logo über der Karte anzeigen
+    # Logo anzeigen (zentriert)
     st.markdown(
-        '<img src="revolution.png" class="logo-round">',
+        f'<img src="revolution.png" class="logo-round">',
         unsafe_allow_html=True
     )

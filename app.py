@@ -1,4 +1,6 @@
 import streamlit as st
+from style import load_logo_top
+load_logo_top()
 
 
 
