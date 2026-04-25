@@ -13,8 +13,10 @@ col1, col2, col3 = st.columns([1, 2, 1])
 
 # Bild in die mittlere Spalte
 with col2:
-    st.image(logo, use_column_width=True)
+    st.image(logo, width=250)
 
+# Bild in der Sidebar ganz oben anzeigen
+st.sidebar.image(logo, width=150)
 
 
 st.set_page_config(page_title="TV Display", layout="wide")
