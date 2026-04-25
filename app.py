@@ -1,4 +1,8 @@
 import streamlit as st
+from style import load_logo
+
+load_logo()
+
 
 st.set_page_config(page_title="Ticket-System", layout="centered")
 
