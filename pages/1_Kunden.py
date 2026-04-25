@@ -1,7 +1,7 @@
 import streamlit as st
 from database import create_ticket
 
-st.set_page_config(page_title="Nummer ziehen", layout="centered")
+st.set_page_config(page_title="Nummer ziehen", layout="wide")
 
 # ---------------------------------------------------------
 # Styling
@@ -12,33 +12,32 @@ st.markdown("""
             background-color: #f5f7fa;
         }
 
-        /* Hauptkarte */
+        /* Hauptkarte – jetzt volle Breite */
         .main-card {
             background-color: #1E90FF;
             padding: 40px;
-            border-radius: 30px;
+            border-radius: 20px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            width: 80%;
-            margin: auto;
-            margin-top: 60px;
-            text-align: center;
+            width: 100%;
+            margin-top: 20px;
+            text-align: left;   /* Text linksbündig */
         }
 
         .main-title {
             font-size: 45px;
             font-weight: bold;
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .main-text {
             font-size: 22px;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         /* Ticket-Karte */
-        div[data-testid="stMarkdownContainer"] .ticket-card {
+        .ticket-card {
             background-color: white;
             padding: 30px;
             border-radius: 20px;
@@ -53,7 +52,7 @@ st.markdown("""
             color: #1E90FF;
         }
 
-        /* BUTTON – so lassen wir ihn */
+        /* BUTTON – unverändert, nur volle Breite */
         .stButton>button {
             background-color: #1E90FF !important;
             color: white !important;
@@ -61,32 +60,30 @@ st.markdown("""
             padding: 16px 25px;
             font-size: 24px;
             border: none;
-            width: 90% !important;
-            max-width: 500px !important;
-            margin: 40px auto 20px auto;
-            display: block !important;
+            width: 100% !important;
+            max-width: 400px;
             white-space: nowrap !important;
+            margin-top: 20px;
         }
 
         .stButton>button:hover {
             background-color: #187bcd !important;
         }
 
-        /* INFO BOX SICHTBAR MACHEN — funktionierende Version */
+        /* INFO BOX SICHTBAR MACHEN */
         div[data-testid="stAlert"] {
             background-color: white !important;
             color: #1E90FF !important;
             border-left: 6px solid #1E90FF !important;
             padding: 18px !important;
             font-size: 20px !important;
-            opacity: 1 !important;
+            margin-top: 20px !important;
         }
 
         div[data-testid="stAlert"] p {
             color: #1E90FF !important;
             font-size: 20px !important;
             margin: 0 !important;
-            padding: 0 !important;
         }
 
         /* Sidebar */
@@ -100,7 +97,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Inhalt in Karte
+# Inhalt in voller Breite
 # ---------------------------------------------------------
 st.markdown("""
 <div class="main-card">
