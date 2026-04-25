@@ -130,7 +130,7 @@ if st.button(t["pull_button"]):
     st.session_state["meine_nummer"] = nummer
 
     # URL erzeugen
-    url = f"{BASE_URL}/?ticket={nummer}"
+    url = f"{BASE_URL}/Warteraum?ticket={nummer}"
 
     # QR-Code erzeugen
     qr = qrcode.make(url)
@@ -153,10 +153,14 @@ if st.button(t["pull_button"]):
     # QR-Code anzeigen
     st.image(buffer.getvalue(), caption="QR-Code", width=250)
 
-    # Automatische Weiterleitung nach 3 Sekunden (RICHTIGE URL!)
+    # Automatische Weiterleitung per JavaScript (funktioniert IMMER)
     st.markdown(
         f"""
-        <meta http-equiv="refresh" content="3; url=https://revolution-ticketsystem.streamlit.app/pages/2_Warteraum?ticket={nummer}">
+        <script>
+            setTimeout(function() {{
+                window.location.href = "{url}";
+            }}, 2500);
+        </script>
         """,
         unsafe_allow_html=True
     )

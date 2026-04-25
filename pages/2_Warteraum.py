@@ -41,7 +41,7 @@ st.set_page_config(page_title=t["waiting_room"], layout="centered")
 st.markdown("""
     <style>
         [data-testid="stSidebar"] {
-            background-color: #1E90FF;
+            background-color: #1E90FF !important;
         }
         [data-testid="stSidebar"] * {
             color: white !important;
