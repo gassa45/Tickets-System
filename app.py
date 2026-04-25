@@ -1,36 +1,17 @@
 import streamlit as st
-
-
-import streamlit as st
-from PIL import Image
-import os
-
-import streamlit as st
 from PIL import Image
 import os
 
 # Absoluter Pfad zum Bild
 image_path = os.path.join(os.path.dirname(__file__), ".", "revolution.png")
-
-# Bild laden
 logo = Image.open(image_path)
 
-# Bild zentriert anzeigen
-st.markdown(
-    """
-    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-    """,
-    unsafe_allow_html=True
-)
+# 3 Spalten erzeugen
+col1, col2, col3 = st.columns([1, 2, 1])
 
-st.image(logo, width=250)
-
-st.markdown(
-    """
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# Bild in die mittlere Spalte
+with col2:
+    st.image(logo, width=250)
 
 
 
