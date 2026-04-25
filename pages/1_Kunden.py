@@ -12,9 +12,10 @@ st.markdown("""
             background-color: #f5f7fa;
         }
 
+        /* Hauptkarte */
         .main-card {
             background-color: #1E90FF;
-            padding: 40px;
+            padding: 50px;
             border-radius: 30px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
             width: 80%;
@@ -36,6 +37,22 @@ st.markdown("""
             margin-bottom: 40px;
         }
 
+        /* Button */
+        .stButton>button {
+            background-color: white !important;
+            color: #1E90FF !important;
+            border-radius: 12px;
+            padding: 15px 25px;
+            font-size: 22px;
+            border: none;
+            width: 60%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .stButton>button:hover {
+            background-color: #e6e6e6 !important;
+        }
+
         /* Ticket-Karte */
         .ticket-card {
             background-color: white;
@@ -51,19 +68,11 @@ st.markdown("""
             color: #1E90FF;
         }
 
-        /* Button */
-        .stButton>button {
-            background-color: #187bcd !important;
-            color: white !important;
-            border-radius: 12px;
-            padding: 15px 25px;
-            font-size: 22px;
-            border: none;
-            width: 60%;
-            margin-top: 30px;
-        }
-        .stButton>button:hover {
-            background-color: #0f5fa8 !important;
+        /* Info Box sichtbar machen */
+        .stAlert {
+            background-color: white !important;
+            color: #1E90FF !important;
+            border-left: 5px solid #1E90FF !important;
         }
 
         /* Sidebar */
@@ -72,13 +81,6 @@ st.markdown("""
         }
         [data-testid="stSidebar"] * {
             color: white !important;
-        }
-
-        /* Info Box sichtbar machen */
-        .stAlert {
-            background-color: white !important;
-            color: #1E90FF !important;
-            border-left: 5px solid #1E90FF !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -91,6 +93,7 @@ st.markdown('<div class="main-card">', unsafe_allow_html=True)
 st.markdown('<div class="main-title">🎫 Nummer ziehen</div>', unsafe_allow_html=True)
 st.markdown('<div class="main-text">Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.</div>', unsafe_allow_html=True)
 
+# Button ist jetzt IN der Karte und perfekt ausgerichtet
 if st.button("Nummer ziehen"):
     nummer = create_ticket()
     st.session_state["meine_nummer"] = nummer
