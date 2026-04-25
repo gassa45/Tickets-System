@@ -16,7 +16,7 @@ import os
 # ---------------------------------------------------------
 
 USERNAME = "admin"
-PASSWORD = "1234"
+PASSWORD = "Gael2012"
 
 if "logged_in_sach" not in st.session_state:
     st.session_state.logged_in_sach = False
