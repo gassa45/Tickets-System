@@ -95,3 +95,12 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+st.markdown("""
+    <style>
+        /* Fix: Dropdown Text sichtbar machen */
+        div[data-baseweb="select"] * {
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
