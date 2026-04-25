@@ -12,7 +12,7 @@ st.markdown("""
             background-color: #f5f7fa;
         }
 
-        /* Hauptkarte – jetzt volle Breite */
+        /* Hauptkarte – volle Breite */
         .main-card {
             background-color: #1E90FF;
             padding: 40px;
@@ -20,7 +20,7 @@ st.markdown("""
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
             width: 100%;
             margin-top: 20px;
-            text-align: left;   /* Text linksbündig */
+            text-align: left;
         }
 
         .main-title {
@@ -52,7 +52,7 @@ st.markdown("""
             color: #1E90FF;
         }
 
-        /* BUTTON – unverändert, nur volle Breite */
+        /* BUTTON */
         .stButton>button {
             background-color: #1E90FF !important;
             color: white !important;
@@ -70,24 +70,6 @@ st.markdown("""
             background-color: #187bcd !important;
         }
 
-            /* INFO BOX SICHTBAR MACHEN – funktionierende Version */
-        div[data-testid="stAlert"] {
-            background-color: white !important;      /* Weißer Hintergrund */
-            color: #1E90FF !important;               /* Blaue Schrift */
-            border-left: 6px solid #1E90FF !important;
-            padding: 18px !important;
-            font-size: 20px !important;
-            opacity: 1 !important;                   /* Keine Transparenz */
-            filter: none !important;                 /* Entfernt Streamlit-Filter */
-        }
-
-        div[data-testid="stAlert"] p {
-            color: #1E90FF !important;
-            font-size: 20px !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
         /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #1E90FF;
@@ -99,7 +81,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Inhalt in voller Breite
+# Inhalt
 # ---------------------------------------------------------
 st.markdown("""
 <div class="main-card">
@@ -113,14 +95,17 @@ if st.button("Nummer ziehen"):
     nummer = create_ticket()
     st.session_state["meine_nummer"] = nummer
 
+    # Ticket + Info-Text in EINER weißen Karte → IMMER sichtbar
     st.markdown(
         f"""
         <div class="ticket-card">
             <span class="ticket-number">{nummer}</span>
+            <p style="color:#1E90FF; font-size:20px; margin-top:20px;">
+                Bitte warten Sie, bis Ihre Nummer aufgerufen wird.
+            </p>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    st.write("Bitte warten Sie, bis Ihre Nummer aufgerufen wird.")
     st.switch_page("pages/2_Warteraum.py")
