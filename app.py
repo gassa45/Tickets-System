@@ -1,23 +1,44 @@
 import streamlit as st
 from PIL import Image
 import os
+from languages import translations
 
-# Absoluter Pfad zum Bild
+# ---------------------------------------------------------
+# Sprache laden
+# ---------------------------------------------------------
+if "lang" not in st.session_state:
+    st.session_state.lang = "de"
+
+lang = st.sidebar.selectbox(
+    "Sprache / Language / Langue / 语言",
+    ["de", "en", "fr", "cn"],
+    format_func=lambda x: {
+        "de": "Deutsch",
+        "en": "English",
+        "fr": "Français",
+        "cn": "中文"
+    }[x]
+)
+
+st.session_state.lang = lang
+t = translations[lang]
+
+# ---------------------------------------------------------
+# Page Config
+# ---------------------------------------------------------
+st.set_page_config(page_title=t["app_title"], layout="centered")
+
+# ---------------------------------------------------------
+# Logo
+# ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), ".", "revolution.png")
 logo = Image.open(image_path)
 
-# 3 Spalten erzeugen
 col1, col2, col3 = st.columns([1, 2, 1])
-
-# Bild in die mittlere Spalte
 with col2:
     st.image(logo, width=250)
 
-# Bild in der Sidebar ganz oben anzeigen
 st.sidebar.image(logo, width=250)
-
-
-st.set_page_config(page_title="Ticket-System", layout="centered")
 
 # ---------------------------------------------------------
 # Styling
@@ -33,13 +54,10 @@ st.markdown("""
             padding: 40px;
             border-radius: 30px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-
-            /* Karte volle Breite */
             width: 100%;
             max-width: 100%;
             margin: 0;
             margin-top: 20px;
-
             text-align: left;
         }
 
@@ -56,7 +74,6 @@ st.markdown("""
             margin-bottom: 10px;
         }
 
-        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #1E90FF;
         }
@@ -67,11 +84,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Inhalt in Karte
+# Inhalt
 # ---------------------------------------------------------
-st.markdown("""
+st.markdown(
+    f"""
     <div class="main-card">
-        <div class="main-title">🎫 Revolution Ticket-System </div>
-        <div class="main-text">Wähle links: Kunden, Warteraum oder Sachbearbeiter.</div>
+        <div class="main-title">{t["app_title"]}</div>
+        <div class="main-text">{t["app_choose"]}</div>
     </div>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)

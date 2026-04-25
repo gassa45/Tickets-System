@@ -2,22 +2,27 @@ import streamlit as st
 from database import create_ticket
 from PIL import Image
 import os
+from languages import translations
 
-# Absoluter Pfad zum Bild
+# ---------------------------------------------------------
+# Sprache laden
+# ---------------------------------------------------------
+lang = st.session_state.get("lang", "de")
+t = translations[lang]
+
+# ---------------------------------------------------------
+# Logo
+# ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
 logo = Image.open(image_path)
 
-# 3 Spalten erzeugen
 col1, col2, col3 = st.columns([1, 2, 1])
-
-# Bild in die mittlere Spalte
 with col2:
     st.image(logo, width=250)
 
-# Bild in der Sidebar ganz oben anzeigen
 st.sidebar.image(logo, width=150)
 
-st.set_page_config(page_title="Nummer ziehen", layout="wide")
+st.set_page_config(page_title=t["pull_title"], layout="wide")
 
 # ---------------------------------------------------------
 # Styling
@@ -28,7 +33,6 @@ st.markdown("""
             background-color: #f5f7fa;
         }
 
-        /* Hauptkarte – volle Breite */
         .main-card {
             background-color: #1E90FF;
             padding: 40px;
@@ -52,7 +56,6 @@ st.markdown("""
             margin-bottom: 20px;
         }
 
-        /* Ticket-Karte */
         .ticket-card {
             background-color: white;
             padding: 30px;
@@ -68,7 +71,6 @@ st.markdown("""
             color: #1E90FF;
         }
 
-        /* BUTTON */
         .stButton>button {
             background-color: #1E90FF !important;
             color: white !important;
@@ -86,51 +88,53 @@ st.markdown("""
             background-color: #187bcd !important;
         }
 
-        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #1E90FF;
         }
         [data-testid="stSidebar"] * {
             color: white !important;
         }
-            
-                /* Info-Text eigene Box */
+
         .info-visible {
             background-color: white;
-            color: #008000;              /* GRÜN */
+            color: #008000;
             border-left: 6px solid #008000;
             padding: 22px;
-            font-size: 26px;             /* GRÖSSER */
-            font-weight: bold;           /* FETT */
+            font-size: 26px;
+            font-weight: bold;
             margin-top: 25px;
             border-radius: 5px;
         }
-
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # Inhalt
 # ---------------------------------------------------------
-st.markdown("""
-<div class="main-card">
-    <div class="main-title">🎫 Nummer ziehen</div>
-    <div class="main-text">Bitte drücken Sie auf den Button, um Ihre Wartenummer zu erhalten.</div>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    f"""
+    <div class="main-card">
+        <div class="main-title">{t["pull_title"]}</div>
+        <div class="main-text">{t["pull_info"]}</div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
+# ---------------------------------------------------------
 # Button
-if st.button("Nummer ziehen"):
+# ---------------------------------------------------------
+if st.button(t["pull_button"]):
     nummer = create_ticket()
     st.session_state["meine_nummer"] = nummer
 
-    # Ticket + Info-Text in EINER weißen Karte → IMMER sichtbar
     st.markdown(
         f"""
         <div class="ticket-card">
             <span class="ticket-number">{nummer}</span>
             <p style="color:#1E90FF; font-size:20px; margin-top:20px;">
-                Bitte warten Sie, bis Ihre Nummer aufgerufen wird.
+                {t["pull_wait"]}
+            </p>
         </div>
         """,
         unsafe_allow_html=True
@@ -139,10 +143,13 @@ if st.button("Nummer ziehen"):
     st.switch_page("pages/2_Warteraum.py")
 
 # ---------------------------------------------------------
-# Info-Text IMMER sichtbar, NICHT in IF-Bedingung
+# Info-Text immer sichtbar
 # ---------------------------------------------------------
-st.markdown("""
-<div class="info-visible">
-    Bitte warten Sie, bis Ihre Nummer aufgerufen wird.
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    f"""
+    <div class="info-visible">
+        {t["pull_wait"]}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
