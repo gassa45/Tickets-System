@@ -50,7 +50,7 @@ st.markdown("""
 # ---------------------------------------------------------
 st.markdown("""
     <div class="main-card">
-        <div class="main-title">🎫 Ticket-System mit Supabase und Streamlit</div>
+        <div class="main-title">🎫 Revolution Ticket-System </div>
         <div class="main-text">Wähle links: Kunden, Warteraum oder Sachbearbeiter.</div>
     </div>
 """, unsafe_allow_html=True)
