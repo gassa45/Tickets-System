@@ -108,6 +108,15 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+        /* Logout-Button Text sichtbar machen */
+        .stButton > button {
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # ---------------------------------------------------------
 # Titel
 # ---------------------------------------------------------
