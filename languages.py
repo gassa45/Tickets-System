@@ -31,7 +31,16 @@ translations = {
         "in_progress": "Aktuell in Bearbeitung",
         "none_in_progress": "Kein Ticket in Bearbeitung.",
         "finish": "Fertig",
-        "finished": "Ticket abgeschlossen."
+        "finished": "Ticket abgeschlossen.",
+        "no_description": "Keine Beschreibung angegeben",
+        "no_ticket_called": "Noch kein Ticket aufgerufen.",
+        "ticket_called": "Ticket aufgerufen:",
+        "ticket_finished": "Ticket abgeschlossen:",
+        "no_ticket_in_progress": "Kein Ticket in Bearbeitung.",
+        "call_next": "➡️ Nächstes Ticket aufrufen",
+        "finish_ticket": "✔️ Ticket abschließen",
+        "description": "Kurzbeschreibung",
+
     },
 
     "en": {
@@ -66,7 +75,16 @@ translations = {
         "in_progress": "Currently in Progress",
         "none_in_progress": "No ticket in progress.",
         "finish": "Finish",
-        "finished": "Ticket completed."
+        "finished": "Ticket completed.",
+        "no_description": "No description provided",
+        "no_ticket_called": "No ticket has been called yet.",
+        "ticket_called": "Ticket called:",
+        "ticket_finished": "Ticket finished:",
+        "no_ticket_in_progress": "No ticket in progress.",
+        "call_next": "➡️ Call next ticket",
+        "finish_ticket": "✔️ Finish ticket",
+        "description": "Description",
+
     },
 
     "fr": {
@@ -101,7 +119,16 @@ translations = {
         "in_progress": "Actuellement en traitement",
         "none_in_progress": "Aucun ticket en traitement.",
         "finish": "Terminer",
-        "finished": "Ticket terminé."
+        "finished": "Ticket terminé.",
+        "no_description": "Aucune description fournie",
+        "no_ticket_called": "Aucun ticket n’a encore été appelé.",
+        "ticket_called": "Ticket appelé :",
+        "ticket_finished": "Ticket terminé :",
+        "no_ticket_in_progress": "Aucun ticket en cours.",
+        "call_next": "➡️ Appeler le prochain ticket",
+        "finish_ticket": "✔️ Terminer le ticket",
+        "description": "Description",
+
     },
 
     "cn": {
@@ -136,6 +163,15 @@ translations = {
         "in_progress": "正在处理",
         "none_in_progress": "没有正在处理的号码。",
         "finish": "完成",
-        "finished": "号码已完成。"
+        "finished": "号码已完成。",
+        "no_description": "没有提供描述",
+        "no_ticket_called": "尚未叫号。",
+        "ticket_called": "已叫号：",
+        "ticket_finished": "已完成：",
+        "no_ticket_in_progress": "当前没有正在处理的号码。",
+        "call_next": "➡️ 呼叫下一个号码",
+        "finish_ticket": "✔️ 完成号码",
+        "description": "描述",
+
     }
 }
