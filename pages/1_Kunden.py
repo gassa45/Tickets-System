@@ -77,6 +77,19 @@ st.markdown("""
         [data-testid="stSidebar"] * {
             color: white !important;
         }
+            
+                /* Info-Text eigene Box */
+        .info-visible {
+            background-color: white;
+            color: #008000;              /* GRÜN */
+            border-left: 6px solid #008000;
+            padding: 22px;
+            font-size: 26px;             /* GRÖSSER */
+            font-weight: bold;           /* FETT */
+            margin-top: 25px;
+            border-radius: 5px;
+        }
+
     </style>
 """, unsafe_allow_html=True)
 
