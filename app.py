@@ -1,10 +1,14 @@
 import streamlit as st
-from style import load_logo
 
-load_logo()
 
 
 st.set_page_config(page_title="Ticket-System", layout="centered")
+
+# Logo über der Karte anzeigen
+st.markdown(
+        '<img src="revolution.png">',
+        unsafe_allow_html=True
+    )
 
 # ---------------------------------------------------------
 # Styling
