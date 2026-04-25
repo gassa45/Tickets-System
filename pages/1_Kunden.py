@@ -2,6 +2,8 @@ import streamlit as st
 from database import create_ticket
 from PIL import Image
 import os
+import qrcode
+from io import BytesIO
 from languages import translations
 
 # ---------------------------------------------------------
@@ -9,6 +11,11 @@ from languages import translations
 # ---------------------------------------------------------
 lang = st.session_state.get("lang", "de")
 t = translations[lang]
+
+# ---------------------------------------------------------
+# Basis-URL deiner App
+# ---------------------------------------------------------
+BASE_URL = "https://revolution-ticketsystem.streamlit.app"
 
 # ---------------------------------------------------------
 # Logo
@@ -29,9 +36,7 @@ st.set_page_config(page_title=t["pull_title"], layout="wide")
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        body {
-            background-color: #f5f7fa;
-        }
+        body { background-color: #f5f7fa; }
 
         .main-card {
             background-color: #1E90FF;
@@ -80,19 +85,7 @@ st.markdown("""
             border: none;
             width: 100% !important;
             max-width: 400px;
-            white-space: nowrap !important;
             margin-top: 20px;
-        }
-
-        .stButton>button:hover {
-            background-color: #187bcd !important;
-        }
-
-        [data-testid="stSidebar"] {
-            background-color: #1E90FF;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
         }
 
         .info-visible {
@@ -128,6 +121,15 @@ if st.button(t["pull_button"]):
     nummer = create_ticket()
     st.session_state["meine_nummer"] = nummer
 
+    # URL erzeugen
+    url = f"{BASE_URL}/?ticket={nummer}"
+
+    # QR-Code erzeugen
+    qr = qrcode.make(url)
+    buffer = BytesIO()
+    qr.save(buffer, format="PNG")
+
+    # Ticket + QR-Code anzeigen
     st.markdown(
         f"""
         <div class="ticket-card">
@@ -140,7 +142,10 @@ if st.button(t["pull_button"]):
         unsafe_allow_html=True
     )
 
-    st.switch_page("pages/2_Warteraum.py")
+    st.image(buffer.getvalue(), caption="QR-Code", width=250)
+
+    # Weiterleitung in den Warteraum
+    st.switch_page(f"pages/2_Warteraum.py?ticket={nummer}")
 
 # ---------------------------------------------------------
 # Info-Text immer sichtbar

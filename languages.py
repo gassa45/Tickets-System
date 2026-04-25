@@ -70,7 +70,7 @@ translations = {
     },
 
     "fr": {
-        "app_title": "🎫 Système de Tickets Révolution",
+        "app_title": "🎫 Système de Tickets Révolutionnaire",
         "app_choose": "Choisissez à gauche : Clients, Salle d'attente ou Agent.",
 
         "pull_title": "🎫 Prendre un numéro",

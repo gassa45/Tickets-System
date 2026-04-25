@@ -12,6 +12,16 @@ lang = st.session_state.get("lang", "de")
 t = translations[lang]
 
 # ---------------------------------------------------------
+# Ticketnummer aus URL lesen
+# ---------------------------------------------------------
+query_params = st.query_params
+meine_nummer = query_params.get("ticket", None)
+
+# Falls URL keine Nummer enthält → Session fallback
+if not meine_nummer:
+    meine_nummer = st.session_state.get("meine_nummer", None)
+
+# ---------------------------------------------------------
 # Logo
 # ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
@@ -37,9 +47,7 @@ st.markdown("""
             color: white !important;
         }
 
-        body {
-            background-color: #f5f7fa;
-        }
+        body { background-color: #f5f7fa; }
 
         .ticket-card {
             background-color: #1E90FF;
@@ -55,11 +63,6 @@ st.markdown("""
             font-weight: bold;
             color: white;
         }
-
-        .info-text {
-            font-size: 20px;
-            margin-top: 10px;
-        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -67,9 +70,6 @@ st.markdown("""
 # Inhalt
 # ---------------------------------------------------------
 st.title(t["waiting_room"])
-
-# Eigene Nummer aus Session
-meine_nummer = st.session_state.get("meine_nummer", None)
 
 aktuelles_ticket = get_current_ticket()
 waiting = get_waiting_tickets()
