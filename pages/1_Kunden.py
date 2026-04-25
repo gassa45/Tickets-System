@@ -145,10 +145,10 @@ if st.button(t["pull_button"]):
     # QR-Code anzeigen
     st.image(buffer.getvalue(), caption="QR-Code", width=250)
 
-    # Automatische Weiterleitung nach 3 Sekunden
+    # Automatische Weiterleitung nach 30 Sekunden
     st.markdown(
         f"""
-        <meta http-equiv="refresh" content="3; url=/pages/2_Warteraum?ticket={nummer}">
+        <meta http-equiv="refresh" content="30; url=/pages/Warteraum?ticket={nummer}">
         """,
         unsafe_allow_html=True
     )
