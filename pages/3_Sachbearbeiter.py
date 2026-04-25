@@ -1,12 +1,72 @@
 import streamlit as st
-from database import get_waiting_tickets, call_next_ticket, finish_current_ticket, get_current_ticket
+from database import (
+    get_waiting_tickets,
+    call_next_ticket,
+    finish_current_ticket,
+    get_current_ticket
+)
 from languages import translations
+from PIL import Image
+import os
+
+# ---------------------------------------------------------
+# Page Config (MUSS GANZ OBEN SEIN)
+# ---------------------------------------------------------
+st.set_page_config(page_title="Sachbearbeiter", layout="centered")
 
 # ---------------------------------------------------------
 # Sprache laden
 # ---------------------------------------------------------
 lang = st.session_state.get("lang", "de")
 t = translations[lang]
+
+# ---------------------------------------------------------
+# LOGIN SYSTEM
+# ---------------------------------------------------------
+USERNAME = "gassa"
+PASSWORD = "Gael2012"
+
+if "logged_in_sach" not in st.session_state:
+    st.session_state.logged_in_sach = False
+
+def login_form():
+    st.title(t["login_title"])
+    username = st.text_input(t["username"])
+    password = st.text_input(t["password"], type="password")
+
+    if st.button(t["login"]):
+        if username == USERNAME and password == PASSWORD:
+            st.session_state.logged_in_sach = True
+            st.success("OK")
+            st.rerun()
+        else:
+            st.error(t["login_error"])
+
+# Wenn NICHT eingeloggt → Login anzeigen und STOP
+if not st.session_state.logged_in_sach:
+    login_form()
+    st.stop()
+
+# ---------------------------------------------------------
+# AB HIER NUR SICHTBAR, WENN EINGELOGGT
+# ---------------------------------------------------------
+
+# ---------------------------------------------------------
+# Logo
+# ---------------------------------------------------------
+image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+logo = Image.open(image_path)
+
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.image(logo, width=250)
+
+st.sidebar.image(logo, width=150)
+
+# Logout
+if st.sidebar.button(t["logout"]):
+    st.session_state.logged_in_sach = False
+    st.rerun()
 
 # ---------------------------------------------------------
 # Styling
@@ -54,14 +114,13 @@ st.markdown("""
 st.title(t["agent_title"])
 
 # ---------------------------------------------------------
-# Aktuelles Ticket abrufen
+# Aktuelles Ticket
 # ---------------------------------------------------------
 aktuelles = get_current_ticket()
 
 if aktuelles:
     st.subheader(t["current_ticket"])
 
-    # Ticketnummer anzeigen
     st.markdown(
         f"""
         <div class="ticket-box">
@@ -71,7 +130,6 @@ if aktuelles:
         unsafe_allow_html=True
     )
 
-    # Beschreibung anzeigen
     beschreibung = aktuelles.get("beschreibung", "")
 
     if beschreibung:
@@ -110,7 +168,7 @@ with col2:
             st.warning(t["no_ticket_in_progress"])
 
 # ---------------------------------------------------------
-# Wartende Tickets anzeigen
+# Wartende Tickets
 # ---------------------------------------------------------
 st.subheader(t["waiting_numbers"])
 
