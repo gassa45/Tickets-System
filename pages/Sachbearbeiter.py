@@ -1,6 +1,7 @@
 import streamlit as st
 import time
-from style import load_logo
+from style import load_logo_top
+
 from database import (
     get_waiting_tickets,
     get_in_progress_tickets,
@@ -8,7 +9,7 @@ from database import (
     finish_current_ticket,
 )
 
-load_logo()
+load_logo_top()
 
 st.set_page_config(page_title="Sachbearbeiter", layout="centered")
 

@@ -1,8 +1,9 @@
 import streamlit as st
 from database import create_ticket
-from style import load_logo
+from style import load_logo_top
 
-load_logo()
+load_logo_top()
+
 
 
 st.set_page_config(page_title="Nummer ziehen", layout="wide")

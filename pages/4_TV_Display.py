@@ -1,9 +1,10 @@
 import streamlit as st
 import time
 from database import get_current_ticket, get_waiting_tickets
-from style import load_logo
+from style import load_logo_top
 
-load_logo()
+load_logo_top()
+
 
 
 st.set_page_config(page_title="TV Display", layout="wide")
