@@ -51,7 +51,7 @@ st.markdown("""
 # ---------------------------------------------------------
 # Titel
 # ---------------------------------------------------------
-st.title("Sachbearbeiter – Ticketverwaltung")
+st.title(t["agent_title"])
 
 # ---------------------------------------------------------
 # Aktuelles Ticket abrufen
@@ -59,7 +59,7 @@ st.title("Sachbearbeiter – Ticketverwaltung")
 aktuelles = get_current_ticket()
 
 if aktuelles:
-    st.subheader("Aktuelles Ticket")
+    st.subheader(t["current_ticket"])
 
     # Ticketnummer anzeigen
     st.markdown(
@@ -78,41 +78,41 @@ if aktuelles:
         st.markdown(
             f"""
             <div class="beschreibung-box">
-                <b>Kurzbeschreibung:</b><br>{beschreibung}
+                <b>{t["description"]}:</b><br>{beschreibung}
             </div>
             """,
             unsafe_allow_html=True
         )
     else:
-        st.info("Keine Beschreibung angegeben.")
+        st.info(t["no_description"])
 else:
-    st.info("Noch kein Ticket aufgerufen.")
+    st.info(t["no_ticket_called"])
 
 # ---------------------------------------------------------
-# Buttons: Nächstes Ticket / Ticket abschließen
+# Buttons
 # ---------------------------------------------------------
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("➡️ Nächstes Ticket aufrufen"):
+    if st.button(t["call_next"]):
         next_ticket = call_next_ticket()
         if next_ticket:
-            st.success(f"Ticket {next_ticket['nummer']} wurde aufgerufen.")
+            st.success(f"{t['ticket_called']} {next_ticket['nummer']}")
         else:
-            st.warning("Keine wartenden Tickets.")
+            st.warning(t["no_more_tickets"])
 
 with col2:
-    if st.button("✔️ Ticket abschließen"):
+    if st.button(t["finish_ticket"]):
         finished = finish_current_ticket()
         if finished:
-            st.success(f"Ticket {finished} wurde abgeschlossen.")
+            st.success(f"{t['ticket_finished']} {finished}")
         else:
-            st.warning("Kein Ticket in Bearbeitung.")
+            st.warning(t["no_ticket_in_progress"])
 
 # ---------------------------------------------------------
 # Wartende Tickets anzeigen
 # ---------------------------------------------------------
-st.subheader("Wartende Tickets")
+st.subheader(t["waiting_numbers"])
 
 waiting = get_waiting_tickets()
 
@@ -127,4 +127,4 @@ if waiting:
             unsafe_allow_html=True
         )
 else:
-    st.info("Keine wartenden Tickets.")
+    st.info(t["no_more_tickets"])
