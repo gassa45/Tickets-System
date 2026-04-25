@@ -115,7 +115,7 @@ st.markdown(
 )
 
 # ---------------------------------------------------------
-# Button + Beschreibung
+# Beschreibung + Button
 # ---------------------------------------------------------
 beschreibung = st.text_area(
     "📝 Kurzbeschreibung (optional):",
