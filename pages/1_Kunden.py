@@ -15,10 +15,13 @@ t = translations[lang]
 BASE_URL = "https://revolution-ticketsystem.streamlit.app"
 
 # ---------------------------------------------------------
-# Styling
+# Styling – DEIN ALTES BLAUES DESIGN
 # ---------------------------------------------------------
 st.markdown("""
     <style>
+        body { background-color: #f5f7fa; }
+
+        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #1E90FF !important;
         }
@@ -26,8 +29,31 @@ st.markdown("""
             color: white !important;
         }
 
-        body { background-color: #f5f7fa; }
+        /* Hauptkarte */
+        .main-card {
+            background-color: #1E90FF;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            margin-top: 20px;
+            text-align: left;
+        }
 
+        .main-title {
+            font-size: 45px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .main-text {
+            font-size: 22px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* Ticketkarte */
         .ticket-card {
             background-color: white;
             padding: 30px;
@@ -38,9 +64,27 @@ st.markdown("""
         }
 
         .ticket-number {
-            font-size: 60px;
+            font-size: 70px;
             font-weight: bold;
             color: #1E90FF;
+        }
+
+        /* Blauer Button */
+        .stButton>button {
+            background-color: #1E90FF !important;
+            color: white !important;
+            border-radius: 12px;
+            padding: 16px 25px;
+            font-size: 24px;
+            border: none;
+            width: 100% !important;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        /* Beschreibung */
+        textarea {
+            font-size: 20px !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -50,26 +94,37 @@ st.markdown("""
 # ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
 logo = Image.open(image_path)
+
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.image(logo, width=250)
+
 st.sidebar.image(logo, width=150)
 
 # ---------------------------------------------------------
-# Titel & Info
+# Hauptkarte (wie früher)
 # ---------------------------------------------------------
-st.title(t["pull_title"])
-st.write(t["pull_info"])
+st.markdown(
+    f"""
+    <div class="main-card">
+        <div class="main-title">{t["pull_title"]}</div>
+        <div class="main-text">{t["pull_info"]}</div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # ---------------------------------------------------------
-# Button: Ticket ziehen
+# Button + Beschreibung
 # ---------------------------------------------------------
+beschreibung = st.text_area(
+    "📝 Kurzbeschreibung (optional):",
+    placeholder="Worum geht es? Bitte kurz beschreiben..."
+)
+
 if st.button(t["pull_button"]):
 
-    # 📝 Beschreibung vom Kunden
-    beschreibung = st.text_area(
-        "📝 Kurzbeschreibung (optional):",
-        placeholder="Worum geht es? Bitte kurz beschreiben..."
-    )
-
-    # Ticket erstellen + Beschreibung speichern
+    # Ticket erstellen
     nummer = create_ticket(beschreibung)
     st.session_state["meine_nummer"] = nummer
     st.session_state["beschreibung"] = beschreibung
@@ -82,7 +137,7 @@ if st.button(t["pull_button"]):
     buffer = BytesIO()
     qr.save(buffer, format="PNG")
 
-    # Ticket anzeigen
+    # Ticketkarte anzeigen
     st.markdown(
         f"""
         <div class="ticket-card">
@@ -98,7 +153,7 @@ if st.button(t["pull_button"]):
     # QR-Code anzeigen
     st.image(buffer.getvalue(), caption="QR-Code", width=250)
 
-    # Automatische Weiterleitung nach 2.5 Sekunden
+    # Weiterleitung
     st.markdown(
         f"""
         <script>
