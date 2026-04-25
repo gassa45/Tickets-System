@@ -120,5 +120,5 @@ if st.button("Nummer ziehen"):
         unsafe_allow_html=True
     )
 
-    st.info("Bitte warten Sie, bis Ihre Nummer aufgerufen wird.")
+    st.write("Bitte warten Sie, bis Ihre Nummer aufgerufen wird.")
     st.switch_page("pages/2_Warteraum.py")
