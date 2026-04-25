@@ -34,7 +34,7 @@ st.markdown("""
         .main-text {
             font-size: 22px;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         /* Ticket-Karte */
@@ -57,18 +57,25 @@ st.markdown("""
             color: #1E90FF;
         }
 
-        /* Buttons */
+        /* Button */
         .stButton>button {
-            background-color: white;
+            background-color: #ffffff;
             color: #1E90FF;
-            border-radius: 10px;
-            padding: 12px 25px;
-            font-size: 20px;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 22px;
+            font-weight: 600;
             border: none;
-            width: 60%;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            width: auto;
+            min-width: 250px;
         }
+
         .stButton>button:hover {
             background-color: #e6e6e6;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
         /* Sidebar */
