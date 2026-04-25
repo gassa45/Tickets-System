@@ -1,8 +1,15 @@
 import streamlit as st
 from database import create_ticket
-from style import load_logo_top
 
-load_logo_top()
+
+st.markdown(
+    """
+    <div style="text-align:center;">
+        <img src="../revolution.png" width="180">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
 
