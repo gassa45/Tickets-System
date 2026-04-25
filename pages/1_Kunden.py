@@ -44,10 +44,6 @@ st.markdown("""
             border-radius: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
             text-align: center;
         }
 
@@ -57,20 +53,32 @@ st.markdown("""
             color: #1E90FF;
         }
 
-        /* Button – Abstand + Farbe */
+        /* BUTTON FIX */
         .stButton>button {
             background-color: #1E90FF !important;
             color: white !important;
-            border-radius: 10px;
-            padding: 14px 25px;
+            border-radius: 12px;
+            padding: 14px 20px;
             font-size: 22px;
             border: none;
-            width: 60%;
-            margin-top: 40px;   /* Abstand zur Karte */
-            margin-bottom: 20px;
+            width: 80% !important;      /* breiter */
+            margin: 40px auto 20px auto; /* Abstand oben/unten */
+            display: block !important;   /* zentriert */
+            white-space: nowrap !important; /* verhindert Zeilenbruch */
         }
+
         .stButton>button:hover {
             background-color: #187bcd !important;
+        }
+
+        /* INFO BOX SICHTBAR MACHEN */
+        .stAlert {
+            background-color: white !important;
+            color: #1E90FF !important;
+            border-left: 6px solid #1E90FF !important;
+            font-size: 18px !important;
+            padding: 15px !important;
+            margin-top: 20px !important;
         }
 
         /* Sidebar */
@@ -80,15 +88,9 @@ st.markdown("""
         [data-testid="stSidebar"] * {
             color: white !important;
         }
-
-        /* Info Box sichtbar machen */
-        .stAlert {
-            background-color: white !important;
-            color: #1E90FF !important;
-            border-left: 5px solid #1E90FF !important;
-        }
     </style>
 """, unsafe_allow_html=True)
+
 
 # ---------------------------------------------------------
 # Inhalt in Karte
