@@ -107,12 +107,23 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
-
 st.markdown("""
     <style>
-        /* Logout-Button Text sichtbar machen */
-        .stButton > button {
-            color: black !important;
+        /* Logout Button: Blau + weiße Schrift */
+        [data-testid="stSidebar"] .stButton > button {
+            background-color: #1E90FF !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 10px !important;
+            padding: 12px 20px !important;
+            font-size: 18px !important;
+            font-weight: bold !important;
+        }
+
+        /* Kein Hover-Farbwechsel */
+        [data-testid="stSidebar"] .stButton > button:hover {
+            background-color: #1E90FF !important;
+            color: white !important;
         }
     </style>
 """, unsafe_allow_html=True)
