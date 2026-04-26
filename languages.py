@@ -40,6 +40,27 @@ translations = {
         "call_next": "➡️ Nächstes Ticket aufrufen",
         "finish_ticket": "✔️ Ticket abschließen",
         "description": "Kurzbeschreibung",
+        "about_title": "Revolution Ticket-System",
+        "about_sub": "Willkommen! Hier erfahren Sie, wer wir sind und was unser System besonders macht.",
+
+        "about_us_title": "Über uns",
+        "about_us_text": "Wir entwickeln moderne, digitale Lösungen für Warte- und Ticketsysteme. Unser Ziel ist es, Abläufe zu vereinfachen, Wartezeiten transparent zu machen und sowohl Kunden als auch Mitarbeitern ein angenehmes, effizientes Erlebnis zu bieten.",
+
+        "mission_title": "Unsere Mission",
+        "mission_text": "Wir glauben an klare Prozesse, intuitive Bedienung und moderne Technologie. Das Revolution Ticket-System wurde entwickelt, um Organisationen jeder Größe eine einfache, zuverlässige und flexible Lösung zu bieten.",
+
+        "why_title": "Warum unser System?",
+        "why_1": "✔ Intuitive Bedienung für Kunden und Mitarbeiter",
+        "why_2": "✔ Klare Struktur und moderne Benutzeroberfläche",
+        "why_3": "✔ Mehrsprachige Unterstützung",
+        "why_4": "✔ Echtzeit-Informationen über Wartezeiten",
+        "why_5": "✔ Flexibel anpassbar für jede Branche",
+
+        "contact_title": "Kontakt",
+        "contact_mail": "📧 E-Mail: support@revolution-ticketsystem.com",
+        "contact_phone": "📞 Telefon: +49 123 456 789",
+        "contact_location": "📍 Standort: Hessen, Deutschland",
+
 
     },
 
@@ -84,6 +105,27 @@ translations = {
         "call_next": "➡️ Call next ticket",
         "finish_ticket": "✔️ Finish ticket",
         "description": "Description",
+        "about_title": "Revolution Ticket System",
+        "about_sub": "Welcome! Here you can learn who we are and what makes our system special.",
+
+        "about_us_title": "About Us",
+        "about_us_text": "We develop modern digital solutions for queue and ticket systems. Our goal is to simplify processes, make waiting times transparent, and provide both customers and staff with an efficient and pleasant experience.",
+
+        "mission_title": "Our Mission",
+        "mission_text": "We believe in clear processes, intuitive usability, and modern technology. The Revolution Ticket System was created to offer organizations of all sizes a simple, reliable, and flexible solution.",
+
+        "why_title": "Why Our System?",
+        "why_1": "✔ Intuitive for customers and staff",
+        "why_2": "✔ Clear structure and modern interface",
+        "why_3": "✔ Multilingual support",
+        "why_4": "✔ Real-time waiting information",
+        "why_5": "✔ Flexible for any industry",
+
+        "contact_title": "Contact",
+        "contact_mail": "📧 Email: support@revolution-ticketsystem.com",
+        "contact_phone": "📞 Phone: +49 123 456 789",
+        "contact_location": "📍 Location: Hesse, Germany",
+
 
     },
 
@@ -128,6 +170,27 @@ translations = {
         "call_next": "➡️ Appeler le prochain ticket",
         "finish_ticket": "✔️ Terminer le ticket",
         "description": "Description",
+        "about_title": "Système de Tickets Revolution",
+        "about_sub": "Bienvenue ! Découvrez qui nous sommes et ce qui rend notre système unique.",
+
+        "about_us_title": "À propos de nous",
+        "about_us_text": "Nous développons des solutions numériques modernes pour les systèmes de file d’attente et de tickets. Notre objectif est de simplifier les processus, de rendre les temps d’attente transparents et d’offrir une expérience efficace et agréable aux clients comme aux employés.",
+
+        "mission_title": "Notre mission",
+        "mission_text": "Nous croyons en des processus clairs, une utilisation intuitive et une technologie moderne. Le Système de Tickets Revolution a été conçu pour offrir une solution simple, fiable et flexible aux organisations de toute taille.",
+
+        "why_title": "Pourquoi notre système ?",
+        "why_1": "✔ Utilisation intuitive pour les clients et les employés",
+        "why_2": "✔ Structure claire et interface moderne",
+        "why_3": "✔ Support multilingue",
+        "why_4": "✔ Informations en temps réel sur les temps d’attente",
+        "why_5": "✔ Flexible pour tous les secteurs",
+
+        "contact_title": "Contact",
+        "contact_mail": "📧 E-mail : support@revolution-ticketsystem.com",
+        "contact_phone": "📞 Téléphone : +49 123 456 789",
+        "contact_location": "📍 Localisation : Hesse, Allemagne",
+
 
     },
 
@@ -172,6 +235,27 @@ translations = {
         "call_next": "➡️ 呼叫下一个号码",
         "finish_ticket": "✔️ 完成号码",
         "description": "描述",
+        "about_title": "Revolution 排队与票务系统",
+        "about_sub": "欢迎！在这里您可以了解我们是谁，以及我们的系统有何独特之处。",
+
+        "about_us_title": "关于我们",
+        "about_us_text": "我们致力于开发现代化的排队与票务数字解决方案。我们的目标是简化流程，使等待时间透明化，并为客户和员工提供高效、舒适的体验。",
+
+        "mission_title": "我们的使命",
+        "mission_text": "我们相信清晰的流程、直观的操作和现代技术。Revolution 票务系统旨在为各种规模的组织提供简单、可靠且灵活的解决方案。",
+
+        "why_title": "为什么选择我们的系统？",
+        "why_1": "✔ 客户与员工均可轻松使用",
+        "why_2": "✔ 清晰结构与现代界面",
+        "why_3": "✔ 多语言支持",
+        "why_4": "✔ 实时等待信息",
+        "why_5": "✔ 适用于各行业的灵活性",
+
+        "contact_title": "联系方式",
+        "contact_mail": "📧 邮箱：support@revolution-ticketsystem.com",
+        "contact_phone": "📞 电话：+49 123 456 789",
+        "contact_location": "📍 地址：德国黑森州",
+
 
     }
 }
