@@ -69,6 +69,27 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+        /* Logout-Button sichtbar machen */
+        .stSidebar button[kind="secondary"] {
+            background-color: #003A78 !important;  /* dunkelblau */
+            color: white !important;               /* weißer Text */
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: bold;
+            border: none !important;
+        }
+
+        /* Kein Hover-Farbwechsel */
+        .stSidebar button[kind="secondary"]:hover {
+            background-color: #003A78 !important;
+            color: white !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # ---------------------------------------------------------
 # Sidebar: Sprache + Logo + Logout
 # ---------------------------------------------------------
