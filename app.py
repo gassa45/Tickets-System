@@ -65,6 +65,16 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+        /* Fix: Dropdown Text sichtbar machen */
+        div[data-baseweb="select"] * {
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 with st.sidebar:
     # Logo oben
     image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
