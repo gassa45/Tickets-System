@@ -84,9 +84,7 @@ with st.sidebar:
     # Logo (nur in Sidebar, nicht oben auf der Startseite)
     image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
     if os.path.exists(image_path):
-        st.image(Image.open(image_path), width=180)
-
-    st.write("---")
+        st.image(Image.open(image_path), width=250)
 
     # Sprache
     lang_choice = st.selectbox(
@@ -104,7 +102,6 @@ with st.sidebar:
 
     t = translations[st.session_state.lang]
 
-    st.write("---")
     st.markdown("### 📂 Navigation")
 
     if st.button("🏠 " + t["nav_home"], key="nav_home"):
@@ -119,19 +116,7 @@ with st.sidebar:
     if st.button("👨‍💼 " + t["nav_agent"], key="nav_agent"):
         st.session_state.nav = "Sachbearbeiter"
 
-    st.write("---")
-
-    if st.button("🚪 " + t["logout"], key="logout"):
-        st.session_state.logged_in_sach = False
-        st.session_state.nav = "Startseite"
-        st.rerun()
-        
-    if st.session_state.get("logged_in_sach", False):
-        if st.button("🚪 Logout"):
-            st.session_state.logged_in_sach = False
-            st.session_state.nav = "Startseite"
-            st.rerun()
-
+    
 # ---------------------------------------------------------
 # Seiten-Routing
 # ---------------------------------------------------------
