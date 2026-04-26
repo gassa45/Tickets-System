@@ -10,12 +10,24 @@ from database import (
     finish_current_ticket,
 )
 
+# ---------------------------------------------------------
+# LOGOUT BUTTON (nur wenn eingeloggt)
+# ---------------------------------------------------------
+with st.sidebar:
+    if st.session_state.get("logged_in", False):
+        if st.button("Logout"):
+            st.session_state["logged_in"] = False
+            st.rerun()
+
+# ---------------------------------------------------------
+# Page Config
+# ---------------------------------------------------------
 st.set_page_config(page_title="Sachbearbeiter", layout="centered")
+
 # ---------------------------------------------------------
 # Sprache + Logo in Sidebar
 # ---------------------------------------------------------
 with st.sidebar:
-    # Sprachwahl
     lang = st.selectbox(
         "Sprache / Language / Langue / 语言",
         ["de", "en", "fr", "cn"],
@@ -28,7 +40,6 @@ with st.sidebar:
         index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
     )
 
-    # Logo
     image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
     logo = Image.open(image_path)
     st.image(logo, width=250)
@@ -37,11 +48,30 @@ st.session_state["lang"] = lang
 t = translations[lang]
 
 # ---------------------------------------------------------
+# LOGIN-SCHUTZ
+# ---------------------------------------------------------
+if not st.session_state.get("logged_in", False):
+
+    st.title("Sachbearbeiter Login")
+
+    username = st.text_input("Benutzername")
+    password = st.text_input("Passwort", type="password")
+
+    if st.button("Login"):
+        if username == "admin" and password == "1234":
+            st.session_state["logged_in"] = True
+            st.success("Erfolgreich eingeloggt!")
+            st.rerun()
+        else:
+            st.error("Falsche Zugangsdaten")
+
+    st.stop()  # verhindert Zugriff auf die Seite ohne Login
+
+# ---------------------------------------------------------
 # Styling – EINHEITLICH DUNKELBLAU
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #003A78 !important;
         }
@@ -49,12 +79,10 @@ st.markdown("""
             color: white !important;
         }
 
-        /* Hintergrund */
         body {
             background-color: #f5f7fa;
         }
 
-        /* DUNKELBLAUE Karten */
         .ticket-card {
             background-color: #003A78 !important;
             padding: 25px;
@@ -64,14 +92,12 @@ st.markdown("""
             margin-top: 15px;
         }
 
-        /* Nummer groß */
         .ticket-number {
             font-size: 60px;
             font-weight: bold;
             color: white !important;
         }
 
-        /* Buttons */
         .stButton {
             margin-top: 25px;
         }
@@ -88,12 +114,7 @@ st.markdown("""
         .stButton>button:hover {
             background-color: #002e5c !important;
         }
-    </style>
-""", unsafe_allow_html=True)
 
-st.markdown("""
-    <style>
-        /* Dropdown Text schwarz machen */
         div[data-baseweb="select"] * {
             color: black !important;
         }
@@ -101,7 +122,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Inhalt
+# INHALT – NUR SICHTBAR WENN EINGELOGGT
 # ---------------------------------------------------------
 st.title("🧑‍💼 Sachbearbeiter")
 
