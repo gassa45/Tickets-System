@@ -5,24 +5,6 @@ from PIL import Image
 from languages import translations
 
 # ---------------------------------------------------------
-# Browser-Müll-Schutz
-# ---------------------------------------------------------
-def remove_browser_muell():
-    file_path = os.path.abspath(__file__)
-    with open(file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-    clean = []
-    for line in lines:
-        if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break
-        clean.append(line)
-    if len(clean) != len(lines):
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean)
-        st.rerun()
-remove_browser_muell()
-
-# ---------------------------------------------------------
 # Page Config
 # ---------------------------------------------------------
 st.set_page_config(page_title="Revolution Ticket-System", layout="wide")
@@ -37,7 +19,7 @@ lang = st.session_state["lang"]
 t = translations[lang]
 
 # ---------------------------------------------------------
-# Custom Sidebar (Option C)
+# Custom Sidebar
 # ---------------------------------------------------------
 st.markdown("""
     <style>
@@ -54,13 +36,12 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+
 with st.sidebar:
-    # Logo oben
     image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
     if os.path.exists(image_path):
         st.image(image_path, width=160)
 
-    # Sprache
     st.session_state["lang"] = st.selectbox(
         "Language / Sprache",
         ["de", "en", "fr", "cn"],
@@ -69,7 +50,6 @@ with st.sidebar:
     lang = st.session_state["lang"]
     t = translations[lang]
 
-    # Navigation
     pages = {
         t["nav_home"]: "startseite",
         t["nav_customers"]: "kunden_page",
@@ -80,7 +60,6 @@ with st.sidebar:
     selected = st.radio("Navigation", list(pages.keys()))
 
 # ---------------------------------------------------------
-# Seite laden
+# Seite laden (OHNE show(), OHNE main())
 # ---------------------------------------------------------
-module = importlib.import_module(pages[selected])
-module.show()
+importlib.import_module(pages[selected])
