@@ -151,9 +151,9 @@ with st.sidebar:
 # Mapping der Seiten zu Modulen
 pages = {
     "Startseite": "startseite",
-    "Kunden": "1_Kunden",
-    "Warteraum": "2_Warteraum",
-    "Sachbearbeiter": "3_Sachbearbeiter"
+    "Kunden": "kunden_page",
+    "Warteraum": "warteraum_page",
+    "Sachbearbeiter": "sachbearbeiter_page"
 }
 
 # Modul dynamisch laden

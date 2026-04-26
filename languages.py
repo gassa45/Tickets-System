@@ -40,6 +40,11 @@ translations = {
         "call_next": "➡️ Nächstes Ticket aufrufen",
         "finish_ticket": "✔️ Ticket abschließen",
         "description": "Kurzbeschreibung",
+        "nav_home": "Startseite",
+        "nav_customers": "Kunden",
+        "nav_waiting": "Warteraum",
+        "nav_agent": "Sachbearbeiter",
+        "logout": "Abmelden",
 
     },
 
@@ -84,6 +89,11 @@ translations = {
         "call_next": "➡️ Call next ticket",
         "finish_ticket": "✔️ Finish ticket",
         "description": "Description",
+        "nav_home": "Home",
+        "nav_customers": "Customers",
+        "nav_waiting": "Waiting room",
+        "nav_agent": "Agent",
+        "logout": "Logout",
 
     },
 
@@ -128,6 +138,11 @@ translations = {
         "call_next": "➡️ Appeler le prochain ticket",
         "finish_ticket": "✔️ Terminer le ticket",
         "description": "Description",
+        "nav_home": "Accueil",
+        "nav_customers": "Clients",
+        "nav_waiting": "Salle d'attente",
+        "nav_agent": "Agent",
+        "logout": "Déconnexion",
 
     },
 
@@ -172,6 +187,11 @@ translations = {
         "call_next": "➡️ 呼叫下一个号码",
         "finish_ticket": "✔️ 完成号码",
         "description": "描述",
+        "nav_home": "首页",
+        "nav_customers": "客户",
+        "nav_waiting": "候诊室",
+        "nav_agent": "办理人员",
+        "logout": "退出登录",
 
     }
 }
