@@ -92,19 +92,17 @@ st.markdown("""
             display: block;
             margin-left: auto;
             margin-right: auto;
-            width: 250px !important;      /* Desktop */
-            max-width: 80% !important;    /* Falls Sidebar kleiner ist */
+            width: 250px !important;
+            max-width: 80% !important;
             height: auto !important;
         }
 
-        /* Tablet */
         @media (max-width: 1200px) {
             [data-testid="stSidebar"] img {
                 width: 200px !important;
             }
         }
 
-        /* Handy */
         @media (max-width: 768px) {
             [data-testid="stSidebar"] img {
                 width: 150px !important;
