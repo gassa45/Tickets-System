@@ -5,11 +5,10 @@ import os
 import qrcode
 from io import BytesIO
 from languages import translations
+
 # ---------------------------------------------------------
 # AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
 # ---------------------------------------------------------
-import os, sys
-
 def remove_browser_muell():
     file_path = os.path.abspath(__file__)
     with open(file_path, "r", encoding="utf-8") as f:
@@ -18,14 +17,12 @@ def remove_browser_muell():
     clean_lines = []
     for line in lines:
         if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break  # Alles danach löschen
+            break
         clean_lines.append(line)
 
-    # Wenn Datei verändert wurde → neu schreiben
     if len(clean_lines) != len(lines):
         with open(file_path, "w", encoding="utf-8") as f:
             f.writelines(clean_lines)
-        # App neu starten
         st.rerun()
 
 remove_browser_muell()
@@ -45,7 +42,6 @@ st.markdown("""
     <style>
         body { background-color: #f5f7fa; }
 
-        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #1E90FF !important;
         }
@@ -53,7 +49,6 @@ st.markdown("""
             color: white !important;
         }
 
-        /* Hauptkarte */
         .main-card {
             background-color: #1E90FF;
             padding: 40px;
@@ -77,7 +72,6 @@ st.markdown("""
             margin-bottom: 20px;
         }
 
-        /* Ticketkarte */
         .ticket-card {
             background-color: white;
             padding: 30px;
@@ -93,7 +87,6 @@ st.markdown("""
             color: #1E90FF;
         }
 
-        /* Blauer Button */
         .stButton>button {
             background-color: #1E90FF !important;
             color: white !important;
@@ -106,7 +99,6 @@ st.markdown("""
             margin-top: 20px;
         }
 
-        /* Beschreibung */
         textarea {
             font-size: 20px !important;
         }
@@ -118,10 +110,11 @@ st.markdown("""
 # ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
 logo = Image.open(image_path)
+
 st.sidebar.image(logo, width=150)
 
 # ---------------------------------------------------------
-# Hauptkarte (wie früher)
+# Hauptkarte
 # ---------------------------------------------------------
 st.markdown(
     f"""
@@ -143,24 +136,21 @@ beschreibung = st.text_area(
 
 if st.button(t["pull_button"]):
 
-    # Ticket erstellen
     nummer = create_ticket(beschreibung)
     st.session_state["meine_nummer"] = nummer
     st.session_state["beschreibung"] = beschreibung
 
-    # URL für QR-Code & Weiterleitung
     url = f"{BASE_URL}/Warteraum?ticket={nummer}"
 
-    # QR-Code erzeugen
     qr = qrcode.make(url)
     buffer = BytesIO()
     qr.save(buffer, format="PNG")
+    qr_bytes = buffer.getvalue()
 
-    # Ticketkarte anzeigen
+    # Ticketkarte
     st.markdown(
         f"""
         <div class="ticket-card" style="margin-bottom:40px;">
-
             <span class="ticket-number">{nummer}</span>
             <p style="color:#1E90FF; font-size:20px; margin-top:20px;">
                 {t["pull_wait"]}
@@ -170,18 +160,19 @@ if st.button(t["pull_button"]):
         unsafe_allow_html=True
     )
 
-    
-    # QR-Code anzeigen
+    # QR-Code zentriert + Abstand
+    import base64
+    qr_base64 = base64.b64encode(qr_bytes).decode()
+
     st.markdown(
-        """
-        <div style='text-align:center; margin-top:40px;'>
-            <img src='data:image/png;base64,{}' width='250'>
-            <p style='color:#1E90FF; font-size:20px; margin-top:10px;'>QR-Code</p>
+        f"""
+        <div style="text-align:center; margin-top:40px;">
+            <img src="data:image/png;base64,{qr_base64}" width="250">
+            <p style="color:#1E90FF; font-size:20px; margin-top:10px;">QR-Code</p>
         </div>
-        """.format(buffer.getvalue().hex()),
+        """,
         unsafe_allow_html=True
     )
-
 
     # Weiterleitung
     st.markdown(
