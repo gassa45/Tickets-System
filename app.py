@@ -5,22 +5,20 @@ from PIL import Image
 from languages import translations
 
 # ---------------------------------------------------------
-# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
+# Browser-Müll-Schutz
 # ---------------------------------------------------------
 def remove_browser_muell():
     file_path = os.path.abspath(__file__)
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
-
-    clean_lines = []
+    clean = []
     for line in lines:
         if line.strip().startswith("# User's Edge browser tabs metadata"):
             break
-        clean_lines.append(line)
-
-    if len(clean_lines) != len(lines):
+        clean.append(line)
+    if len(clean) != len(lines):
         with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean_lines)
+            f.writelines(clean)
         st.rerun()
 
 remove_browser_muell()
@@ -31,33 +29,6 @@ remove_browser_muell()
 st.set_page_config(page_title="Revolution Ticketsystem", layout="centered")
 
 # ---------------------------------------------------------
-# Einheitliches Sidebar-Design (dunkelblau, kein Hover)
-# ---------------------------------------------------------
-st.markdown("""
-    <style>
-        [data-testid="stSidebar"] {
-            background-color: #003A78 !important;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-        }
-        [data-testid="stSidebar"] .stButton > button {
-            background-color: #003A78 !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 10px !important;
-            padding: 10px 18px !important;
-            font-size: 16px !important;
-            font-weight: bold !important;
-        }
-        [data-testid="stSidebar"] .stButton > button:hover {
-            background-color: #003A78 !important;
-            color: white !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# ---------------------------------------------------------
 # Sprache wählen
 # ---------------------------------------------------------
 if "lang" not in st.session_state:
@@ -65,16 +36,16 @@ if "lang" not in st.session_state:
 
 with st.sidebar:
     lang = st.selectbox(
-        "Sprache / Language",
-        options=["de", "en"],
-        index=0 if st.session_state["lang"] == "de" else 1,
+        "Language / Sprache",
+        options=["de", "en", "fr", "cn"],
+        index=["de", "en", "fr", "cn"].index(st.session_state["lang"])
     )
 
 st.session_state["lang"] = lang
 t = translations[lang]
 
 # ---------------------------------------------------------
-# Logo in Sidebar
+# Sidebar Logo
 # ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
 if os.path.exists(image_path):
@@ -82,13 +53,13 @@ if os.path.exists(image_path):
     st.sidebar.image(logo, width=150)
 
 # ---------------------------------------------------------
-# Navigation
+# Navigation (NEUE KEYS!)
 # ---------------------------------------------------------
 pages = {
-    t["home"]: "startseite",
-    t["customers"]: "kunden_page",
-    t["waiting_room"]: "warteraum_page",
-    t["agent_title"]: "sachbearbeiter_page",
+    t["nav_home"]: "startseite",
+    t["nav_customers"]: "kunden_page",
+    t["nav_waiting"]: "warteraum_page",
+    t["nav_agent"]: "sachbearbeiter_page",
 }
 
 with st.sidebar:
@@ -97,6 +68,6 @@ with st.sidebar:
 module_name = pages[selected_label]
 
 # ---------------------------------------------------------
-# Seite laden (kein module.show(), nur Import)
+# Seite laden
 # ---------------------------------------------------------
 importlib.import_module(module_name)
