@@ -36,7 +36,7 @@ t = translations[lang]
 BASE_URL = "https://revolution-ticketsystem.streamlit.app"
 
 # ---------------------------------------------------------
-# Styling – DUNKELBLAU (#003A78)
+# Einheitliches Styling – Dunkelblau (#003A78)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
@@ -106,10 +106,18 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Logo
+# Sidebar Logo (nur anzeigen, wenn Sachbearbeiter eingeloggt)
 # ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
-logo = Image.open(image_path)
+if st.session_state.get("logged_in_sach", False):
+    image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
+    if os.path.exists(image_path):
+        logo = Image.open(image_path)
+        st.sidebar.image(logo, width=150)
+
+    if st.sidebar.button(t["logout"]):
+        st.session_state.logged_in_sach = False
+        st.rerun()
+
 # ---------------------------------------------------------
 # Hauptkarte
 # ---------------------------------------------------------
@@ -144,7 +152,7 @@ if st.button(t["pull_button"]):
     qr.save(buffer, format="PNG")
     qr_bytes = buffer.getvalue()
 
-    # Ticketkarte (DUNKELBLAU)
+    # Ticketkarte
     st.markdown(
         f"""
         <div class="ticket-card" style="margin-bottom:40px;">
@@ -157,7 +165,7 @@ if st.button(t["pull_button"]):
         unsafe_allow_html=True
     )
 
-    # QR-Code zentriert
+    # QR-Code
     import base64
     qr_base64 = base64.b64encode(qr_bytes).decode()
 

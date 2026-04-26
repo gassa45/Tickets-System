@@ -1,6 +1,5 @@
 import streamlit as st
-import time
-from database import get_current_ticket, get_waiting_tickets
+from database import get_ticket_position
 from PIL import Image
 import os
 from languages import translations
@@ -16,7 +15,7 @@ def remove_browser_muell():
     clean_lines = []
     for line in lines:
         if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break  # Alles danach löschen
+            break
         clean_lines.append(line)
 
     if len(clean_lines) != len(lines):
@@ -33,19 +32,12 @@ lang = st.session_state.get("lang", "de")
 t = translations[lang]
 
 # ---------------------------------------------------------
-# Ticketnummer aus URL lesen
-# ---------------------------------------------------------
-query_params = st.query_params
-meine_nummer = query_params.get("ticket", None)
-
-if not meine_nummer:
-    meine_nummer = st.session_state.get("meine_nummer", None)
-
-# ---------------------------------------------------------
-# Styling – DUNKELBLAUE KARTEN
+# Einheitliches Styling – Dunkelblau (#003A78)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
+        body { background-color: #f5f7fa; }
+
         [data-testid="stSidebar"] {
             background-color: #003A78 !important;
         }
@@ -53,15 +45,36 @@ st.markdown("""
             color: white !important;
         }
 
-        body { background-color: #f5f7fa; }
+        .main-card {
+            background-color: #003A78 !important;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .main-title {
+            font-size: 45px;
+            font-weight: bold;
+            color: white !important;
+            margin-bottom: 10px;
+        }
+
+        .main-text {
+            font-size: 22px;
+            color: white !important;
+            margin-bottom: 20px;
+        }
 
         .ticket-card {
-            background-color: #003A78 !important;   /* DUNKELBLAU */
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            background-color: #003A78 !important;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            margin-top: 20px;
             text-align: center;
-            margin-top: 15px;
         }
 
         .ticket-number {
@@ -69,97 +82,60 @@ st.markdown("""
             font-weight: bold;
             color: white !important;
         }
-
-        .small-ticket {
-            font-size: 45px;
-            font-weight: bold;
-            color: white !important;
-        }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Logo
+# Sidebar Logo (nur anzeigen, wenn Sachbearbeiter eingeloggt)
 # ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
-logo = Image.open(image_path)
+if st.session_state.get("logged_in_sach", False):
+    image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
+    if os.path.exists(image_path):
+        logo = Image.open(image_path)
+        st.sidebar.image(logo, width=150)
+
+    if st.sidebar.button(t["logout"]):
+        st.session_state.logged_in_sach = False
+        st.rerun()
 
 # ---------------------------------------------------------
-# Titel
+# Ticketnummer aus URL
 # ---------------------------------------------------------
-st.title(t["waiting_room"])
+ticket = st.query_params.get("ticket", None)
+
+if not ticket:
+    st.error("Kein Ticket gefunden.")
+    st.stop()
 
 # ---------------------------------------------------------
-# Datenbank
+# Hauptkarte
 # ---------------------------------------------------------
-aktuelles = get_current_ticket()
-waiting = get_waiting_tickets()
+st.markdown(
+    f"""
+    <div class="main-card">
+        <div class="main-title">{t["waiting_room"]}</div>
+        <div class="main-text">{t["wait_info"]}</div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # ---------------------------------------------------------
-# Sound abspielen, wenn Kunde dran ist
+# Position abrufen
 # ---------------------------------------------------------
-if meine_nummer and aktuelles and aktuelles["nummer"] == meine_nummer:
-    st.markdown("""
-        <audio autoplay>
-            <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
-        </audio>
-    """, unsafe_allow_html=True)
-    st.success(t["called_now"])
+position = get_ticket_position(ticket)
 
 # ---------------------------------------------------------
-# Eigene Nummer
+# Ticketkarte
 # ---------------------------------------------------------
-if meine_nummer:
-    st.subheader(t["your_number"])
-    st.markdown(f"""
-        <div class="ticket-card">
-            <span class="ticket-number">{meine_nummer}</span>
-        </div>
-    """, unsafe_allow_html=True)
-
-# ---------------------------------------------------------
-# Aktuelles Ticket
-# ---------------------------------------------------------
-st.subheader(t["current_ticket"])
-
-if aktuelles:
-    st.markdown(f"""
-        <div class="ticket-card">
-            <span class="ticket-number">{aktuelles['nummer']}</span>
-        </div>
-    """, unsafe_allow_html=True)
-else:
-    st.info("Noch kein Ticket aufgerufen.")
-
-# ---------------------------------------------------------
-# Position in der Warteschlange
-# ---------------------------------------------------------
-if meine_nummer:
-    alle = [tkt["nummer"] for tkt in waiting]
-
-    if meine_nummer in alle:
-        pos = alle.index(meine_nummer) + 1
-        st.info(f"{t['queue_position']} **{pos}**")
-    else:
-        st.success(t["almost_called"])
-
-# ---------------------------------------------------------
-# Wartende anzeigen
-# ---------------------------------------------------------
-st.subheader(t["waiting_numbers"])
-
-if waiting:
-    for tkt in waiting:
-        st.markdown(f"""
-            <div class="ticket-card">
-                <span class="small-ticket">{tkt['nummer']}</span>
-            </div>
-        """, unsafe_allow_html=True)
-else:
-    st.info(t["no_more_tickets"])
-
-# ---------------------------------------------------------
-# Automatischer Refresh
-# ---------------------------------------------------------
-time.sleep(3)
-st.rerun()
+st.markdown(
+    f"""
+    <div class="ticket-card">
+        <span class="ticket-number">{ticket}</span>
+        <p style="color:white; font-size:22px; margin-top:20px;">
+            {t["your_position"]}: <b>{position}</b>
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
