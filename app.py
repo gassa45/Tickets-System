@@ -1,16 +1,11 @@
-# ---------------------------------------------------------
-# Datei: app.py
-# Hauptnavigation + Sidebar + Sprachsystem + Seitensteuerung
-# ---------------------------------------------------------
-
 import streamlit as st
-from PIL import Image
-import os
-from languages import translations
 import importlib
+import os
+from PIL import Image
+from languages import translations
 
 # ---------------------------------------------------------
-# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
+# Browser-Müll-Schutz
 # ---------------------------------------------------------
 def remove_browser_muell():
     file_path = os.path.abspath(__file__)
@@ -19,12 +14,10 @@ def remove_browser_muell():
 
     clean = []
     for line in lines:
-        # Browser-Müll beginnt IMMER mit dieser Zeile
         if line.strip().startswith("# User's Edge browser tabs metadata"):
             break
         clean.append(line)
 
-    # Wenn Müll gefunden → Datei reparieren
     if len(clean) != len(lines):
         with open(file_path, "w", encoding="utf-8") as f:
             f.writelines(clean)
@@ -33,38 +26,34 @@ def remove_browser_muell():
 remove_browser_muell()
 
 # ---------------------------------------------------------
-# Page Config
+# Grundkonfiguration
 # ---------------------------------------------------------
 st.set_page_config(page_title="Revolution Ticket-System", layout="wide")
 
-# ---------------------------------------------------------
-# Sprache initialisieren
-# ---------------------------------------------------------
 if "lang" not in st.session_state:
     st.session_state.lang = "de"
 
-# ---------------------------------------------------------
-# Navigation initialisieren
-# ---------------------------------------------------------
 if "nav" not in st.session_state:
     st.session_state.nav = "Startseite"
 
+if "logged_in_sach" not in st.session_state:
+    st.session_state.logged_in_sach = False
+
 # ---------------------------------------------------------
-# Sidebar Styling (DUNKELBLAU)
+# Sidebar Styling
 # ---------------------------------------------------------
 st.markdown("""
     <style>
         [data-testid="stSidebar"] {
-            background-color: #002B5B !important; /* Dunkelblau */
+            background-color: #002B5B !important;
             padding-top: 20px;
         }
         [data-testid="stSidebar"] * {
-            color: white !important;
+            color: #E6E6E6 !important;
             font-size: 18px;
         }
-
         .nav-btn > button {
-            background-color: #002B5B !important;
+            background-color: #003A78 !important;
             color: white !important;
             border: 2px solid white !important;
             border-radius: 10px !important;
@@ -73,14 +62,12 @@ st.markdown("""
             text-align: left !important;
             font-size: 18px !important;
         }
-
         .nav-btn > button:hover {
             background-color: white !important;
             color: #002B5B !important;
         }
-
         .logout-btn > button {
-            background-color: #8B0000 !important; /* Dunkelrot */
+            background-color: #8B0000 !important;
             color: white !important;
             border-radius: 10px !important;
             padding: 10px !important;
@@ -91,25 +78,23 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# SIDEBAR INHALT
+# Sidebar Inhalt
 # ---------------------------------------------------------
 with st.sidebar:
-
-    # Logo
+    # Logo (nur in Sidebar, nicht oben auf der Startseite)
     image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
-    logo = Image.open(image_path)
-    st.image(logo, width=180)
+    if os.path.exists(image_path):
+        st.image(Image.open(image_path), width=180)
 
     st.write("---")
 
-    # Sprache Auswahl mit Emoji
+    # Sprache
     lang_choice = st.selectbox(
         "🌐 Sprache / Language",
         ["🇩🇪 Deutsch", "🇬🇧 English", "🇫🇷 Français", "🇨🇳 中文"],
         index=["de", "en", "fr", "cn"].index(st.session_state.lang)
     )
 
-    # Sprache speichern
     st.session_state.lang = {
         "🇩🇪 Deutsch": "de",
         "🇬🇧 English": "en",
@@ -120,8 +105,6 @@ with st.sidebar:
     t = translations[st.session_state.lang]
 
     st.write("---")
-
-    # Navigation
     st.markdown("### 📂 Navigation")
 
     if st.button("🏠 " + t["nav_home"], key="nav_home"):
@@ -138,27 +121,21 @@ with st.sidebar:
 
     st.write("---")
 
-    # Logout
     if st.button("🚪 " + t["logout"], key="logout"):
         st.session_state.logged_in_sach = False
         st.session_state.nav = "Startseite"
         st.rerun()
 
 # ---------------------------------------------------------
-# SEITEN LADEN
+# Seiten-Routing
 # ---------------------------------------------------------
-
-# Mapping der Seiten zu Modulen
 pages = {
-    "Startseite": "startseite",
+    "Startseite": "startseite",          # deine „Über uns“ / Startseite
     "Kunden": "kunden_page",
     "Warteraum": "warteraum_page",
     "Sachbearbeiter": "sachbearbeiter_page"
 }
 
-# Modul dynamisch laden
-module_name = pages.get(st.session_state.nav)
+module_name = pages.get(st.session_state.nav, "startseite")
 module = importlib.import_module(module_name)
-
-# show()-Funktion ausführen
 module.show()
