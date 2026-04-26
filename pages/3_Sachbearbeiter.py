@@ -1,6 +1,7 @@
 import streamlit as st
 import time
 import os
+from PIL import Image
 from languages import translations
 from database import (
     get_waiting_tickets,
@@ -11,30 +12,10 @@ from database import (
 
 st.set_page_config(page_title="Sachbearbeiter", layout="centered")
 # ---------------------------------------------------------
-# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
-# ---------------------------------------------------------
-def remove_browser_muell():
-    file_path = os.path.abspath(__file__)
-    with open(file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-
-    clean_lines = []
-    for line in lines:
-        if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break  # Alles danach löschen
-        clean_lines.append(line)
-
-    if len(clean_lines) != len(lines):
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean_lines)
-        st.rerun()
-
-remove_browser_muell()
-
-# ---------------------------------------------------------
-# Sprache laden (Sidebar Dropdown)
+# Sprache + Logo in Sidebar
 # ---------------------------------------------------------
 with st.sidebar:
+    # Sprachwahl
     lang = st.selectbox(
         "Sprache / Language / Langue / 语言",
         ["de", "en", "fr", "cn"],
@@ -47,8 +28,14 @@ with st.sidebar:
         index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
     )
 
+    # Logo
+    image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+    logo = Image.open(image_path)
+    st.image(logo, width=150)
+
 st.session_state["lang"] = lang
 t = translations[lang]
+
 # ---------------------------------------------------------
 # Styling – EINHEITLICH DUNKELBLAU
 # ---------------------------------------------------------
@@ -100,6 +87,15 @@ st.markdown("""
 
         .stButton>button:hover {
             background-color: #002e5c !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+        /* Dropdown Text schwarz machen */
+        div[data-baseweb="select"] * {
+            color: black !important;
         }
     </style>
 """, unsafe_allow_html=True)

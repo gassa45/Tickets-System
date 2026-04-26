@@ -97,6 +97,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+        /* Dropdown Text schwarz machen */
+        div[data-baseweb="select"] * {
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
 # ---------------------------------------------------------
 # Logo
 # ---------------------------------------------------------
