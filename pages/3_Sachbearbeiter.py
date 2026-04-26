@@ -1,18 +1,18 @@
 import streamlit as st
+import time
+import os
+from languages import translations
 from database import (
     get_waiting_tickets,
+    get_in_progress_tickets,
     call_next_ticket,
     finish_current_ticket,
-    get_current_ticket
 )
-from languages import translations
-from PIL import Image
-import os
+
+st.set_page_config(page_title="Sachbearbeiter", layout="centered")
 # ---------------------------------------------------------
 # AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
 # ---------------------------------------------------------
-import os, sys
-
 def remove_browser_muell():
     file_path = os.path.abspath(__file__)
     with open(file_path, "r", encoding="utf-8") as f:
@@ -24,76 +24,37 @@ def remove_browser_muell():
             break  # Alles danach löschen
         clean_lines.append(line)
 
-    # Wenn Datei verändert wurde → neu schreiben
     if len(clean_lines) != len(lines):
         with open(file_path, "w", encoding="utf-8") as f:
             f.writelines(clean_lines)
-        # App neu starten
         st.rerun()
 
 remove_browser_muell()
 
 # ---------------------------------------------------------
-# Page Config (MUSS GANZ OBEN SEIN)
+# Sprache laden (Sidebar Dropdown)
 # ---------------------------------------------------------
-st.set_page_config(page_title="Sachbearbeiter", layout="centered")
+with st.sidebar:
+    lang = st.selectbox(
+        "Sprache / Language / Langue / 语言",
+        ["de", "en", "fr", "cn"],
+        format_func=lambda x: {
+            "de": "Deutsch",
+            "en": "English",
+            "fr": "Français",
+            "cn": "中文"
+        }[x],
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
+    )
 
-# ---------------------------------------------------------
-# Sprache laden
-# ---------------------------------------------------------
-lang = st.session_state.get("lang", "de")
+st.session_state["lang"] = lang
 t = translations[lang]
-
 # ---------------------------------------------------------
-# LOGIN SYSTEM
-# ---------------------------------------------------------
-USERNAME = "gassa"
-PASSWORD = "Gael2012"
-
-if "logged_in_sach" not in st.session_state:
-    st.session_state.logged_in_sach = False
-
-def login_form():
-    st.title(t["login_title"])
-    username = st.text_input(t["username"])
-    password = st.text_input(t["password"], type="password")
-
-    if st.button(t["login"]):
-        if username == USERNAME and password == PASSWORD:
-            st.session_state.logged_in_sach = True
-            st.success("OK")
-            st.rerun()
-        else:
-            st.error(t["login_error"])
-
-# Wenn NICHT eingeloggt → Login anzeigen und STOP
-if not st.session_state.logged_in_sach:
-    login_form()
-    st.stop()
-
-# ---------------------------------------------------------
-# Styling – DUNKELBLAUE KARTEN
+# Styling – EINHEITLICH DUNKELBLAU
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        [data-testid="stSidebar"] {
-            background-color: #003A78 !important;
-            padding-top: 30px;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-            font-size: 18px;
-        }
-
-        /* Dropdown lesbar machen */
-        div[data-baseweb="select"] * {
-            color: black !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
+        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #003A78 !important;
         }
@@ -101,10 +62,14 @@ st.markdown("""
             color: white !important;
         }
 
-        body { background-color: #f5f7fa; }
+        /* Hintergrund */
+        body {
+            background-color: #f5f7fa;
+        }
 
+        /* DUNKELBLAUE Karten */
         .ticket-card {
-            background-color: #003A78 !important;   /* DUNKELBLAU */
+            background-color: #003A78 !important;
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.25);
@@ -112,168 +77,90 @@ st.markdown("""
             margin-top: 15px;
         }
 
+        /* Nummer groß */
         .ticket-number {
-            font-size: 70px;
+            font-size: 60px;
             font-weight: bold;
             color: white !important;
         }
 
-        .small-ticket {
-            font-size: 45px;
-            font-weight: bold;
+        /* Buttons */
+        .stButton {
+            margin-top: 25px;
+        }
+
+        .stButton>button {
+            background-color: #003A78 !important;
             color: white !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
-logo = Image.open(image_path)
-
-st.sidebar.image(logo, width=150)
-
-# Logout
-if st.sidebar.button(t["logout"]):
-    st.session_state.logged_in_sach = False
-    st.rerun()
-
-# ---------------------------------------------------------
-# Styling
-# ---------------------------------------------------------
-st.markdown("""
-    <style>
-        [data-testid="stSidebar"] {
-            background-color: #1E90FF !important;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-        }
-
-        body { background-color: #f5f7fa; }
-
-        .ticket-box {
-            background-color: #1E90FF;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .ticket-number {
-            font-size: 70px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .beschreibung-box {
-            background-color: white;
-            padding: 15px;
             border-radius: 10px;
-            margin-top: 10px;
-            border-left: 5px solid #1E90FF;
+            padding: 10px 20px;
             font-size: 18px;
-        }
-    </style>
-""", unsafe_allow_html=True)
-st.markdown("""
-    <style>
-        /* Logout Button: Blau + weiße Schrift */
-        [data-testid="stSidebar"] .stButton > button {
-            background-color: #1E90FF !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 10px !important;
-            padding: 12px 20px !important;
-            font-size: 18px !important;
-            font-weight: bold !important;
+            border: none;
         }
 
-        /* Kein Hover-Farbwechsel */
-        [data-testid="stSidebar"] .stButton > button:hover {
-            background-color: #1E90FF !important;
-            color: white !important;
+        .stButton>button:hover {
+            background-color: #002e5c !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Titel
+# Inhalt
 # ---------------------------------------------------------
-st.title(t["agent_title"])
+st.title("🧑‍💼 Sachbearbeiter")
 
-# ---------------------------------------------------------
-# Aktuelles Ticket
-# ---------------------------------------------------------
-aktuelles = get_current_ticket()
+if "just_finished" not in st.session_state:
+    st.session_state.just_finished = False
 
-if aktuelles:
-    st.subheader(t["current_ticket"])
-
-    st.markdown(
-        f"""
-        <div class="ticket-box">
-            <span class="ticket-number">{aktuelles['nummer']}</span>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    beschreibung = aktuelles.get("beschreibung", "")
-
-    if beschreibung:
-        st.markdown(
-            f"""
-            <div class="beschreibung-box">
-                <b>{t["description"]}:</b><br>{beschreibung}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    else:
-        st.info(t["no_description"])
-else:
-    st.info(t["no_ticket_called"])
-
-# ---------------------------------------------------------
-# Buttons
-# ---------------------------------------------------------
-col1, col2 = st.columns(2)
-
-with col1:
-    if st.button(t["call_next"]):
-        next_ticket = call_next_ticket()
-        if next_ticket:
-            st.success(f"{t['ticket_called']} {next_ticket['nummer']}")
-        else:
-            st.warning(t["no_more_tickets"])
-
-with col2:
-    if st.button(t["finish_ticket"]):
-        finished = finish_current_ticket()
-        if finished:
-            st.success(f"{t['ticket_finished']} {finished}")
-        else:
-            st.warning(t["no_ticket_in_progress"])
-
-# ---------------------------------------------------------
-# Wartende Tickets
-# ---------------------------------------------------------
-st.subheader(t["waiting_numbers"])
+st.subheader("Wartende Tickets")
 
 waiting = get_waiting_tickets()
 
 if waiting:
-    for tkt in waiting:
+    for t in waiting:
         st.markdown(
             f"""
-            <div class="ticket-box">
-                <span class="ticket-number" style="font-size:45px;">{tkt['nummer']}</span>
+            <div class="ticket-card">
+                <span class="ticket-number" style="font-size:40px;">{t['nummer']}</span>
             </div>
             """,
             unsafe_allow_html=True
         )
 else:
-    st.info(t["no_more_tickets"])
+    st.write("Keine wartenden Tickets.")
+
+if st.button("Nächstes Ticket aufrufen"):
+    nummer = call_next_ticket()
+    if nummer:
+        st.success(f"Aufgerufen: {nummer}")
+    else:
+        st.warning("Keine Tickets mehr vorhanden.")
+
+st.subheader("Aktuell in Bearbeitung")
+
+in_progress = get_in_progress_tickets()
+
+if in_progress and not st.session_state.just_finished:
+    aktuelle_nummer = in_progress[0]["nummer"]
+
+    st.markdown(
+        f"""
+        <div class="ticket-card">
+            <span class="ticket-number">{aktuelle_nummer}</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+else:
+    st.write("Kein Ticket in Bearbeitung.")
+
+if st.button("Fertig"):
+    nummer = finish_current_ticket()
+    if nummer:
+        st.session_state.just_finished = True
+        st.success(f"Ticket {nummer} abgeschlossen.")
+        time.sleep(2)
+        st.session_state.just_finished = False
+        st.rerun()
+    else:
+        st.error("Kein Ticket in Bearbeitung.")

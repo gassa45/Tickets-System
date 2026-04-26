@@ -27,6 +27,25 @@ def remove_browser_muell():
 remove_browser_muell()
 
 # ---------------------------------------------------------
+# Sprache laden (Sidebar Dropdown)
+# ---------------------------------------------------------
+with st.sidebar:
+    lang = st.selectbox(
+        "Sprache / Language / Langue / 语言",
+        ["de", "en", "fr", "cn"],
+        format_func=lambda x: {
+            "de": "Deutsch",
+            "en": "English",
+            "fr": "Français",
+            "cn": "中文"
+        }[x],
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
+    )
+
+st.session_state["lang"] = lang
+t = translations[lang]
+
+# ---------------------------------------------------------
 # Sprache laden
 # ---------------------------------------------------------
 lang = st.session_state.get("lang", "de")

@@ -26,6 +26,25 @@ def remove_browser_muell():
         st.rerun()
 
 remove_browser_muell()
+# ---------------------------------------------------------
+# Sprache laden (Sidebar Dropdown)
+# ---------------------------------------------------------
+with st.sidebar:
+    lang = st.selectbox(
+        "Sprache / Language / Langue / 语言",
+        ["de", "en", "fr", "cn"],
+        format_func=lambda x: {
+            "de": "Deutsch",
+            "en": "English",
+            "fr": "Français",
+            "cn": "中文"
+        }[x],
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
+    )
+
+st.session_state["lang"] = lang
+t = translations[lang]
+
 
 # ---------------------------------------------------------
 # Sprache laden
@@ -36,44 +55,52 @@ t = translations[lang]
 BASE_URL = "https://revolution-ticketsystem.streamlit.app"
 
 # ---------------------------------------------------------
-# Styling – DUNKELBLAUE KARTEN
+# EINHEITLICHES DUNKELBLAUES DESIGN
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        [data-testid="stSidebar"] {
-            background-color: #003A78 !important;
-            padding-top: 30px;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-            font-size: 18px;
-        }
-
-        /* Dropdown lesbar machen */
-        div[data-baseweb="select"] * {
-            color: black !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-        [data-testid="stSidebar"] {
-            background-color: #003A78 !important;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-        }
-
         body { background-color: #f5f7fa; }
 
+        /* Sidebar */
+        [data-testid="stSidebar"] {
+            background-color: #003A78 !important;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+        }
+
+        /* Hauptkarte */
+        .main-card {
+            background-color: #003A78 !important;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .main-title {
+            font-size: 45px;
+            font-weight: bold;
+            color: white !important;
+            margin-bottom: 10px;
+        }
+
+        .main-text {
+            font-size: 22px;
+            color: white !important;
+            margin-bottom: 20px;
+        }
+
+        /* Ticketkarte – jetzt dunkelblau */
         .ticket-card {
-            background-color: #003A78 !important;   /* DUNKELBLAU */
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            background-color: #003A78 !important;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-top: 20px;
             text-align: center;
-            margin-top: 15px;
         }
 
         .ticket-number {
@@ -82,21 +109,29 @@ st.markdown("""
             color: white !important;
         }
 
-        .small-ticket {
-            font-size: 45px;
-            font-weight: bold;
+        .stButton>button {
+            background-color: #003A78 !important;
             color: white !important;
+            border-radius: 12px;
+            padding: 16px 25px;
+            font-size: 24px;
+            border: none;
+            width: 100% !important;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        textarea {
+            font-size: 20px !important;
         }
     </style>
 """, unsafe_allow_html=True)
-
 
 # ---------------------------------------------------------
 # Logo
 # ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
 logo = Image.open(image_path)
-
 st.sidebar.image(logo, width=150)
 
 # ---------------------------------------------------------
@@ -133,12 +168,12 @@ if st.button(t["pull_button"]):
     qr.save(buffer, format="PNG")
     qr_bytes = buffer.getvalue()
 
-    # Ticketkarte
+    # Ticketkarte – jetzt dunkelblau
     st.markdown(
         f"""
         <div class="ticket-card" style="margin-bottom:40px;">
             <span class="ticket-number">{nummer}</span>
-            <p style="color:#1E90FF; font-size:20px; margin-top:20px;">
+            <p style="color:white; font-size:20px; margin-top:20px;">
                 {t["pull_wait"]}
             </p>
         </div>
@@ -154,7 +189,7 @@ if st.button(t["pull_button"]):
         f"""
         <div style="text-align:center; margin-top:40px;">
             <img src="data:image/png;base64,{qr_base64}" width="250">
-            <p style="color:#1E90FF; font-size:20px; margin-top:10px;">QR-Code</p>
+            <p style="color:white; font-size:20px; margin-top:10px;">QR-Code</p>
         </div>
         """,
         unsafe_allow_html=True
