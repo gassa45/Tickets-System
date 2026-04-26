@@ -4,44 +4,32 @@ from PIL import Image
 from languages import translations
 
 # ---------------------------------------------------------
-# BROWSER-MÜLL-KILLER 3.0 (unkaputtbar)
+# Page Config
 # ---------------------------------------------------------
-def remove_browser_muell():
-    markers = [
-        "# User's Edge browser tabs metadata",
-        "edge_all_open_tabs = [",
-        "The edge_all_open_tabs metadata provides important context"
-    ]
-
-    file_path = os.path.abspath(__file__)
-
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-    except:
-        return
-
-    clean_lines = []
-    skip = False
-
-    for line in lines:
-        if any(marker in line for marker in markers):
-            skip = True
-        if not skip:
-            clean_lines.append(line)
-
-    if clean_lines != lines:
-        try:
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.writelines(clean_lines)
-        except:
-            return
-        st.rerun()
-
-remove_browser_muell()
+st.set_page_config(page_title="Revolution Ticket System", layout="centered")
 
 # ---------------------------------------------------------
-# Sprache + Logo in Sidebar
+# Sidebar Styling (dunkelblau)
+# ---------------------------------------------------------
+st.markdown("""
+    <style>
+        [data-testid="stSidebar"] {
+            background-color: #003A78 !important;
+            padding-top: 30px;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+        }
+
+        /* Dropdown Text schwarz */
+        div[data-baseweb="select"] * {
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# ---------------------------------------------------------
+# Sidebar: Sprache + Logo (fest 250px)
 # ---------------------------------------------------------
 with st.sidebar:
     lang = st.selectbox(
@@ -58,58 +46,13 @@ with st.sidebar:
 
     image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
     logo = Image.open(image_path)
-    st.image(logo)
+    st.image(logo, width=250)
 
 st.session_state["lang"] = lang
 t = translations[lang]
 
 # ---------------------------------------------------------
-# Page Config
-# ---------------------------------------------------------
-st.set_page_config(page_title=t["about_title"], layout="centered")
-
-# ---------------------------------------------------------
-# Sidebar + Dropdown + Responsive Logo CSS
-# ---------------------------------------------------------
-st.markdown("""
-    <style>
-        [data-testid="stSidebar"] {
-            background-color: #003A78 !important;
-            padding-top: 30px;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-        }
-
-        div[data-baseweb="select"] * {
-            color: black !important;
-        }
-
-        [data-testid="stSidebar"] img {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: 250px !important;
-            max-width: 80% !important;
-            height: auto !important;
-        }
-
-        @media (max-width: 1200px) {
-            [data-testid="stSidebar"] img {
-                width: 200px !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            [data-testid="stSidebar"] img {
-                width: 150px !important;
-            }
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# ---------------------------------------------------------
-# CSS für Animationen + Layout
+# CSS für Animationen + Layout (DEIN DESIGN)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
