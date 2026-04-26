@@ -26,48 +26,72 @@ remove_browser_muell()
 # ---------------------------------------------------------
 # Page Config
 # ---------------------------------------------------------
-st.set_page_config(page_title="Revolution Ticketsystem", layout="centered")
+st.set_page_config(page_title="Revolution Ticket-System", layout="wide")
 
 # ---------------------------------------------------------
-# Sprache wählen
+# Sprache
 # ---------------------------------------------------------
 if "lang" not in st.session_state:
     st.session_state["lang"] = "de"
 
-with st.sidebar:
-    lang = st.selectbox(
-        "Language / Sprache",
-        options=["de", "en", "fr", "cn"],
-        index=["de", "en", "fr", "cn"].index(st.session_state["lang"])
-    )
-
-st.session_state["lang"] = lang
+lang = st.session_state["lang"]
 t = translations[lang]
 
 # ---------------------------------------------------------
-# Sidebar Logo
+# Custom Sidebar (Option C)
 # ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
-if os.path.exists(image_path):
-    logo = Image.open(image_path)
-    st.sidebar.image(logo, width=150)
-
-# ---------------------------------------------------------
-# Navigation (NEUE KEYS!)
-# ---------------------------------------------------------
-pages = {
-    t["nav_home"]: "startseite",
-    t["nav_customers"]: "kunden_page",
-    t["nav_waiting"]: "warteraum_page",
-    t["nav_agent"]: "sachbearbeiter_page",
-}
+st.markdown("""
+    <style>
+        [data-testid="stSidebar"] {
+            background-color: #003A78 !important;
+            padding-top: 30px;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+            font-size: 18px;
+        }
+        .sidebar-logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .sidebar-nav {
+            margin-top: 30px;
+        }
+        .sidebar-nav label {
+            font-size: 20px !important;
+            font-weight: bold;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 with st.sidebar:
-    selected_label = st.radio("Navigation", list(pages.keys()))
+    # Logo oben
+    image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
+    if os.path.exists(image_path):
+        st.image(image_path, width=160)
 
-module_name = pages[selected_label]
+    # Sprache
+    st.session_state["lang"] = st.selectbox(
+        "Language / Sprache",
+        ["de", "en", "fr", "cn"],
+        index=["de", "en", "fr", "cn"].index(st.session_state["lang"])
+    )
+    lang = st.session_state["lang"]
+    t = translations[lang]
+
+    # Navigation
+    pages = {
+        t["nav_home"]: "startseite",
+        t["nav_customers"]: "kunden_page",
+        t["nav_waiting"]: "warteraum_page",
+        t["nav_agent"]: "sachbearbeiter_page",
+    }
+
+    selected = st.radio("Navigation", list(pages.keys()))
 
 # ---------------------------------------------------------
 # Seite laden
 # ---------------------------------------------------------
-importlib.import_module(module_name)
+module = importlib.import_module(pages[selected])
+module.show()
