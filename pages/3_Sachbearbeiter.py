@@ -8,6 +8,30 @@ from database import (
 from languages import translations
 from PIL import Image
 import os
+# ---------------------------------------------------------
+# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
+# ---------------------------------------------------------
+import os, sys
+
+def remove_browser_muell():
+    file_path = os.path.abspath(__file__)
+    with open(file_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    clean_lines = []
+    for line in lines:
+        if line.strip().startswith("# User's Edge browser tabs metadata"):
+            break  # Alles danach löschen
+        clean_lines.append(line)
+
+    # Wenn Datei verändert wurde → neu schreiben
+    if len(clean_lines) != len(lines):
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.writelines(clean_lines)
+        # App neu starten
+        st.rerun()
+
+remove_browser_muell()
 
 # ---------------------------------------------------------
 # Page Config (MUSS GANZ OBEN SEIN)

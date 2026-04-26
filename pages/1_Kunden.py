@@ -5,6 +5,30 @@ import os
 import qrcode
 from io import BytesIO
 from languages import translations
+# ---------------------------------------------------------
+# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
+# ---------------------------------------------------------
+import os, sys
+
+def remove_browser_muell():
+    file_path = os.path.abspath(__file__)
+    with open(file_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    clean_lines = []
+    for line in lines:
+        if line.strip().startswith("# User's Edge browser tabs metadata"):
+            break  # Alles danach löschen
+        clean_lines.append(line)
+
+    # Wenn Datei verändert wurde → neu schreiben
+    if len(clean_lines) != len(lines):
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.writelines(clean_lines)
+        # App neu starten
+        st.rerun()
+
+remove_browser_muell()
 
 # ---------------------------------------------------------
 # Sprache laden
@@ -135,7 +159,8 @@ if st.button(t["pull_button"]):
     # Ticketkarte anzeigen
     st.markdown(
         f"""
-        <div class="ticket-card">
+        <div class="ticket-card" style="margin-bottom:40px;">
+
             <span class="ticket-number">{nummer}</span>
             <p style="color:#1E90FF; font-size:20px; margin-top:20px;">
                 {t["pull_wait"]}
@@ -145,8 +170,18 @@ if st.button(t["pull_button"]):
         unsafe_allow_html=True
     )
 
+    
     # QR-Code anzeigen
-    st.image(buffer.getvalue(), caption="QR-Code", width=250)
+    st.markdown(
+        """
+        <div style='text-align:center; margin-top:40px;'>
+            <img src='data:image/png;base64,{}' width='250'>
+            <p style='color:#1E90FF; font-size:20px; margin-top:10px;'>QR-Code</p>
+        </div>
+        """.format(buffer.getvalue().hex()),
+        unsafe_allow_html=True
+    )
+
 
     # Weiterleitung
     st.markdown(
