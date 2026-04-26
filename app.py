@@ -1,149 +1,164 @@
+# ---------------------------------------------------------
+# Datei: app.py
+# Hauptnavigation + Sidebar + Sprachsystem + Seitensteuerung
+# ---------------------------------------------------------
+
 import streamlit as st
 from PIL import Image
 import os
 from languages import translations
+import importlib
+
 # ---------------------------------------------------------
 # AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
 # ---------------------------------------------------------
-import os, sys
-
 def remove_browser_muell():
     file_path = os.path.abspath(__file__)
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    clean_lines = []
+    clean = []
     for line in lines:
+        # Browser-Müll beginnt IMMER mit dieser Zeile
         if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break  # Alles danach löschen
-        clean_lines.append(line)
+            break
+        clean.append(line)
 
-    # Wenn Datei verändert wurde → neu schreiben
-    if len(clean_lines) != len(lines):
+    # Wenn Müll gefunden → Datei reparieren
+    if len(clean) != len(lines):
         with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean_lines)
-        # App neu starten
+            f.writelines(clean)
         st.rerun()
 
 remove_browser_muell()
 
 # ---------------------------------------------------------
-# Sprache laden
+# Page Config
+# ---------------------------------------------------------
+st.set_page_config(page_title="Revolution Ticket-System", layout="wide")
+
+# ---------------------------------------------------------
+# Sprache initialisieren
 # ---------------------------------------------------------
 if "lang" not in st.session_state:
     st.session_state.lang = "de"
 
-lang = st.sidebar.selectbox(
-    "Sprache / Language / Langue / 语言",
-    ["de", "en", "fr", "cn"],
-    format_func=lambda x: {
-        "de": "Deutsch",
-        "en": "English",
-        "fr": "Français",
-        "cn": "中文"
-    }[x]
-)
-
-st.session_state.lang = lang
-t = translations[lang]
+# ---------------------------------------------------------
+# Navigation initialisieren
+# ---------------------------------------------------------
+if "nav" not in st.session_state:
+    st.session_state.nav = "Startseite"
 
 # ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), ".", "revolution.png")
-logo = Image.open(image_path)
-st.sidebar.image(logo, width=150)
-
-
-# ---------------------------------------------------------
-# Page Config
-# ---------------------------------------------------------
-st.set_page_config(page_title=t["app_title"], layout="centered")
-
-
-# ---------------------------------------------------------
-# Styling
+# Sidebar Styling (DUNKELBLAU)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        body {
-            background-color: #f5f7fa;
-        }
-
-        .main-card {
-            background-color: #1E90FF;
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 100%;
-            margin: 0;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .main-title {
-            font-size: 45px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .main-text {
-            font-size: 22px;
-            color: white;
-            margin-bottom: 10px;
-        }
-
         [data-testid="stSidebar"] {
-            background-color: #1E90FF;
+            background-color: #002B5B !important; /* Dunkelblau */
+            padding-top: 20px;
         }
         [data-testid="stSidebar"] * {
             color: white !important;
+            font-size: 18px;
         }
-    </style>
-""", unsafe_allow_html=True)
 
-# ---------------------------------------------------------
-# Inhalt
-# ---------------------------------------------------------
-st.markdown(
-    f"""
-    <div class="main-card">
-        <div class="main-title">{t["app_title"]}</div>
-        <div class="main-text">{t["app_choose"]}</div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-st.markdown("""
-    <style>
-        /* Fix: Dropdown Text sichtbar machen */
-        div[data-baseweb="select"] * {
-            color: black !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-        /* Logout Button: Blau + weiße Schrift */
-        [data-testid="stSidebar"] .stButton > button {
-            background-color: #1E90FF !important;
+        .nav-btn > button {
+            background-color: #002B5B !important;
             color: white !important;
-            border: none !important;
+            border: 2px solid white !important;
             border-radius: 10px !important;
-            padding: 12px 20px !important;
+            padding: 10px !important;
+            width: 100% !important;
+            text-align: left !important;
             font-size: 18px !important;
+        }
+
+        .nav-btn > button:hover {
+            background-color: white !important;
+            color: #002B5B !important;
+        }
+
+        .logout-btn > button {
+            background-color: #8B0000 !important; /* Dunkelrot */
+            color: white !important;
+            border-radius: 10px !important;
+            padding: 10px !important;
+            width: 100% !important;
             font-weight: bold !important;
         }
-
-        /* Kein Hover-Farbwechsel */
-        [data-testid="stSidebar"] .stButton > button:hover {
-            background-color: #1E90FF !important;
-            color: white !important;
-        }
     </style>
 """, unsafe_allow_html=True)
 
+# ---------------------------------------------------------
+# SIDEBAR INHALT
+# ---------------------------------------------------------
+with st.sidebar:
+
+    # Logo
+    image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
+    logo = Image.open(image_path)
+    st.image(logo, width=180)
+
+    st.write("---")
+
+    # Sprache Auswahl mit Emoji
+    lang_choice = st.selectbox(
+        "🌐 Sprache / Language",
+        ["🇩🇪 Deutsch", "🇬🇧 English", "🇫🇷 Français", "🇨🇳 中文"],
+        index=["de", "en", "fr", "cn"].index(st.session_state.lang)
+    )
+
+    # Sprache speichern
+    st.session_state.lang = {
+        "🇩🇪 Deutsch": "de",
+        "🇬🇧 English": "en",
+        "🇫🇷 Français": "fr",
+        "🇨🇳 中文": "cn"
+    }[lang_choice]
+
+    t = translations[st.session_state.lang]
+
+    st.write("---")
+
+    # Navigation
+    st.markdown("### 📂 Navigation")
+
+    if st.button("🏠 " + t["nav_home"], key="nav_home"):
+        st.session_state.nav = "Startseite"
+
+    if st.button("🧾 " + t["nav_customers"], key="nav_kunden"):
+        st.session_state.nav = "Kunden"
+
+    if st.button("⏳ " + t["nav_waiting"], key="nav_waiting"):
+        st.session_state.nav = "Warteraum"
+
+    if st.button("👨‍💼 " + t["nav_agent"], key="nav_agent"):
+        st.session_state.nav = "Sachbearbeiter"
+
+    st.write("---")
+
+    # Logout
+    if st.button("🚪 " + t["logout"], key="logout"):
+        st.session_state.logged_in_sach = False
+        st.session_state.nav = "Startseite"
+        st.rerun()
+
+# ---------------------------------------------------------
+# SEITEN LADEN
+# ---------------------------------------------------------
+
+# Mapping der Seiten zu Modulen
+pages = {
+    "Startseite": "startseite",
+    "Kunden": "1_Kunden",
+    "Warteraum": "2_Warteraum",
+    "Sachbearbeiter": "3_Sachbearbeiter"
+}
+
+# Modul dynamisch laden
+module_name = pages.get(st.session_state.nav)
+module = importlib.import_module(module_name)
+
+# show()-Funktion ausführen
+module.show()

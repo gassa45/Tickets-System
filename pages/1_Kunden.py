@@ -1,10 +1,16 @@
+# ---------------------------------------------------------
+# Datei: 1_Kunden.py
+# Kunden-Seite – Ticket ziehen + QR-Code
+# ---------------------------------------------------------
+
 import streamlit as st
-from database import create_ticket
 from PIL import Image
 import os
 import qrcode
 from io import BytesIO
 from languages import translations
+from database import create_ticket
+import base64
 
 # ---------------------------------------------------------
 # AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
@@ -14,174 +20,144 @@ def remove_browser_muell():
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    clean_lines = []
+    clean = []
     for line in lines:
+        # Browser-Müll beginnt IMMER mit dieser Zeile
         if line.strip().startswith("# User's Edge browser tabs metadata"):
             break
-        clean_lines.append(line)
+        clean.append(line)
 
-    if len(clean_lines) != len(lines):
+    # Wenn Müll gefunden → Datei reparieren
+    if len(clean) != len(lines):
         with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean_lines)
+            f.writelines(clean)
         st.rerun()
 
 remove_browser_muell()
 
 # ---------------------------------------------------------
-# Sprache laden
+# HAUPTFUNKTION DER SEITE
 # ---------------------------------------------------------
-lang = st.session_state.get("lang", "de")
-t = translations[lang]
+def show():
 
-BASE_URL = "https://revolution-ticketsystem.streamlit.app"
+    # Sprache laden
+    lang = st.session_state.get("lang", "de")
+    t = translations[lang]
 
-# ---------------------------------------------------------
-# Styling – DEIN ALTES BLAUES DESIGN
-# ---------------------------------------------------------
-st.markdown("""
-    <style>
-        body { background-color: #f5f7fa; }
+    BASE_URL = "https://revolution-ticketsystem.streamlit.app"
 
-        [data-testid="stSidebar"] {
-            background-color: #1E90FF !important;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-        }
+    # ---------------------------------------------------------
+    # Styling – ALLE Karten dunkelblau
+    # ---------------------------------------------------------
+    st.markdown("""
+        <style>
+            body { background-color: #f5f7fa; }
 
-        .main-card {
-            background-color: #1E90FF;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            width: 100%;
-            margin-top: 20px;
-            text-align: left;
-        }
+            .main-card {
+                background-color: #002B5B; /* Dunkelblau */
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+                width: 100%;
+                margin-top: 20px;
+                text-align: left;
+            }
 
-        .main-title {
-            font-size: 45px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 10px;
-        }
+            .main-title {
+                font-size: 45px;
+                font-weight: bold;
+                color: white;
+                margin-bottom: 10px;
+            }
 
-        .main-text {
-            font-size: 22px;
-            color: white;
-            margin-bottom: 20px;
-        }
+            .main-text {
+                font-size: 22px;
+                color: white;
+                margin-bottom: 20px;
+            }
 
-        .ticket-card {
-            background-color: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-top: 20px;
-            text-align: center;
-        }
+            .ticket-card {
+                background-color: #002B5B; /* Dunkelblau */
+                padding: 30px;
+                border-radius: 20px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                margin-top: 20px;
+                text-align: center;
+            }
 
-        .ticket-number {
-            font-size: 70px;
-            font-weight: bold;
-            color: #1E90FF;
-        }
+            .ticket-number {
+                font-size: 70px;
+                font-weight: bold;
+                color: white !important;
+            }
 
-        .stButton>button {
-            background-color: #1E90FF !important;
-            color: white !important;
-            border-radius: 12px;
-            padding: 16px 25px;
-            font-size: 24px;
-            border: none;
-            width: 100% !important;
-            max-width: 400px;
-            margin-top: 20px;
-        }
+            .stButton>button {
+                background-color: #1E90FF !important;
+                color: white !important;
+                border-radius: 12px;
+                padding: 16px 25px;
+                font-size: 24px;
+                border: none;
+                width: 100% !important;
+                max-width: 400px;
+                margin-top: 20px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
-        textarea {
-            font-size: 20px !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
-logo = Image.open(image_path)
-
-st.sidebar.image(logo, width=150)
-
-# ---------------------------------------------------------
-# Hauptkarte
-# ---------------------------------------------------------
-st.markdown(
-    f"""
-    <div class="main-card">
-        <div class="main-title">{t["pull_title"]}</div>
-        <div class="main-text">{t["pull_info"]}</div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# ---------------------------------------------------------
-# Beschreibung + Button
-# ---------------------------------------------------------
-beschreibung = st.text_area(
-    "📝 Kurzbeschreibung (optional):",
-    placeholder="Worum geht es? Bitte kurz beschreiben..."
-)
-
-if st.button(t["pull_button"]):
-
-    nummer = create_ticket(beschreibung)
-    st.session_state["meine_nummer"] = nummer
-    st.session_state["beschreibung"] = beschreibung
-
-    url = f"{BASE_URL}/Warteraum?ticket={nummer}"
-
-    qr = qrcode.make(url)
-    buffer = BytesIO()
-    qr.save(buffer, format="PNG")
-    qr_bytes = buffer.getvalue()
-
-    # Ticketkarte
+    # ---------------------------------------------------------
+    # Hauptkarte (Titel + Info)
+    # ---------------------------------------------------------
     st.markdown(
         f"""
-        <div class="ticket-card" style="margin-bottom:40px;">
-            <span class="ticket-number">{nummer}</span>
-            <p style="color:#1E90FF; font-size:20px; margin-top:20px;">
-                {t["pull_wait"]}
-            </p>
+        <div class="main-card">
+            <div class="main-title">{t["pull_title"]}</div>
+            <div class="main-text">{t["pull_info"]}</div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    # QR-Code zentriert + Abstand
-    import base64
-    qr_base64 = base64.b64encode(qr_bytes).decode()
+    # Beschreibung
+    beschreibung = st.text_area("📝 Kurzbeschreibung (optional):")
 
-    st.markdown(
-        f"""
-        <div style="text-align:center; margin-top:40px;">
-            <img src="data:image/png;base64,{qr_base64}" width="250">
-            <p style="color:#1E90FF; font-size:20px; margin-top:10px;">QR-Code</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # ---------------------------------------------------------
+    # Ticket ziehen
+    # ---------------------------------------------------------
+    if st.button(t["pull_button"]):
 
-    # Weiterleitung
-    st.markdown(
-        f"""
-        <script>
-            setTimeout(function() {{
-                window.location.href = "{url}";
-            }}, 2500);
-        </script>
-        """,
-        unsafe_allow_html=True
-    )
+        nummer = create_ticket(beschreibung)
+        st.session_state["meine_nummer"] = nummer
+
+        url = f"{BASE_URL}/Warteraum?ticket={nummer}"
+
+        # QR-Code erzeugen
+        qr = qrcode.make(url)
+        buffer = BytesIO()
+        qr.save(buffer, format="PNG")
+        qr_bytes = buffer.getvalue()
+        qr_base64 = base64.b64encode(qr_bytes).decode()
+
+        # Ticketkarte (dunkelblau)
+        st.markdown(
+            f"""
+            <div class="ticket-card" style="margin-bottom:40px;">
+                <span class="ticket-number">{nummer}</span>
+                <p style="color:white; font-size:20px; margin-top:20px;">
+                    {t["pull_wait"]}
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # QR-Code zentriert + Abstand
+        st.markdown(
+            f"""
+            <div style="text-align:center; margin-top:40px;">
+                <img src="data:image/png;base64,{qr_base64}" width="250">
+                <p style="color:#002B5B; font-size:20px; margin-top:10px;">QR-Code</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )

@@ -1,179 +1,160 @@
+# ---------------------------------------------------------
+# Datei: 2_Warteraum.py
+# Warteraum – zeigt aktuelle Nummer + eigene Nummer + Warteschlange
+# ---------------------------------------------------------
+
 import streamlit as st
-import time
-from database import get_current_ticket, get_waiting_tickets
 from PIL import Image
 import os
 from languages import translations
+from database import (
+    get_current_ticket,
+    get_waiting_tickets
+)
+
 # ---------------------------------------------------------
 # AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
 # ---------------------------------------------------------
-import os, sys
-
 def remove_browser_muell():
     file_path = os.path.abspath(__file__)
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    clean_lines = []
+    clean = []
     for line in lines:
+        # Browser-Müll beginnt IMMER mit dieser Zeile
         if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break  # Alles danach löschen
-        clean_lines.append(line)
+            break
+        clean.append(line)
 
-    # Wenn Datei verändert wurde → neu schreiben
-    if len(clean_lines) != len(lines):
+    # Wenn Müll gefunden → Datei reparieren
+    if len(clean) != len(lines):
         with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean_lines)
-        # App neu starten
+            f.writelines(clean)
         st.rerun()
 
 remove_browser_muell()
 
 # ---------------------------------------------------------
-# Sprache laden
+# HAUPTFUNKTION DER SEITE
 # ---------------------------------------------------------
-lang = st.session_state.get("lang", "de")
-t = translations[lang]
+def show():
 
-# ---------------------------------------------------------
-# Ticketnummer aus URL lesen
-# ---------------------------------------------------------
-query_params = st.query_params
-meine_nummer = query_params.get("ticket", None)
+    # Sprache laden
+    lang = st.session_state.get("lang", "de")
+    t = translations[lang]
 
-# Falls URL keine Nummer enthält → Session fallback
-if not meine_nummer:
+    # ---------------------------------------------------------
+    # Styling – ALLE Karten dunkelblau
+    # ---------------------------------------------------------
+    st.markdown("""
+        <style>
+            body { background-color: #f5f7fa; }
+
+            .ticket-card {
+                background-color: #002B5B; /* Dunkelblau */
+                padding: 30px;
+                border-radius: 20px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                margin-top: 20px;
+                text-align: center;
+            }
+
+            .ticket-number {
+                font-size: 70px;
+                font-weight: bold;
+                color: white !important;
+            }
+
+            .small-number {
+                font-size: 40px;
+                font-weight: bold;
+                color: white !important;
+            }
+
+            .info-text {
+                color: white;
+                font-size: 20px;
+                margin-top: 10px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # ---------------------------------------------------------
+    # Eigene Nummer aus URL oder Session
+    # ---------------------------------------------------------
+    query_params = st.query_params
+    meine_nummer = query_params.get("ticket", [None])[0]
+
+    if meine_nummer:
+        st.session_state["meine_nummer"] = meine_nummer
+
     meine_nummer = st.session_state.get("meine_nummer", None)
 
-# ---------------------------------------------------------
-# Styling
-# ---------------------------------------------------------
-st.markdown("""
-    <style>
-        [data-testid="stSidebar"] {
-            background-color: #1E90FF !important;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-        }
+    # ---------------------------------------------------------
+    # Aktuelle Nummer
+    # ---------------------------------------------------------
+    aktuelles = get_current_ticket()
 
-        body { background-color: #f5f7fa; }
+    st.markdown("## ⏳ " + t["waiting_room_title"])
 
-        .ticket-card {
-            background-color: #1E90FF;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .ticket-number {
-            font-size: 70px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .small-ticket {
-            font-size: 45px;
-            font-weight: bold;
-            color: white;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
-logo = Image.open(image_path)
-st.sidebar.image(logo, width=150)
-
-# ---------------------------------------------------------
-# Titel
-# ---------------------------------------------------------
-st.title(t["waiting_room"])
-
-# ---------------------------------------------------------
-# Datenbank: aktuelles Ticket + Warteschlange
-# ---------------------------------------------------------
-aktuelles = get_current_ticket()
-waiting = get_waiting_tickets()
-
-# ---------------------------------------------------------
-# Sound abspielen, wenn der Kunde dran ist
-# ---------------------------------------------------------
-if meine_nummer and aktuelles and aktuelles["nummer"] == meine_nummer:
-    st.markdown("""
-        <audio autoplay>
-            <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
-        </audio>
-    """, unsafe_allow_html=True)
-    st.success(t["called_now"])
-
-# ---------------------------------------------------------
-# Eigene Nummer anzeigen
-# ---------------------------------------------------------
-if meine_nummer:
-    st.subheader(t["your_number"])
-    st.markdown(
-        f"""
-        <div class="ticket-card">
-            <span class="ticket-number">{meine_nummer}</span>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-# ---------------------------------------------------------
-# Aktuelles Ticket anzeigen
-# ---------------------------------------------------------
-st.subheader(t["current_ticket"])
-
-if aktuelles:
-    st.markdown(
-        f"""
-        <div class="ticket-card">
-            <span class="ticket-number">{aktuelles['nummer']}</span>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-else:
-    st.info("Noch kein Ticket aufgerufen.")
-
-# ---------------------------------------------------------
-# Position in der Warteschlange
-# ---------------------------------------------------------
-if meine_nummer:
-    alle = [tkt["nummer"] for tkt in waiting]
-
-    if meine_nummer in alle:
-        pos = alle.index(meine_nummer) + 1
-        st.info(f"{t['queue_position']} **{pos}**")
-    else:
-        st.success(t["almost_called"])
-
-# ---------------------------------------------------------
-# Wartende anzeigen
-# ---------------------------------------------------------
-st.subheader(t["waiting_numbers"])
-
-if waiting:
-    for tkt in waiting:
+    if aktuelles:
         st.markdown(
             f"""
             <div class="ticket-card">
-                <span class="small-ticket">{tkt['nummer']}</span>
+                <div class="ticket-number">{aktuelles['nummer']}</div>
+                <div class="info-text">{t["current_ticket"]}</div>
             </div>
             """,
             unsafe_allow_html=True
         )
-else:
-    st.info(t["no_more_tickets"])
+    else:
+        st.info(t["no_ticket_called"])
 
-# ---------------------------------------------------------
-# Automatischer Refresh
-# ---------------------------------------------------------
-time.sleep(3)
-st.rerun()
+    # ---------------------------------------------------------
+    # Eigene Nummer anzeigen
+    # ---------------------------------------------------------
+    if meine_nummer:
+        st.markdown(
+            f"""
+            <div class="ticket-card">
+                <div class="ticket-number">{meine_nummer}</div>
+                <div class="info-text">{t["your_ticket"]}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # ---------------------------------------------------------
+    # Warteschlange anzeigen
+    # ---------------------------------------------------------
+    waiting = get_waiting_tickets()
+
+    st.markdown("### " + t["waiting_numbers"])
+
+    if waiting:
+        for tkt in waiting:
+            st.markdown(
+                f"""
+                <div class="ticket-card">
+                    <div class="small-number">{tkt['nummer']}</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+    else:
+        st.info(t["no_more_tickets"])
+
+    # ---------------------------------------------------------
+    # Automatische Aktualisierung alle 3 Sekunden
+    # ---------------------------------------------------------
+    st.markdown(
+        """
+        <script>
+            setTimeout(function() {
+                window.location.reload();
+            }, 3000);
+        </script>
+        """,
+        unsafe_allow_html=True
+    )
