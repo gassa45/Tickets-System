@@ -7,6 +7,27 @@ from io import BytesIO
 from languages import translations
 
 # ---------------------------------------------------------
+# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
+# ---------------------------------------------------------
+def remove_browser_muell():
+    file_path = os.path.abspath(__file__)
+    with open(file_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    clean_lines = []
+    for line in lines:
+        if line.strip().startswith("# User's Edge browser tabs metadata"):
+            break
+        clean_lines.append(line)
+
+    if len(clean_lines) != len(lines):
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.writelines(clean_lines)
+        st.rerun()
+
+remove_browser_muell()
+
+# ---------------------------------------------------------
 # Sprache laden
 # ---------------------------------------------------------
 lang = st.session_state.get("lang", "de")
@@ -15,21 +36,21 @@ t = translations[lang]
 BASE_URL = "https://revolution-ticketsystem.streamlit.app"
 
 # ---------------------------------------------------------
-# Einheitliches Styling – Dunkelblau (#003A78)
+# Styling – DEIN ALTES BLAUES DESIGN
 # ---------------------------------------------------------
 st.markdown("""
     <style>
         body { background-color: #f5f7fa; }
 
         [data-testid="stSidebar"] {
-            background-color: #003A78 !important;
+            background-color: #1E90FF !important;
         }
         [data-testid="stSidebar"] * {
             color: white !important;
         }
 
         .main-card {
-            background-color: #003A78 !important;
+            background-color: #1E90FF;
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
@@ -41,21 +62,21 @@ st.markdown("""
         .main-title {
             font-size: 45px;
             font-weight: bold;
-            color: white !important;
+            color: white;
             margin-bottom: 10px;
         }
 
         .main-text {
             font-size: 22px;
-            color: white !important;
+            color: white;
             margin-bottom: 20px;
         }
 
         .ticket-card {
-            background-color: #003A78 !important;
+            background-color: white;
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             margin-top: 20px;
             text-align: center;
         }
@@ -63,11 +84,11 @@ st.markdown("""
         .ticket-number {
             font-size: 70px;
             font-weight: bold;
-            color: white !important;
+            color: #1E90FF;
         }
 
         .stButton>button {
-            background-color: #003A78 !important;
+            background-color: #1E90FF !important;
             color: white !important;
             border-radius: 12px;
             padding: 16px 25px;
@@ -85,17 +106,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Sidebar Logo (nur anzeigen, wenn Sachbearbeiter eingeloggt)
+# Logo
 # ---------------------------------------------------------
-if st.session_state.get("logged_in_sach", False):
-    image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
-    if os.path.exists(image_path):
-        logo = Image.open(image_path)
-        st.sidebar.image(logo, width=150)
+image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+logo = Image.open(image_path)
 
-    if st.sidebar.button(t["logout"]):
-        st.session_state.logged_in_sach = False
-        st.rerun()
+st.sidebar.image(logo, width=150)
 
 # ---------------------------------------------------------
 # Hauptkarte
@@ -136,7 +152,7 @@ if st.button(t["pull_button"]):
         f"""
         <div class="ticket-card" style="margin-bottom:40px;">
             <span class="ticket-number">{nummer}</span>
-            <p style="color:white; font-size:20px; margin-top:20px;">
+            <p style="color:#1E90FF; font-size:20px; margin-top:20px;">
                 {t["pull_wait"]}
             </p>
         </div>
@@ -144,7 +160,7 @@ if st.button(t["pull_button"]):
         unsafe_allow_html=True
     )
 
-    # QR-Code
+    # QR-Code zentriert + Abstand
     import base64
     qr_base64 = base64.b64encode(qr_bytes).decode()
 
@@ -152,7 +168,7 @@ if st.button(t["pull_button"]):
         f"""
         <div style="text-align:center; margin-top:40px;">
             <img src="data:image/png;base64,{qr_base64}" width="250">
-            <p style="color:#003A78; font-size:20px; margin-top:10px;">QR-Code</p>
+            <p style="color:#1E90FF; font-size:20px; margin-top:10px;">QR-Code</p>
         </div>
         """,
         unsafe_allow_html=True
