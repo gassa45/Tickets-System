@@ -20,7 +20,6 @@ def remove_browser_muell():
         with open(file_path, "w", encoding="utf-8") as f:
             f.writelines(clean)
         st.rerun()
-
 remove_browser_muell()
 
 # ---------------------------------------------------------
@@ -50,31 +49,11 @@ st.markdown("""
             color: white !important;
             font-size: 18px;
         }
-        .sidebar-logo {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .sidebar-nav {
-            margin-top: 30px;
-        }
-        .sidebar-nav label {
-            font-size: 20px !important;
-            font-weight: bold;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-        /* Fix: Dropdown Text sichtbar machen */
         div[data-baseweb="select"] * {
             color: black !important;
         }
     </style>
 """, unsafe_allow_html=True)
-
-
 with st.sidebar:
     # Logo oben
     image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
