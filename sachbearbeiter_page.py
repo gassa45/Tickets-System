@@ -72,7 +72,6 @@ if not st.session_state.logged_in_sach:
 # ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
 logo = Image.open(image_path)
-st.sidebar.image(logo, width=250)
 
 if st.sidebar.button(t["logout"]):
     st.session_state.logged_in_sach = False

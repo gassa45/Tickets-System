@@ -83,7 +83,6 @@ st.markdown("""
 # ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
 logo = Image.open(image_path)
-st.sidebar.image(logo, width=250)
 
 # ---------------------------------------------------------
 # Titel
