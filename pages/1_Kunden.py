@@ -94,11 +94,6 @@ st.markdown("""
 # ---------------------------------------------------------
 image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
 logo = Image.open(image_path)
-
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image(logo, width=250)
-
 st.sidebar.image(logo, width=150)
 
 # ---------------------------------------------------------

@@ -28,17 +28,6 @@ t = translations[lang]
 # ---------------------------------------------------------
 st.set_page_config(page_title=t["app_title"], layout="centered")
 
-# ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), ".", "revolution.png")
-logo = Image.open(image_path)
-
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image(logo, width=250)
-
-st.sidebar.image(logo, width=250)
 
 # ---------------------------------------------------------
 # Styling
