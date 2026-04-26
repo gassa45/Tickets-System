@@ -1,77 +1,155 @@
 import streamlit as st
+import time
+from database import get_current_ticket, get_waiting_tickets
+from PIL import Image
 import os
 from languages import translations
-from database import get_current_ticket, get_waiting_tickets
 
 # ---------------------------------------------------------
-# Browser-Müll-Schutz
+# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
 # ---------------------------------------------------------
 def remove_browser_muell():
     file_path = os.path.abspath(__file__)
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
-    clean = []
+
+    clean_lines = []
     for line in lines:
         if line.strip().startswith("# User's Edge browser tabs metadata"):
             break
-        clean.append(line)
-    if len(clean) != len(lines):
+        clean_lines.append(line)
+
+    if len(clean_lines) != len(lines):
         with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean)
+            f.writelines(clean_lines)
         st.rerun()
 
 remove_browser_muell()
 
 # ---------------------------------------------------------
-# CSS für Karten
+# Sprache laden
+# ---------------------------------------------------------
+lang = st.session_state.get("lang", "de")
+t = translations[lang]
+
+# ---------------------------------------------------------
+# Ticketnummer aus URL lesen
+# ---------------------------------------------------------
+query_params = st.query_params
+meine_nummer = query_params.get("ticket", None)
+
+if not meine_nummer:
+    meine_nummer = st.session_state.get("meine_nummer", None)
+
+# ---------------------------------------------------------
+# Styling
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        .blue-card {
-            background-color: #003A78;
+        .ticket-card {
+            background-color: #1E90FF;
             padding: 25px;
-            border-radius: 20px;
-            color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             text-align: center;
-            font-size: 36px;
+            margin-top: 15px;
+        }
+        .ticket-number {
+            font-size: 70px;
             font-weight: bold;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-            margin-top: 20px;
+            color: white;
+        }
+        .small-ticket {
+            font-size: 45px;
+            font-weight: bold;
+            color: white;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Warteraum-Seite
+# Logo
 # ---------------------------------------------------------
-def show():
-    lang = st.session_state.get("lang", "de")
-    t = translations[lang]
+image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+logo = Image.open(image_path)
+st.sidebar.image(logo, width=150)
 
-    st.title(t["waiting_room"])
+# ---------------------------------------------------------
+# Titel
+# ---------------------------------------------------------
+st.title(t["waiting_room"])
 
-    aktuelles = get_current_ticket()
-    waiting = get_waiting_tickets()
+# ---------------------------------------------------------
+# Datenbank
+# ---------------------------------------------------------
+aktuelles = get_current_ticket()
+waiting = get_waiting_tickets()
 
-    # Aktuelles Ticket
-    if aktuelles:
+# ---------------------------------------------------------
+# Sound abspielen, wenn Kunde dran ist
+# ---------------------------------------------------------
+if meine_nummer and aktuelles and aktuelles["nummer"] == meine_nummer:
+    st.markdown("""
+        <audio autoplay>
+            <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+        </audio>
+    """, unsafe_allow_html=True)
+    st.success(t["called_now"])
+
+# ---------------------------------------------------------
+# Eigene Nummer
+# ---------------------------------------------------------
+if meine_nummer:
+    st.subheader(t["your_number"])
+    st.markdown(f"""
+        <div class="ticket-card">
+            <span class="ticket-number">{meine_nummer}</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+# ---------------------------------------------------------
+# Aktuelles Ticket
+# ---------------------------------------------------------
+st.subheader(t["current_ticket"])
+
+if aktuelles:
+    st.markdown(f"""
+        <div class="ticket-card">
+            <span class="ticket-number">{aktuelles['nummer']}</span>
+        </div>
+    """, unsafe_allow_html=True)
+else:
+    st.info("Noch kein Ticket aufgerufen.")
+
+# ---------------------------------------------------------
+# Position in der Warteschlange
+# ---------------------------------------------------------
+if meine_nummer:
+    alle = [tkt["nummer"] for tkt in waiting]
+
+    if meine_nummer in alle:
+        pos = alle.index(meine_nummer) + 1
+        st.info(f"{t['queue_position']} **{pos}**")
+    else:
+        st.success(t["almost_called"])
+
+# ---------------------------------------------------------
+# Wartende anzeigen
+# ---------------------------------------------------------
+st.subheader(t["waiting_numbers"])
+
+if waiting:
+    for tkt in waiting:
         st.markdown(f"""
-            <div class="blue-card">
-                {aktuelles['nummer']}
+            <div class="ticket-card">
+                <span class="small-ticket">{tkt['nummer']}</span>
             </div>
         """, unsafe_allow_html=True)
-    else:
-        st.info(t["no_ticket_called"])
+else:
+    st.info(t["no_more_tickets"])
 
-    st.write("### " + t["waiting_numbers"])
-
-    # Warteliste
-    if waiting:
-        for tkt in waiting:
-            st.markdown(f"""
-                <div class="blue-card" style="font-size:28px;">
-                    {tkt['nummer']}
-                </div>
-            """, unsafe_allow_html=True)
-    else:
-        st.info(t["no_more_tickets"])
+# ---------------------------------------------------------
+# Automatischer Refresh
+# ---------------------------------------------------------
+time.sleep(3)
+st.rerun()
