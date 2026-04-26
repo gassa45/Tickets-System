@@ -125,6 +125,12 @@ with st.sidebar:
         st.session_state.logged_in_sach = False
         st.session_state.nav = "Startseite"
         st.rerun()
+        
+    if st.session_state.get("logged_in_sach", False):
+        if st.button("🚪 Logout"):
+            st.session_state.logged_in_sach = False
+            st.session_state.nav = "Startseite"
+            st.rerun()
 
 # ---------------------------------------------------------
 # Seiten-Routing
