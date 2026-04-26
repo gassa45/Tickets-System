@@ -1,3 +1,38 @@
+# ---------------------------------------------------------
+# Datei: languages.py
+# Sprachsystem für das Revolution Ticket-System
+# ---------------------------------------------------------
+
+import os
+import streamlit as st
+
+# ---------------------------------------------------------
+# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
+# ---------------------------------------------------------
+def remove_browser_muell():
+    file_path = os.path.abspath(__file__)
+    with open(file_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    clean = []
+    for line in lines:
+        # Browser-Müll beginnt IMMER mit dieser Zeile
+        if line.strip().startswith("# User's Edge browser tabs metadata"):
+            break
+        clean.append(line)
+
+    # Wenn Müll gefunden → Datei reparieren
+    if len(clean) != len(lines):
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.writelines(clean)
+        st.rerun()
+
+remove_browser_muell()
+
+# ---------------------------------------------------------
+# TRANSLATIONS
+# ---------------------------------------------------------
+
 translations = {
     "de": {
         "app_title": "🎫 Revolution Ticket-System",
@@ -22,12 +57,11 @@ translations = {
         "password": "Passwort",
         "login": "Login",
         "login_error": "Falscher Benutzername oder Passwort",
-        "logout": "Logout",
 
         "agent_title": "🧑‍💼 Sachbearbeiter",
         "waiting_tickets": "Wartende Tickets",
         "no_waiting": "Keine wartenden Tickets.",
-        "call_next": "Nächstes Ticket aufrufen",
+        "call_next": "➡️ Nächstes Ticket aufrufen",
         "in_progress": "Aktuell in Bearbeitung",
         "none_in_progress": "Kein Ticket in Bearbeitung.",
         "finish": "Fertig",
@@ -37,15 +71,15 @@ translations = {
         "ticket_called": "Ticket aufgerufen:",
         "ticket_finished": "Ticket abgeschlossen:",
         "no_ticket_in_progress": "Kein Ticket in Bearbeitung.",
-        "call_next": "➡️ Nächstes Ticket aufrufen",
         "finish_ticket": "✔️ Ticket abschließen",
         "description": "Kurzbeschreibung",
+
+        # Navigation
         "nav_home": "Startseite",
         "nav_customers": "Kunden",
         "nav_waiting": "Warteraum",
         "nav_agent": "Sachbearbeiter",
         "logout": "Abmelden",
-
     },
 
     "en": {
@@ -71,12 +105,11 @@ translations = {
         "password": "Password",
         "login": "Login",
         "login_error": "Incorrect username or password",
-        "logout": "Logout",
 
         "agent_title": "🧑‍💼 Agent",
         "waiting_tickets": "Waiting Tickets",
         "no_waiting": "No waiting tickets.",
-        "call_next": "Call Next Ticket",
+        "call_next": "➡️ Call next ticket",
         "in_progress": "Currently in Progress",
         "none_in_progress": "No ticket in progress.",
         "finish": "Finish",
@@ -86,15 +119,15 @@ translations = {
         "ticket_called": "Ticket called:",
         "ticket_finished": "Ticket finished:",
         "no_ticket_in_progress": "No ticket in progress.",
-        "call_next": "➡️ Call next ticket",
         "finish_ticket": "✔️ Finish ticket",
         "description": "Description",
+
+        # Navigation
         "nav_home": "Home",
         "nav_customers": "Customers",
-        "nav_waiting": "Waiting room",
+        "nav_waiting": "Waiting Room",
         "nav_agent": "Agent",
         "logout": "Logout",
-
     },
 
     "fr": {
@@ -120,12 +153,11 @@ translations = {
         "password": "Mot de passe",
         "login": "Connexion",
         "login_error": "Nom d'utilisateur ou mot de passe incorrect",
-        "logout": "Déconnexion",
 
         "agent_title": "🧑‍💼 Agent",
         "waiting_tickets": "Tickets en attente",
         "no_waiting": "Aucun ticket en attente.",
-        "call_next": "Appeler le prochain ticket",
+        "call_next": "➡️ Appeler le prochain ticket",
         "in_progress": "Actuellement en traitement",
         "none_in_progress": "Aucun ticket en traitement.",
         "finish": "Terminer",
@@ -135,15 +167,15 @@ translations = {
         "ticket_called": "Ticket appelé :",
         "ticket_finished": "Ticket terminé :",
         "no_ticket_in_progress": "Aucun ticket en cours.",
-        "call_next": "➡️ Appeler le prochain ticket",
         "finish_ticket": "✔️ Terminer le ticket",
         "description": "Description",
+
+        # Navigation
         "nav_home": "Accueil",
         "nav_customers": "Clients",
         "nav_waiting": "Salle d'attente",
         "nav_agent": "Agent",
         "logout": "Déconnexion",
-
     },
 
     "cn": {
@@ -169,12 +201,11 @@ translations = {
         "password": "密码",
         "login": "登录",
         "login_error": "用户名或密码错误",
-        "logout": "退出登录",
 
         "agent_title": "🧑‍💼 工作人员",
         "waiting_tickets": "等待中的票号",
         "no_waiting": "没有等待中的票号。",
-        "call_next": "呼叫下一个号码",
+        "call_next": "➡️ 呼叫下一个号码",
         "in_progress": "正在处理",
         "none_in_progress": "没有正在处理的号码。",
         "finish": "完成",
@@ -184,14 +215,14 @@ translations = {
         "ticket_called": "已叫号：",
         "ticket_finished": "已完成：",
         "no_ticket_in_progress": "当前没有正在处理的号码。",
-        "call_next": "➡️ 呼叫下一个号码",
         "finish_ticket": "✔️ 完成号码",
         "description": "描述",
+
+        # Navigation
         "nav_home": "首页",
         "nav_customers": "客户",
         "nav_waiting": "候诊室",
         "nav_agent": "办理人员",
         "logout": "退出登录",
-
     }
 }
