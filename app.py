@@ -40,7 +40,7 @@ with st.sidebar:
 
     image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
     logo = Image.open(image_path)
-    st.image(logo, width=150)
+    st.image(logo, width=250)
 
 st.session_state["lang"] = lang
 t = translations[lang]
