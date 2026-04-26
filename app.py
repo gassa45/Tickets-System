@@ -73,7 +73,6 @@ st.set_page_config(page_title=t["about_title"], layout="centered")
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        /* Sidebar dunkelblau */
         [data-testid="stSidebar"] {
             background-color: #003A78 !important;
             padding-top: 30px;
@@ -82,12 +81,10 @@ st.markdown("""
             color: white !important;
         }
 
-        /* Dropdown Text schwarz */
         div[data-baseweb="select"] * {
             color: black !important;
         }
 
-        /* Responsive Sidebar Logo */
         [data-testid="stSidebar"] img {
             display: block;
             margin-left: auto;
