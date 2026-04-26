@@ -4,20 +4,38 @@ from PIL import Image
 from languages import translations
 
 # ---------------------------------------------------------
-# Browser-Müll-Schutz
+# BROWSER-MÜLL-KILLER 3.0 (unkaputtbar)
 # ---------------------------------------------------------
 def remove_browser_muell():
+    markers = [
+        "# User's Edge browser tabs metadata",
+        "edge_all_open_tabs = [",
+        "The edge_all_open_tabs metadata provides important context"
+    ]
+
     file_path = os.path.abspath(__file__)
-    with open(file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-    clean = []
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+    except:
+        return
+
+    clean_lines = []
+    skip = False
+
     for line in lines:
-        if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break
-        clean.append(line)
-    if len(clean) != len(lines):
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean)
+        if any(marker in line for marker in markers):
+            skip = True
+        if not skip:
+            clean_lines.append(line)
+
+    if clean_lines != lines:
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.writelines(clean_lines)
+        except:
+            return
         st.rerun()
 
 remove_browser_muell()
@@ -40,7 +58,7 @@ with st.sidebar:
 
     image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
     logo = Image.open(image_path)
-    st.image(logo, width=250)
+    st.image(logo)
 
 st.session_state["lang"] = lang
 t = translations[lang]
@@ -51,16 +69,55 @@ t = translations[lang]
 st.set_page_config(page_title=t["about_title"], layout="centered")
 
 # ---------------------------------------------------------
-# CSS für Animationen + Layout
+# Sidebar + Dropdown + Responsive Logo CSS
 # ---------------------------------------------------------
 st.markdown("""
     <style>
+        /* Sidebar dunkelblau */
+        [data-testid="stSidebar"] {
+            background-color: #003A78 !important;
+            padding-top: 30px;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+        }
+
         /* Dropdown Text schwarz */
         div[data-baseweb="select"] * {
             color: black !important;
         }
 
-        /* Fade-in Animation */
+        /* Responsive Sidebar Logo */
+        [data-testid="stSidebar"] img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 250px !important;      /* Desktop */
+            max-width: 80% !important;    /* Falls Sidebar kleiner ist */
+            height: auto !important;
+        }
+
+        /* Tablet */
+        @media (max-width: 1200px) {
+            [data-testid="stSidebar"] img {
+                width: 200px !important;
+            }
+        }
+
+        /* Handy */
+        @media (max-width: 768px) {
+            [data-testid="stSidebar"] img {
+                width: 150px !important;
+            }
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# ---------------------------------------------------------
+# CSS für Animationen + Layout
+# ---------------------------------------------------------
+st.markdown("""
+    <style>
         @keyframes fadeIn {
             0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -70,7 +127,6 @@ st.markdown("""
             animation: fadeIn 1.2s ease-out;
         }
 
-        /* Hauptkarte */
         .about-card {
             background: linear-gradient(135deg, #1E90FF, #0066CC);
             padding: 50px;
@@ -93,7 +149,6 @@ st.markdown("""
             opacity: 0.95;
         }
 
-        /* Sektionen */
         .about-section {
             background-color: white;
             color: #003A78;
@@ -110,7 +165,6 @@ st.markdown("""
             font-weight: 700;
         }
 
-        /* Kontaktbereich */
         .contact-box {
             background-color: #003A78;
             color: white;
@@ -136,7 +190,6 @@ st.markdown("""
 # Inhalt – STARTSEITE MIT SPRACH-KEYS
 # ---------------------------------------------------------
 
-# Hauptkarte
 st.markdown(f"""
     <div class="about-card fade">
         <div class="about-title">{t["about_title"]}</div>
@@ -144,7 +197,6 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# Über uns
 st.markdown(f"""
     <div class="about-section fade">
         <h3>{t["about_us_title"]}</h3>
@@ -152,7 +204,6 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# Mission
 st.markdown(f"""
     <div class="about-section fade">
         <h3>{t["mission_title"]}</h3>
@@ -160,7 +211,6 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# Vorteile
 st.markdown(f"""
     <div class="about-section fade">
         <h3>{t["why_title"]}</h3>
@@ -174,7 +224,6 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# Kontakt
 st.markdown(f"""
     <div class="contact-box fade">
         <h3>{t["contact_title"]}</h3>
