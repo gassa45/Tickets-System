@@ -2,11 +2,10 @@ import streamlit as st
 from PIL import Image
 import os
 from languages import translations
+
 # ---------------------------------------------------------
 # AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
 # ---------------------------------------------------------
-import os, sys
-
 def remove_browser_muell():
     file_path = os.path.abspath(__file__)
     with open(file_path, "r", encoding="utf-8") as f:
@@ -15,14 +14,12 @@ def remove_browser_muell():
     clean_lines = []
     for line in lines:
         if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break  # Alles danach löschen
+            break
         clean_lines.append(line)
 
-    # Wenn Datei verändert wurde → neu schreiben
     if len(clean_lines) != len(lines):
         with open(file_path, "w", encoding="utf-8") as f:
             f.writelines(clean_lines)
-        # App neu starten
         st.rerun()
 
 remove_browser_muell()
@@ -50,25 +47,21 @@ t = translations[lang]
 # ---------------------------------------------------------
 # Logo
 # ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), ".", "revolution.png")
+image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
 logo = Image.open(image_path)
 st.sidebar.image(logo, width=150)
-
 
 # ---------------------------------------------------------
 # Page Config
 # ---------------------------------------------------------
 st.set_page_config(page_title=t["app_title"], layout="centered")
 
-
 # ---------------------------------------------------------
-# Styling
-# ---------------------------------------------------------
-# ---------------------------------------------------------
-# Styling – DUNKELBLAUE KARTEN
+# EINHEITLICHES DUNKELBLAUES DESIGN
 # ---------------------------------------------------------
 st.markdown("""
     <style>
+        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #003A78 !important;
             padding-top: 30px;
@@ -78,84 +71,34 @@ st.markdown("""
             font-size: 18px;
         }
 
-        /* Dropdown lesbar machen */
+        /* Dropdown lesbar */
         div[data-baseweb="select"] * {
             color: black !important;
         }
-    </style>
-""", unsafe_allow_html=True)
 
-
-st.markdown("""
-    <style>
-        [data-testid="stSidebar"] {
-            background-color: #003A78 !important;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-        }
-
-        body { background-color: #f5f7fa; }
-
-        .ticket-card {
-            background-color: #003A78 !important;   /* DUNKELBLAU */
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .ticket-number {
-            font-size: 70px;
-            font-weight: bold;
-            color: white !important;
-        }
-
-        .small-ticket {
-            font-size: 45px;
-            font-weight: bold;
-            color: white !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-        body {
-            background-color: #f5f7fa;
-        }
-
+        /* Hauptkarte */
         .main-card {
-            background-color: #1E90FF;
+            background-color: #003A78 !important;
             padding: 40px;
             border-radius: 30px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
             width: 100%;
-            max-width: 100%;
-            margin: 0;
             margin-top: 20px;
-            text-align: left;
         }
 
         .main-title {
             font-size: 45px;
             font-weight: bold;
-            color: white;
-            margin-bottom: 20px;
+            color: white !important;
         }
 
         .main-text {
             font-size: 22px;
-            color: white;
-            margin-bottom: 10px;
+            color: white !important;
         }
 
-        [data-testid="stSidebar"] {
-            background-color: #1E90FF;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
+        body {
+            background-color: #f5f7fa;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -172,34 +115,3 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-st.markdown("""
-    <style>
-        /* Fix: Dropdown Text sichtbar machen */
-        div[data-baseweb="select"] * {
-            color: black !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-        /* Logout Button: Blau + weiße Schrift */
-        [data-testid="stSidebar"] .stButton > button {
-            background-color: #1E90FF !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 10px !important;
-            padding: 12px 20px !important;
-            font-size: 18px !important;
-            font-weight: bold !important;
-        }
-
-        /* Kein Hover-Farbwechsel */
-        [data-testid="stSidebar"] .stButton > button:hover {
-            background-color: #1E90FF !important;
-            color: white !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
