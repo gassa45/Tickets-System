@@ -16,7 +16,7 @@ def remove_browser_muell():
     clean_lines = []
     for line in lines:
         if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break
+            break  # Alles danach löschen
         clean_lines.append(line)
 
     if len(clean_lines) != len(lines):
@@ -42,27 +42,38 @@ if not meine_nummer:
     meine_nummer = st.session_state.get("meine_nummer", None)
 
 # ---------------------------------------------------------
-# Styling
+# Styling – DUNKELBLAUE KARTEN
 # ---------------------------------------------------------
 st.markdown("""
     <style>
+        [data-testid="stSidebar"] {
+            background-color: #003A78 !important;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+        }
+
+        body { background-color: #f5f7fa; }
+
         .ticket-card {
-            background-color: #1E90FF;
+            background-color: #003A78 !important;   /* DUNKELBLAU */
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
             text-align: center;
             margin-top: 15px;
         }
+
         .ticket-number {
             font-size: 70px;
             font-weight: bold;
-            color: white;
+            color: white !important;
         }
+
         .small-ticket {
             font-size: 45px;
             font-weight: bold;
-            color: white;
+            color: white !important;
         }
     </style>
 """, unsafe_allow_html=True)
