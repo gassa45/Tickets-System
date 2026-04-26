@@ -36,74 +36,60 @@ t = translations[lang]
 BASE_URL = "https://revolution-ticketsystem.streamlit.app"
 
 # ---------------------------------------------------------
-# Styling – DEIN ALTES BLAUES DESIGN
+# Styling – DUNKELBLAUE KARTEN
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        body { background-color: #f5f7fa; }
-
         [data-testid="stSidebar"] {
-            background-color: #1E90FF !important;
+            background-color: #003A78 !important;
+            padding-top: 30px;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+            font-size: 18px;
+        }
+
+        /* Dropdown lesbar machen */
+        div[data-baseweb="select"] * {
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+        [data-testid="stSidebar"] {
+            background-color: #003A78 !important;
         }
         [data-testid="stSidebar"] * {
             color: white !important;
         }
 
-        .main-card {
-            background-color: #1E90FF;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            width: 100%;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .main-title {
-            font-size: 45px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .main-text {
-            font-size: 22px;
-            color: white;
-            margin-bottom: 20px;
-        }
+        body { background-color: #f5f7fa; }
 
         .ticket-card {
-            background-color: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-top: 20px;
+            background-color: #003A78 !important;   /* DUNKELBLAU */
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
             text-align: center;
+            margin-top: 15px;
         }
 
         .ticket-number {
             font-size: 70px;
             font-weight: bold;
-            color: #1E90FF;
-        }
-
-        .stButton>button {
-            background-color: #1E90FF !important;
             color: white !important;
-            border-radius: 12px;
-            padding: 16px 25px;
-            font-size: 24px;
-            border: none;
-            width: 100% !important;
-            max-width: 400px;
-            margin-top: 20px;
         }
 
-        textarea {
-            font-size: 20px !important;
+        .small-ticket {
+            font-size: 45px;
+            font-weight: bold;
+            color: white !important;
         }
     </style>
 """, unsafe_allow_html=True)
+
 
 # ---------------------------------------------------------
 # Logo

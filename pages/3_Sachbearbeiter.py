@@ -72,8 +72,59 @@ if not st.session_state.logged_in_sach:
     st.stop()
 
 # ---------------------------------------------------------
-# AB HIER NUR SICHTBAR, WENN EINGELOGGT
+# Styling – DUNKELBLAUE KARTEN
 # ---------------------------------------------------------
+st.markdown("""
+    <style>
+        [data-testid="stSidebar"] {
+            background-color: #003A78 !important;
+            padding-top: 30px;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+            font-size: 18px;
+        }
+
+        /* Dropdown lesbar machen */
+        div[data-baseweb="select"] * {
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+        [data-testid="stSidebar"] {
+            background-color: #003A78 !important;
+        }
+        [data-testid="stSidebar"] * {
+            color: white !important;
+        }
+
+        body { background-color: #f5f7fa; }
+
+        .ticket-card {
+            background-color: #003A78 !important;   /* DUNKELBLAU */
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .ticket-number {
+            font-size: 70px;
+            font-weight: bold;
+            color: white !important;
+        }
+
+        .small-ticket {
+            font-size: 45px;
+            font-weight: bold;
+            color: white !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # Logo
