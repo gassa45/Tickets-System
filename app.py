@@ -1,9 +1,9 @@
+# app.py
+
 import streamlit as st
 import os
 from PIL import Image
 from languages import translations
-
-
 
 # ---------------------------------------------------------
 # Page Config
@@ -31,12 +31,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 #####################################
-#Ansicht für Handy
+# Handy-Ansicht
 ########################################
 
 st.markdown("""
     <style>
-        /* Sidebar auf Handy schmaler machen */
         @media (max-width: 768px) {
             [data-testid="stSidebar"] {
                 width: 180px !important;
@@ -75,11 +74,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
 # ---------------------------------------------------------
-# Sidebar: Sprache + Logo (fest 250px)
+# Eigene Sidebar (Logo → Sprache → Navigation)
 # ---------------------------------------------------------
 with st.sidebar:
+
+    # Logo ganz oben
+    image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
+    if os.path.exists(image_path):
+        logo = Image.open(image_path)
+        st.image(logo, width=250)
+
+    # Sprache auswählen
     lang = st.selectbox(
         "Sprache / Language / Langue / 语言",
         ["de", "en", "fr", "cn"],
@@ -89,15 +95,34 @@ with st.sidebar:
             "fr": "Français",
             "cn": "中文"
         }[x],
-        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "fr"))
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
     )
 
-    image_path = os.path.join(os.path.dirname(__file__), "revolution.png")
-    logo = Image.open(image_path)
-    st.image(logo, width=250)
+    st.session_state["lang"] = lang
+    t = translations[lang]
 
-st.session_state["lang"] = lang
-t = translations[lang]
+    st.markdown("---")
+
+    # Navigation
+    page = st.radio(
+        t["navigation"],
+        [t["nav_home"], t["nav_customers"], t["nav_waiting"], t["nav_agent"]]
+    )
+
+# ---------------------------------------------------------
+# Navigation Logik
+# ---------------------------------------------------------
+if page == t["nav_home"]:
+    pass  # wir sind bereits auf der Startseite
+
+elif page == t["nav_customers"]:
+    st.switch_page("pages/1_Kunden.py")
+
+elif page == t["nav_waiting"]:
+    st.switch_page("pages/2_Warteraum.py")
+
+elif page == t["nav_agent"]:
+    st.switch_page("pages/3_Sachbearbeiter.py")
 
 # ---------------------------------------------------------
 # CSS für Animationen + Layout (DEIN DESIGN)
