@@ -193,7 +193,7 @@ else:
 # ---------------------------------------------------------
 # Nächstes Ticket aufrufen (mit schöner Anzeige)
 # ---------------------------------------------------------
-if st.button("Nächstes Ticket aufrufen"):
+if st.button(t["call_next"]):
     nummer = call_next_ticket()
     if nummer:
 
@@ -244,7 +244,7 @@ else:
 # ---------------------------------------------------------
 # Ticket fertig
 # ---------------------------------------------------------
-if st.button("Fertig"):
+if st.button(t["finish"]):
     nummer = finish_current_ticket()
     if nummer:
         st.session_state.just_finished = True
