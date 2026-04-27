@@ -5,15 +5,6 @@ from PIL import Image
 import os
 from languages import translations
 
-################
-####Logout Button
-################
-
-with st.sidebar:
-    if st.session_state.get("logged_in", False):
-        if st.button("Logout"):
-            st.session_state["logged_in"] = False
-            st.rerun()
 
 # ---------------------------------------------------------
 # AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
