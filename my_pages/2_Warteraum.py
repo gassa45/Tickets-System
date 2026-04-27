@@ -12,6 +12,21 @@ from languages import translations
 # ---------------------------------------------------------
 st.set_page_config(page_title="Warteraum", layout="centered")
 
+##################################
+#Sidebar ausblenden
+#################################
+st.markdown("""
+    <style>
+        /* Streamlit Default Sidebar komplett verstecken */
+        [data-testid="stSidebarNav"] {
+            display: none !important;
+        }
+        [data-testid="stSidebarNav"] + div {
+            display: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # ---------------------------------------------------------
 # Sidebar Styling (dunkelblau)
 # ---------------------------------------------------------
@@ -106,13 +121,13 @@ if page == t["nav_home"]:
     st.switch_page("app.py")
 
 elif page == t["nav_customers"]:
-    st.switch_page("my_pages/1_Kunden.py")
+    st.switch_page("pages/1_Kunden.py")
 
 elif page == t["nav_waiting"]:
     pass  # wir sind bereits hier
 
 elif page == t["nav_agent"]:
-    st.switch_page("my_pages/3_Sachbearbeiter.py")
+    st.switch_page("pages/3_Sachbearbeiter.py")
 
 # ---------------------------------------------------------
 # Sprache laden

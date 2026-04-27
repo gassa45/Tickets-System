@@ -16,6 +16,20 @@ from database import (
 # Page Config
 # ---------------------------------------------------------
 st.set_page_config(page_title="Sachbearbeiter", layout="centered")
+##################################
+#Sidebar ausblenden
+#################################
+st.markdown("""
+    <style>
+        /* Streamlit Default Sidebar komplett verstecken */
+        [data-testid="stSidebarNav"] {
+            display: none !important;
+        }
+        [data-testid="stSidebarNav"] + div {
+            display: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # Global Styling (Desktop + Mobile)
@@ -153,10 +167,10 @@ if page == t["nav_home"]:
     st.switch_page("app.py")
 
 elif page == t["nav_customers"]:
-    st.switch_page("my_pages/1_Kunden.py")
+    st.switch_page("pages/1_Kunden.py")
 
 elif page == t["nav_waiting"]:
-    st.switch_page("my_pages/2_Warteraum.py")
+    st.switch_page("pages/2_Warteraum.py")
 
 elif page == t["nav_agent"]:
     pass  # wir sind bereits hier

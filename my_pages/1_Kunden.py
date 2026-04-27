@@ -14,6 +14,21 @@ import base64
 # ---------------------------------------------------------
 st.set_page_config(page_title="Kunden", layout="centered")
 
+##################################
+#Sidebar ausblenden
+#################################
+st.markdown("""
+    <style>
+        /* Streamlit Default Sidebar komplett verstecken */
+        [data-testid="stSidebarNav"] {
+            display: none !important;
+        }
+        [data-testid="stSidebarNav"] + div {
+            display: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # ---------------------------------------------------------
 # Sidebar Styling (dunkelblau)
 # ---------------------------------------------------------
@@ -123,10 +138,10 @@ elif page == t["nav_customers"]:
     pass  # wir sind bereits hier
 
 elif page == t["nav_waiting"]:
-    st.switch_page("my_pages/2_Warteraum.py")
+    st.switch_page("pages/2_Warteraum.py")
 
 elif page == t["nav_agent"]:
-    st.switch_page("my_pages/3_Sachbearbeiter.py")
+    st.switch_page("pages/3_Sachbearbeiter.py")
 
 # ---------------------------------------------------------
 # Sprache laden
