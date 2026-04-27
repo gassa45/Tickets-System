@@ -86,6 +86,8 @@ def get_waiting_tickets():
 def get_in_progress_tickets():
     with get_conn() as conn:
         cur = conn.cursor()
+
+        # 1. Alle in_progress Tickets holen
         cur.execute("""
             SELECT id, nummer, beschreibung
             FROM tickets
@@ -93,16 +95,52 @@ def get_in_progress_tickets():
             ORDER BY id;
         """)
         rows = cur.fetchall()
+
+        # Wenn keine Tickets in_progress sind → fertig
+        if not rows:
+            cur.close()
+            return []
+
+        # 2. Falls MEHRERE Tickets in_progress sind → nur das erste behalten
+        #    und alle anderen automatisch auf 'done' setzen
+        if len(rows) > 1:
+            # alle außer das erste Ticket abschließen
+            for r in rows[1:]:
+                cur.execute("""
+                    UPDATE tickets
+                    SET status='done'
+                    WHERE id=%s;
+                """, (r[0],))
+
+            conn.commit()
+
+            # nur das erste Ticket behalten
+            rows = [rows[0]]
+
         cur.close()
+
+        # 3. Rückgabe im gleichen Format wie vorher
         return [{"id": r[0], "nummer": r[1], "beschreibung": r[2]} for r in rows]
+
 
 # ---------------------------------------------------------
 # Nächstes Ticket aufrufen
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Nächstes Ticket aufrufen (mit Fix)
 # ---------------------------------------------------------
 def call_next_ticket():
     with get_conn() as conn:
         cur = conn.cursor()
 
+        # 1. Alle bestehenden in_progress Tickets automatisch abschließen
+        cur.execute("""
+            UPDATE tickets
+            SET status='done'
+            WHERE status='in_progress';
+        """)
+
+        # 2. Nächstes waiting Ticket holen
         cur.execute("""
             SELECT id, nummer, beschreibung
             FROM tickets
@@ -118,6 +156,7 @@ def call_next_ticket():
 
         ticket_id, nummer, beschreibung = row
 
+        # 3. Dieses Ticket auf in_progress setzen
         cur.execute("""
             UPDATE tickets
             SET status='in_progress'
@@ -128,6 +167,7 @@ def call_next_ticket():
         cur.close()
 
         return {"nummer": nummer, "beschreibung": beschreibung}
+
 
 # ---------------------------------------------------------
 # Ticket abschließen
