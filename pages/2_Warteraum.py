@@ -40,7 +40,7 @@ with st.sidebar:
             "fr": "Français",
             "cn": "中文"
         }[x],
-        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "fr"))
     )
 
 st.session_state["lang"] = lang
@@ -49,7 +49,7 @@ t = translations[lang]
 # ---------------------------------------------------------
 # Sprache laden
 # ---------------------------------------------------------
-lang = st.session_state.get("lang", "de")
+lang = st.session_state.get("lang", "fr")
 t = translations[lang]
 
 # ---------------------------------------------------------

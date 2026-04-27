@@ -98,7 +98,7 @@ with st.sidebar:
             "fr": "Français",
             "cn": "中文"
         }[x],
-        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "fr"))
     )
 
     image_path = os.path.join(os.path.dirname(__file__), "revolution.png")

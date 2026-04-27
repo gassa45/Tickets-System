@@ -125,7 +125,7 @@ with st.sidebar:
             "fr": "Français",
             "cn": "中文"
         }[x],
-        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "fr"))
     )
 
     # Logo
