@@ -217,7 +217,7 @@ st.markdown("""
     margin-bottom:8px;
     color:#003A78;
 ">
-    📝 {t['description_title']}
+    📝{t['description_title']}
 </div>
 """, unsafe_allow_html=True)
 
