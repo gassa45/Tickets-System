@@ -60,6 +60,9 @@ translations = {
         "contact_mail": "📧 E-Mail: support@revolution-ticketsystem.com",
         "contact_phone": "📞 Telefon: +49 123 456 789",
         "contact_location": "📍 Standort: Hessen, Deutschland",
+        "description_title": "Kurzbeschreibung (optional)",
+        "description_placeholder": "Bitte geben Sie kurz Ihr Anliegen ein (optional)…",
+
 
 
     },
@@ -125,6 +128,9 @@ translations = {
         "contact_mail": "📧 Email: support@revolution-ticketsystem.com",
         "contact_phone": "📞 Phone: +49 123 456 789",
         "contact_location": "📍 Location: Hesse, Germany",
+        "description_title": "Short description (optional)",
+        "description_placeholder": "Please briefly describe your request (optional)…",
+
 
 
     },
@@ -190,6 +196,9 @@ translations = {
         "contact_mail": "📧 E-mail : support@revolution-ticketsystem.com",
         "contact_phone": "📞 Téléphone : +49 123 456 789",
         "contact_location": "📍 Localisation : Hesse, Allemagne",
+        "description_title": "Brève description (optionnel)",
+        "description_placeholder": "Veuillez décrire brièvement votre demande (optionnel)…",
+
 
 
     },
@@ -255,6 +264,9 @@ translations = {
         "contact_mail": "📧 邮箱：support@revolution-ticketsystem.com",
         "contact_phone": "📞 电话：+49 123 456 789",
         "contact_location": "📍 地址：德国黑森州",
+        "description_title": "简短说明（可选）",
+        "description_placeholder": "请简要描述您的需求（可选）…",
+
 
 
     }

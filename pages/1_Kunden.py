@@ -1,299 +1,142 @@
 import streamlit as st
-from database import create_ticket
-from PIL import Image
-import os
 import qrcode
+import os
 from io import BytesIO
+from PIL import Image
 from languages import translations
-
-
-
-# ---------------------------------------------------------
-# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
-# ---------------------------------------------------------
-def remove_browser_muell():
-    file_path = os.path.abspath(__file__)
-    with open(file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-
-    clean_lines = []
-    for line in lines:
-        if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break
-        clean_lines.append(line)
-
-    if len(clean_lines) != len(lines):
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean_lines)
-        st.rerun()
-
-remove_browser_muell()
-# ---------------------------------------------------------
-# Sprache laden (Sidebar Dropdown)
-# ---------------------------------------------------------
-with st.sidebar:
-    lang = st.selectbox(
-        "Sprache / Language / Langue / 语言",
-        ["de", "en", "fr", "cn"],
-        format_func=lambda x: {
-            "de": "Deutsch",
-            "en": "English",
-            "fr": "Français",
-            "cn": "中文"
-        }[x],
-        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
-    )
-
-st.session_state["lang"] = lang
-t = translations[lang]
-
+from database import create_ticket
 
 # ---------------------------------------------------------
-# Sprache laden
+# Page Config
 # ---------------------------------------------------------
-lang = st.session_state.get("lang", "de")
-t = translations[lang]
-
-BASE_URL = "https://revolution-ticketsystem.streamlit.app"
+st.set_page_config(page_title="Kunde", layout="centered")
 
 # ---------------------------------------------------------
-# EINHEITLICHES DUNKELBLAUES DESIGN
+# Styling
 # ---------------------------------------------------------
-st.markdown("""
-    <style>
-        body { background-color: #f5f7fa; }
-
-        /* Sidebar */
-        [data-testid="stSidebar"] {
-            background-color: #003A78 !important;
-        }
-        [data-testid="stSidebar"] * {
-            color: white !important;
-        }
-
-        /* Hauptkarte */
-        .main-card {
-            background-color: #003A78 !important;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            width: 100%;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .main-title {
-            font-size: 45px;
-            font-weight: bold;
-            color: white !important;
-            margin-bottom: 10px;
-        }
-
-        .main-text {
-            font-size: 22px;
-            color: white !important;
-            margin-bottom: 20px;
-        }
-
-        /* Ticketkarte – jetzt dunkelblau */
-        .ticket-card {
-            background-color: #003A78 !important;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .ticket-number {
-            font-size: 70px;
-            font-weight: bold;
-            color: white !important;
-        }
-
-        .stButton>button {
-            background-color: #003A78 !important;
-            color: white !important;
-            border-radius: 12px;
-            padding: 16px 25px;
-            font-size: 24px;
-            border: none;
-            width: 100% !important;
-            max-width: 400px;
-            margin-top: 20px;
-        }
-
-        textarea {
-            font-size: 20px !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-#####################################
-#Ansicht für Handy
-########################################
-
-st.markdown("""
-    <style>
-        /* Sidebar auf Handy schmaler machen */
-        @media (max-width: 768px) {
-            [data-testid="stSidebar"] {
-                width: 180px !important;
-            }
-            section[data-testid="stSidebar"] > div {
-                width: 180px !important;
-            }
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-        @media (max-width: 768px) {
-            .ticket-card {
-                padding: 15px !important;
-            }
-            .ticket-number {
-                font-size: 32px !important;
-            }
-            h1, h2, h3 {
-                font-size: 22px !important;
-            }
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-        @media (max-width: 768px) {
-            .stButton>button {
-                padding: 8px 12px !important;
-                font-size: 16px !important;
-            }
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-
-st.markdown("""
-    <style>
-        /* Dropdown Text schwarz machen */
-        div[data-baseweb="select"] * {
-            color: black !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-# ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
-logo = Image.open(image_path)
-st.sidebar.image(logo, width=250)
-
-# ---------------------------------------------------------
-# Hauptkarte
-# ---------------------------------------------------------
-st.markdown(
-    f"""
-    <div class="main-card">
-        <div class="main-title">{t["pull_title"]}</div>
-        <div class="main-text">{t["pull_info"]}</div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# ---------------------------------------------------------
-# Beschreibung + Button
-# ---------------------------------------------------------
-# Abstand zur oberen Karte
-st.markdown("<div style='margin-top:25px;'></div>", unsafe_allow_html=True)
-
-# Schöne Überschrift + Eingabefeld
-st.markdown("""
-<div style="
-    font-size:20px;
-    font-weight:600;
-    margin-bottom:8px;
-    color:#003A78;
-">
-    📝 Kurzbeschreibung (optional)
-</div>
-""", unsafe_allow_html=True)
-
-beschreibung = st.text_area(
-    "",
-    placeholder="Bitte geben Sie kurz Ihr Anliegen ein (optional)…",
-    height=120
-)
-
-# Eingabefeld schöner machen
 st.markdown("""
 <style>
+/* Hintergrund */
+body {
+    background-color: #f5f7fa;
+}
+
+/* Karte */
+.ticket-card {
+    background-color: #003A78 !important;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    text-align: center;
+    margin-top: 20px;
+    color: white !important;
+}
+
+/* Nummer */
+.ticket-number {
+    font-size: 60px;
+    font-weight: bold;
+    color: white !important;
+}
+
+/* Button */
+.stButton>button {
+    background-color: #003A78 !important;
+    color: white !important;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 20px;
+    border: none;
+}
+.stButton>button:hover {
+    background-color: #002e5c !important;
+}
+
+/* Eingabefeld */
 textarea {
     border: 2px solid #003A78 !important;
     border-radius: 10px !important;
     padding: 12px !important;
     font-size: 16px !important;
 }
+
+/* Mobile */
 @media (max-width: 768px) {
+    .ticket-number {
+        font-size: 36px !important;
+    }
+    .ticket-card {
+        padding: 15px !important;
+    }
     textarea {
         font-size: 15px !important;
-        padding: 10px !important;
     }
 }
 </style>
 """, unsafe_allow_html=True)
 
+# ---------------------------------------------------------
+# Sprache
+# ---------------------------------------------------------
+lang = st.session_state.get("lang", "de")
+t = translations[lang]
 
+# ---------------------------------------------------------
+# Titel
+# ---------------------------------------------------------
+st.title(t["pull_title"])
+st.write(t["pull_info"])
+
+# ---------------------------------------------------------
+# Kurzbeschreibung (optional)
+# ---------------------------------------------------------
+st.markdown("<div style='margin-top:25px;'></div>", unsafe_allow_html=True)
+
+st.markdown(f"""
+<div style="
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:8px;
+    color:#003A78;
+">
+    {t['description_title']}
+</div>
+""", unsafe_allow_html=True)
+
+beschreibung = st.text_area(
+    "",
+    placeholder=t["description_placeholder"],
+    height=120
+)
+
+# ---------------------------------------------------------
+# Ticket ziehen
+# ---------------------------------------------------------
 if st.button(t["pull_button"]):
-
     nummer = create_ticket(beschreibung)
-    st.session_state["meine_nummer"] = nummer
-    st.session_state["beschreibung"] = beschreibung
 
-    url = f"{BASE_URL}/Warteraum?ticket={nummer}"
+    if nummer:
+        # QR-Code erzeugen
+        qr = qrcode.make(nummer)
+        buf = BytesIO()
+        qr.save(buf, format="PNG")
+        buf.seek(0)
 
-    qr = qrcode.make(url)
-    buffer = BytesIO()
-    qr.save(buffer, format="PNG")
-    qr_bytes = buffer.getvalue()
+        # Ticketkarte anzeigen
+        st.markdown(
+            f"""
+            <div class="ticket-card">
+                <div class="ticket-number">{nummer}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-    # Ticketkarte – jetzt dunkelblau
-    st.markdown(
-        f"""
-        <div class="ticket-card" style="margin-bottom:40px;">
-            <span class="ticket-number">{nummer}</span>
-            <p style="color:white; font-size:20px; margin-top:20px;">
-                {t["pull_wait"]}
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        st.image(buf, caption="QR-Code", width=200)
 
-    # QR-Code zentriert + Abstand
-    import base64
-    qr_base64 = base64.b64encode(qr_bytes).decode()
+        st.success(t["pull_wait"])
 
-    st.markdown(
-        f"""
-        <div style="text-align:center; margin-top:40px;">
-            <img src="data:image/png;base64,{qr_base64}" width="250">
-            <p style="color:white; font-size:20px; margin-top:10px;">QR-Code</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    # Weiterleitung
-    st.markdown(
-        f"""
-        <script>
-            setTimeout(function() {{
-                window.location.href = "{url}";
-            }}, 2500);
-        </script>
-        """,
-        unsafe_allow_html=True
-    )
+        # Automatische Weiterleitung nach 3 Sekunden
+        st.markdown("""
+            <meta http-equiv="refresh" content="3; url=/Warteraum">
+        """, unsafe_allow_html=True)
