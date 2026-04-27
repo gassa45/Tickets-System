@@ -210,14 +210,13 @@ st.markdown(
 st.markdown("<div style='margin-top:25px;'></div>", unsafe_allow_html=True)
 
 # Schöne Überschrift + Eingabefeld
-st.markdown("""
+st.markdown(f"""
 <div style="
     font-size:20px;
     font-weight:600;
     margin-bottom:8px;
-    color:#003A78;
-">
-    📝{t['description_title']}
+    color:#003A78;"> 📝{t['description_title']}
+    
 </div>
 """, unsafe_allow_html=True)
 
