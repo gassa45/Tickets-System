@@ -19,11 +19,7 @@ st.set_page_config(page_title="Kunden", layout="centered")
 #################################
 st.markdown("""
     <style>
-        /* Streamlit Default Sidebar komplett verstecken */
         [data-testid="stSidebarNav"] {
-            display: none !important;
-        }
-        [data-testid="stSidebarNav"] + div {
             display: none !important;
         }
     </style>
