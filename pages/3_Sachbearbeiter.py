@@ -69,6 +69,52 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+#####################################
+#Ansicht für Handy
+########################################
+
+st.markdown("""
+    <style>
+        /* Sidebar auf Handy schmaler machen */
+        @media (max-width: 768px) {
+            [data-testid="stSidebar"] {
+                width: 180px !important;
+            }
+            section[data-testid="stSidebar"] > div {
+                width: 180px !important;
+            }
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+        @media (max-width: 768px) {
+            .ticket-card {
+                padding: 15px !important;
+            }
+            .ticket-number {
+                font-size: 32px !important;
+            }
+            h1, h2, h3 {
+                font-size: 22px !important;
+            }
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+        @media (max-width: 768px) {
+            .stButton>button {
+                padding: 8px 12px !important;
+                font-size: 16px !important;
+            }
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 st.markdown("""
     <style>
         /* Logout-Button sichtbar machen */
