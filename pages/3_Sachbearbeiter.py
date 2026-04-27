@@ -16,10 +16,11 @@ from database import (
 st.set_page_config(page_title="Sachbearbeiter", layout="centered")
 
 # ---------------------------------------------------------
-# Sidebar Styling – MUSS VOR LOGIN CHECK STEHEN
+# Global Styling (Desktop + Mobile)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
+        /* Sidebar dunkelblau */
         [data-testid="stSidebar"] {
             background-color: #003A78 !important;
         }
@@ -27,10 +28,12 @@ st.markdown("""
             color: white !important;
         }
 
+        /* Hintergrund */
         body {
             background-color: #f5f7fa;
         }
 
+        /* Ticket-Karten */
         .ticket-card {
             background-color: #003A78 !important;
             padding: 25px;
@@ -46,6 +49,7 @@ st.markdown("""
             color: white !important;
         }
 
+        /* Standard-Buttons */
         .stButton {
             margin-top: 25px;
         }
@@ -63,19 +67,26 @@ st.markdown("""
             background-color: #002e5c !important;
         }
 
+        /* Dropdown Text schwarz */
         div[data-baseweb="select"] * {
             color: black !important;
         }
-    </style>
-""", unsafe_allow_html=True)
 
-#####################################
-#Ansicht für Handy
-########################################
+        /* Logout-Button in Sidebar explizit sichtbar machen */
+        .stSidebar button[kind="secondary"] {
+            background-color: #003A78 !important;
+            color: white !important;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: bold;
+            border: none !important;
+        }
+        .stSidebar button[kind="secondary"]:hover {
+            background-color: #003A78 !important;
+            color: white !important;
+        }
 
-st.markdown("""
-    <style>
-        /* Sidebar auf Handy schmaler machen */
+        /* Mobile-Optimierung */
         @media (max-width: 768px) {
             [data-testid="stSidebar"] {
                 width: 180px !important;
@@ -83,13 +94,6 @@ st.markdown("""
             section[data-testid="stSidebar"] > div {
                 width: 180px !important;
             }
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-        @media (max-width: 768px) {
             .ticket-card {
                 padding: 15px !important;
             }
@@ -99,13 +103,6 @@ st.markdown("""
             h1, h2, h3 {
                 font-size: 22px !important;
             }
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-        @media (max-width: 768px) {
             .stButton>button {
                 padding: 8px 12px !important;
                 font-size: 16px !important;
@@ -113,28 +110,6 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
-
-
-st.markdown("""
-    <style>
-        /* Logout-Button sichtbar machen */
-        .stSidebar button[kind="secondary"] {
-            background-color: #003A78 !important;  /* dunkelblau */
-            color: white !important;               /* weißer Text */
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-weight: bold;
-            border: none !important;
-        }
-
-        /* Kein Hover-Farbwechsel */
-        .stSidebar button[kind="secondary"]:hover {
-            background-color: #003A78 !important;
-            color: white !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
 
 # ---------------------------------------------------------
 # Sidebar: Sprache + Logo + Logout
@@ -168,16 +143,16 @@ st.session_state["lang"] = lang
 t = translations[lang]
 
 # ---------------------------------------------------------
-# LOGIN-SCHUTZ – MUSS NACH CSS UND SIDEBAR SEIN
+# Login-Schutz
 # ---------------------------------------------------------
 if not st.session_state.get("logged_in", False):
-
     st.title("Sachbearbeiter Login")
 
     username = st.text_input("Benutzername")
     password = st.text_input("Passwort", type="password")
 
     if st.button("Login"):
+        # Platzhalter-Login – hier kannst du später echte Prüfung einbauen
         if username == "admin" and password == "1234":
             st.session_state["logged_in"] = True
             st.success("Erfolgreich eingeloggt!")
@@ -185,26 +160,29 @@ if not st.session_state.get("logged_in", False):
         else:
             st.error("Falsche Zugangsdaten")
 
-    st.stop()  # verhindert Zugriff ohne Login
+    st.stop()
 
 # ---------------------------------------------------------
-# INHALT – NUR SICHTBAR WENN EINGELOGGT
+# Inhalt – nur sichtbar, wenn eingeloggt
 # ---------------------------------------------------------
 st.title("🧑‍💼 Sachbearbeiter")
 
 if "just_finished" not in st.session_state:
     st.session_state.just_finished = False
 
+# ---------------------------------------------------------
+# Wartende Tickets
+# ---------------------------------------------------------
 st.subheader("Wartende Tickets")
 
 waiting = get_waiting_tickets()
 
 if waiting:
-    for t in waiting:
+    for tkt in waiting:
         st.markdown(
             f"""
             <div class="ticket-card">
-                <span class="ticket-number" style="font-size:40px;">{t['nummer']}</span>
+                <span class="ticket-number" style="font-size:40px;">{tkt['nummer']}</span>
             </div>
             """,
             unsafe_allow_html=True
@@ -212,13 +190,35 @@ if waiting:
 else:
     st.write("Keine wartenden Tickets.")
 
+# ---------------------------------------------------------
+# Nächstes Ticket aufrufen (mit schöner Anzeige)
+# ---------------------------------------------------------
 if st.button("Nächstes Ticket aufrufen"):
     nummer = call_next_ticket()
     if nummer:
-        st.success(f"Aufgerufen: {nummer}")
+        st.markdown(f"""
+        <div style="
+            background-color:#003A78;
+            padding:15px;
+            border-radius:12px;
+            color:white;
+            margin-top:15px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.25);
+        ">
+            <div style="font-size:22px; font-weight:700; margin-bottom:8px;">
+                Ticket {nummer['nummer']}
+            </div>
+            <div style="font-size:18px; opacity:0.9;">
+                {nummer['beschreibung']}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     else:
         st.warning("Keine Tickets mehr vorhanden.")
 
+# ---------------------------------------------------------
+# Aktuell in Bearbeitung
+# ---------------------------------------------------------
 st.subheader("Aktuell in Bearbeitung")
 
 in_progress = get_in_progress_tickets()
@@ -237,6 +237,9 @@ if in_progress and not st.session_state.just_finished:
 else:
     st.write("Kein Ticket in Bearbeitung.")
 
+# ---------------------------------------------------------
+# Ticket fertig
+# ---------------------------------------------------------
 if st.button("Fertig"):
     nummer = finish_current_ticket()
     if nummer:
