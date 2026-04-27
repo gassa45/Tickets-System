@@ -196,8 +196,10 @@ else:
 if st.button("Nächstes Ticket aufrufen"):
     nummer = call_next_ticket()
     if nummer:
+
         # Fallback, falls keine Beschreibung eingegeben wurde
         beschreibung = nummer["beschreibung"] or "Keine Beschreibung angegeben"
+
         st.markdown(f"""
         <div style="
             background-color:#003A78;
@@ -211,7 +213,7 @@ if st.button("Nächstes Ticket aufrufen"):
                 Ticket {nummer['nummer']}
             </div>
             <div style="font-size:18px; opacity:0.9;">
-                {nummer['beschreibung']}
+                {beschreibung}
             </div>
         </div>
         """, unsafe_allow_html=True)
