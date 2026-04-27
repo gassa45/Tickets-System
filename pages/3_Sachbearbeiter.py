@@ -198,7 +198,7 @@ if st.button(t["call_next"]):
     if nummer:
 
         # Fallback, falls keine Beschreibung eingegeben wurde
-        beschreibung = nummer["beschreibung"] or ({t['description_tino_description']})
+        beschreibung = nummer["beschreibung"] or  t["description_placeholder"]
 
         st.markdown(f"""
         <div style="
