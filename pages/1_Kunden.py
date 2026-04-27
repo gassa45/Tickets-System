@@ -206,10 +206,45 @@ st.markdown(
 # ---------------------------------------------------------
 # Beschreibung + Button
 # ---------------------------------------------------------
+# Abstand zur oberen Karte
+st.markdown("<div style='margin-top:25px;'></div>", unsafe_allow_html=True)
+
+# Schöne Überschrift + Eingabefeld
+st.markdown("""
+<div style="
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:8px;
+    color:#003A78;
+">
+    📝 Kurzbeschreibung (optional)
+</div>
+""", unsafe_allow_html=True)
+
 beschreibung = st.text_area(
-    "📝 Kurzbeschreibung (optional):",
-    placeholder="Worum geht es? Bitte kurz beschreiben..."
+    "",
+    placeholder="Bitte geben Sie kurz Ihr Anliegen ein (optional)…",
+    height=120
 )
+
+# Eingabefeld schöner machen
+st.markdown("""
+<style>
+textarea {
+    border: 2px solid #003A78 !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    font-size: 16px !important;
+}
+@media (max-width: 768px) {
+    textarea {
+        font-size: 15px !important;
+        padding: 10px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 if st.button(t["pull_button"]):
 
