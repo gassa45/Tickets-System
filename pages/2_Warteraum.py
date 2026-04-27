@@ -1,3 +1,5 @@
+# 2_Warteraum.py
+
 import streamlit as st
 import time
 from database import get_current_ticket, get_waiting_tickets
@@ -8,107 +10,45 @@ from languages import translations
 # ---------------------------------------------------------
 # Page Config
 # ---------------------------------------------------------
-st.set_page_config(page_title="Revolution Ticket System", layout="centered")
+st.set_page_config(page_title="Warteraum", layout="centered")
+
+##################################
+#Sidebar ausblenden
+#################################
+st.markdown("""
+    <style>
+        [data-testid="stSidebarNav"] {
+            display: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 
 # ---------------------------------------------------------
-# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
-# ---------------------------------------------------------
-def remove_browser_muell():
-    file_path = os.path.abspath(__file__)
-    with open(file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-
-    clean_lines = []
-    for line in lines:
-        if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break  # Alles danach löschen
-        clean_lines.append(line)
-
-    if len(clean_lines) != len(lines):
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean_lines)
-        st.rerun()
-
-remove_browser_muell()
-
-# ---------------------------------------------------------
-# Sprache laden (Sidebar Dropdown)
-# ---------------------------------------------------------
-with st.sidebar:
-    lang = st.selectbox(
-        "Sprache / Language / Langue / 语言",
-        ["de", "en", "fr", "cn"],
-        format_func=lambda x: {
-            "de": "Deutsch",
-            "en": "English",
-            "fr": "Français",
-            "cn": "中文"
-        }[x],
-        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "fr"))
-    )
-
-st.session_state["lang"] = lang
-t = translations[lang]
-
-# ---------------------------------------------------------
-# Sprache laden
-# ---------------------------------------------------------
-lang = st.session_state.get("lang", "fr")
-t = translations[lang]
-
-# ---------------------------------------------------------
-# Ticketnummer aus URL lesen
-# ---------------------------------------------------------
-query_params = st.query_params
-meine_nummer = query_params.get("ticket", None)
-
-if not meine_nummer:
-    meine_nummer = st.session_state.get("meine_nummer", None)
-
-# ---------------------------------------------------------
-# Styling – DUNKELBLAUE KARTEN
+# Sidebar Styling (dunkelblau)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
         [data-testid="stSidebar"] {
             background-color: #003A78 !important;
+            padding-top: 30px;
         }
         [data-testid="stSidebar"] * {
             color: white !important;
         }
 
-        body { background-color: #f5f7fa; }
-
-        .ticket-card {
-            background-color: #003A78 !important;   /* DUNKELBLAU */
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .ticket-number {
-            font-size: 70px;
-            font-weight: bold;
-            color: white !important;
-        }
-
-        .small-ticket {
-            font-size: 45px;
-            font-weight: bold;
-            color: white !important;
+        div[data-baseweb="select"] * {
+            color: black !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
 #####################################
-#Ansicht für Handy
+# Handy-Ansicht
 ########################################
 
 st.markdown("""
     <style>
-        /* Sidebar auf Handy schmaler machen */
         @media (max-width: 768px) {
             [data-testid="stSidebar"] {
                 width: 180px !important;
@@ -136,32 +76,100 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ---------------------------------------------------------
+# Eigene Sidebar (Logo → Sprache → Navigation)
+# ---------------------------------------------------------
+with st.sidebar:
+
+    # Logo ganz oben
+    image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+    if os.path.exists(image_path):
+        logo = Image.open(image_path)
+        st.image(logo, width=250)
+
+    # Sprache auswählen
+    lang = st.selectbox(
+        "Sprache / Language / Langue / 语言",
+        ["de", "en", "fr", "cn"],
+        format_func=lambda x: {
+            "de": "Deutsch",
+            "en": "English",
+            "fr": "Français",
+            "cn": "中文"
+        }[x],
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
+    )
+
+    st.session_state["lang"] = lang
+    t = translations[lang]
+
+    st.markdown("---")
+
+    # Navigation
+    page = st.radio(
+        t["navigation"],
+        [t["nav_home"], t["nav_customers"], t["nav_waiting"], t["nav_agent"]]
+    )
+
+# ---------------------------------------------------------
+# Navigation Logik
+# ---------------------------------------------------------
+if page == t["nav_home"]:
+    st.switch_page("app.py")
+
+elif page == t["nav_customers"]:
+    st.switch_page("pages/1_Kunden.py")
+
+elif page == t["nav_waiting"]:
+    pass  # wir sind bereits hier
+
+elif page == t["nav_agent"]:
+    st.switch_page("pages/3_Sachbearbeiter.py")
+
+# ---------------------------------------------------------
+# Sprache laden
+# ---------------------------------------------------------
+lang = st.session_state.get("lang", "de")
+t = translations[lang]
+
+# ---------------------------------------------------------
+# Ticketnummer aus URL lesen
+# ---------------------------------------------------------
+query_params = st.query_params
+meine_nummer = query_params.get("ticket", None)
+
+if not meine_nummer:
+    meine_nummer = st.session_state.get("meine_nummer", None)
+
+# ---------------------------------------------------------
+# Styling – DUNKELBLAUE KARTEN
+# ---------------------------------------------------------
 st.markdown("""
     <style>
-        @media (max-width: 768px) {
-            .stButton>button {
-                padding: 8px 12px !important;
-                font-size: 16px !important;
-            }
+        body { background-color: #f5f7fa; }
+
+        .ticket-card {
+            background-color: #003A78 !important;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .ticket-number {
+            font-size: 70px;
+            font-weight: bold;
+            color: white !important;
+        }
+
+        .small-ticket {
+            font-size: 45px;
+            font-weight: bold;
+            color: white !important;
         }
     </style>
 """, unsafe_allow_html=True)
-
-
-st.markdown("""
-    <style>
-        /* Dropdown Text schwarz machen */
-        div[data-baseweb="select"] * {
-            color: black !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-# ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
-logo = Image.open(image_path)
-st.sidebar.image(logo, width=250)
 
 # ---------------------------------------------------------
 # Titel
@@ -208,7 +216,7 @@ if aktuelles:
         </div>
     """, unsafe_allow_html=True)
 else:
-    st.info("Noch kein Ticket aufgerufen.")
+    st.info(t["no_current_ticket"])
 
 # ---------------------------------------------------------
 # Position in der Warteschlange

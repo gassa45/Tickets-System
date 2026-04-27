@@ -1,3 +1,5 @@
+# 3_Sachbearbeiter.py
+
 import streamlit as st
 import time
 import os
@@ -13,27 +15,36 @@ from database import (
 # ---------------------------------------------------------
 # Page Config
 # ---------------------------------------------------------
-st.set_page_config(page_title="Revolution Ticket System", layout="centered")
+st.set_page_config(page_title="Sachbearbeiter", layout="centered")
+##################################
+#Sidebar ausblenden
+#################################
+st.markdown("""
+    <style>
+        [data-testid="stSidebarNav"] {
+            display: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 
 # ---------------------------------------------------------
 # Global Styling (Desktop + Mobile)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        /* Sidebar dunkelblau */
         [data-testid="stSidebar"] {
             background-color: #003A78 !important;
+            padding-top: 30px;
         }
         [data-testid="stSidebar"] * {
             color: white !important;
         }
 
-        /* Hintergrund */
         body {
             background-color: #f5f7fa;
         }
 
-        /* Ticket-Karten */
         .ticket-card {
             background-color: #003A78 !important;
             padding: 25px;
@@ -49,7 +60,6 @@ st.markdown("""
             color: white !important;
         }
 
-        /* Standard-Buttons */
         .stButton {
             margin-top: 25px;
         }
@@ -67,12 +77,10 @@ st.markdown("""
             background-color: #002e5c !important;
         }
 
-        /* Dropdown Text schwarz */
         div[data-baseweb="select"] * {
             color: black !important;
         }
 
-        /* Logout-Button in Sidebar explizit sichtbar machen */
         .stSidebar button[kind="secondary"] {
             background-color: #003A78 !important;
             color: white !important;
@@ -81,12 +89,7 @@ st.markdown("""
             font-weight: bold;
             border: none !important;
         }
-        .stSidebar button[kind="secondary"]:hover {
-            background-color: #003A78 !important;
-            color: white !important;
-        }
 
-        /* Mobile-Optimierung */
         @media (max-width: 768px) {
             [data-testid="stSidebar"] {
                 width: 180px !important;
@@ -112,10 +115,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Sidebar: Sprache + Logo + Logout
+# Eigene Sidebar (Logo → Sprache → Navigation → Logout)
 # ---------------------------------------------------------
 with st.sidebar:
-    # Sprache
+
+    # Logo ganz oben
+    image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+    if os.path.exists(image_path):
+        logo = Image.open(image_path)
+        st.image(logo, width=250)
+
+    # Sprache auswählen
     lang = st.selectbox(
         "Sprache / Language / Langue / 语言",
         ["de", "en", "fr", "cn"],
@@ -125,14 +135,21 @@ with st.sidebar:
             "fr": "Français",
             "cn": "中文"
         }[x],
-        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "fr"))
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
     )
 
+    st.session_state["lang"] = lang
+    t = translations[lang]
 
-    # Logo
-    image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
-    logo = Image.open(image_path)
-    st.image(logo, width=250)
+    st.markdown("---")
+
+    # Navigation
+    page = st.radio(
+        t["navigation"],
+        [t["nav_home"], t["nav_customers"], t["nav_waiting"], t["nav_agent"]]
+    )
+
+    st.markdown("---")
 
     # Logout nur wenn eingeloggt
     if st.session_state.get("logged_in", False):
@@ -140,8 +157,20 @@ with st.sidebar:
             st.session_state["logged_in"] = False
             st.rerun()
 
-st.session_state["lang"] = lang
-t = translations[lang]
+# ---------------------------------------------------------
+# Navigation Logik
+# ---------------------------------------------------------
+if page == t["nav_home"]:
+    st.switch_page("app.py")
+
+elif page == t["nav_customers"]:
+    st.switch_page("pages/1_Kunden.py")
+
+elif page == t["nav_waiting"]:
+    st.switch_page("pages/2_Warteraum.py")
+
+elif page == t["nav_agent"]:
+    pass  # wir sind bereits hier
 
 # ---------------------------------------------------------
 # Login-Schutz
@@ -153,7 +182,6 @@ if not st.session_state.get("logged_in", False):
     password = st.text_input(t["password"], type="password")
 
     if st.button(t["login"]):
-        # Platzhalter-Login – hier kannst du später echte Prüfung einbauen
         if username == "admin" and password == "1234":
             st.session_state["logged_in"] = True
             st.success("Erfolgreich eingeloggt!")
@@ -190,15 +218,15 @@ if waiting:
         )
 else:
     st.write(t["no_waiting"])
+
 # ---------------------------------------------------------
-# Nächstes Ticket aufrufen (mit schöner Anzeige)
+# Nächstes Ticket aufrufen
 # ---------------------------------------------------------
 if st.button(t["call_next"]):
     nummer = call_next_ticket()
     if nummer:
 
-        # Fallback, falls keine Beschreibung eingegeben wurde
-        beschreibung = nummer["beschreibung"] or  t["no_description"]
+        beschreibung = nummer["beschreibung"] or t["no_description"]
 
         st.markdown(f"""
         <div style="
@@ -248,7 +276,7 @@ if st.button(t["finish"]):
     nummer = finish_current_ticket()
     if nummer:
         st.session_state.just_finished = True
-        st.success(f" {t["ticket_word"]} {nummer} {t["finished_word"]}")
+        st.success(f"{t['ticket_word']} {nummer} {t['finished_word']}")
         time.sleep(2)
         st.session_state.just_finished = False
         st.rerun()

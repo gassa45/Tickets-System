@@ -66,6 +66,13 @@ translations = {
         "login_success": "Erfolgreich eingeloggt!",
         "ticket_word": "Ticket",
         "finished_word": "abgeschlossen.",
+        "language_select": "Sprache auswählen",
+        "navigation": "Navigation",
+        "nav_home": "Startseite",
+        "nav_customers": "Kunden",
+        "nav_waiting": "Warteraum",
+        "nav_agent": "Sachbearbeiter",
+
 
     },
 
@@ -136,6 +143,14 @@ translations = {
         "login_success": "Successfully logged in!",
         "ticket_word": "Ticket",
         "finished_word": "completed.",
+        "language_select": "Select language",
+        "navigation": "Navigation",
+
+        "nav_home": "Home",
+        "nav_customers": "Customers",
+        "nav_waiting": "Waiting Room",
+        "nav_agent": "Agent",
+
 
     },
 
@@ -206,6 +221,14 @@ translations = {
         "login_success": "Connexion réussie !",
         "ticket_word": "Ticket",
         "finished_word": "terminé.",
+        "language_select": "Choisir la langue",
+        "navigation": "Navigation",
+
+        "nav_home": "Accueil",
+        "nav_customers": "Clients",
+        "nav_waiting": "Salle d'attente",
+        "nav_agent": "Agent",
+
 
     },
 
@@ -276,6 +299,14 @@ translations = {
         "login_success": "登录成功！",
         "ticket_word": "票号",
         "finished_word": "已完成。",
+        "language_select": "选择语言",
+        "navigation": "导航",
+
+        "nav_home": "首页",
+        "nav_customers": "客户",
+        "nav_waiting": "等待区",
+        "nav_agent": "办理人员",
+
 
 
 

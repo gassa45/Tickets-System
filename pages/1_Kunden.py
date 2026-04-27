@@ -1,3 +1,5 @@
+# 1_Kunden.py
+
 import streamlit as st
 from database import create_ticket
 from PIL import Image
@@ -5,146 +7,50 @@ import os
 import qrcode
 from io import BytesIO
 from languages import translations
-
-
-# ---------------------------------------------------------
-# Page Config
-# ---------------------------------------------------------
-st.set_page_config(page_title="Revolution Ticket System", layout="centered")
-
-# ---------------------------------------------------------
-# AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
-# ---------------------------------------------------------
-def remove_browser_muell():
-    file_path = os.path.abspath(__file__)
-    with open(file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-
-    clean_lines = []
-    for line in lines:
-        if line.strip().startswith("# User's Edge browser tabs metadata"):
-            break
-        clean_lines.append(line)
-
-    if len(clean_lines) != len(lines):
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(clean_lines)
-        st.rerun()
-
-remove_browser_muell()
-# ---------------------------------------------------------
-# Sprache laden (Sidebar Dropdown)
-# ---------------------------------------------------------
-with st.sidebar:
-    lang = st.selectbox(
-        "Sprache / Language / Langue / 语言",
-        ["de", "en", "fr", "cn"],
-        format_func=lambda x: {
-            "de": "Deutsch",
-            "en": "English",
-            "fr": "Français",
-            "cn": "中文"
-        }[x],
-        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "fr"))
-    )
-
-st.session_state["lang"] = lang
-t = translations[lang]
-
-
-# ---------------------------------------------------------
-# Sprache laden
-# ---------------------------------------------------------
-lang = st.session_state.get("lang", "fr")
-t = translations[lang]
-
-BASE_URL = "https://revolution-ticketsystem.streamlit.app"
+import base64
 
 # ---------------------------------------------------------
 # Page Config
 # ---------------------------------------------------------
 st.set_page_config(page_title="Kunden", layout="centered")
 
+##################################
+#Sidebar ausblenden
+#################################
+st.markdown("""
+    <style>
+        [data-testid="stSidebarNav"] {
+            display: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # ---------------------------------------------------------
-# EINHEITLICHES DUNKELBLAUES DESIGN
+# Sidebar Styling (dunkelblau)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-        body { background-color: #f5f7fa; }
-
-        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #003A78 !important;
+            padding-top: 30px;
         }
         [data-testid="stSidebar"] * {
             color: white !important;
         }
 
-        /* Hauptkarte */
-        .main-card {
-            background-color: #003A78 !important;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            width: 100%;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .main-title {
-            font-size: 45px;
-            font-weight: bold;
-            color: white !important;
-            margin-bottom: 10px;
-        }
-
-        .main-text {
-            font-size: 22px;
-            color: white !important;
-            margin-bottom: 20px;
-        }
-
-        /* Ticketkarte – jetzt dunkelblau */
-        .ticket-card {
-            background-color: #003A78 !important;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .ticket-number {
-            font-size: 70px;
-            font-weight: bold;
-            color: white !important;
-        }
-
-        .stButton>button {
-            background-color: #003A78 !important;
-            color: white !important;
-            border-radius: 12px;
-            padding: 16px 25px;
-            font-size: 24px;
-            border: none;
-            width: 100% !important;
-            max-width: 400px;
-            margin-top: 20px;
-        }
-
-        textarea {
-            font-size: 20px !important;
+        /* Dropdown Text schwarz */
+        div[data-baseweb="select"] * {
+            color: black !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
 #####################################
-#Ansicht für Handy
+# Handy-Ansicht
 ########################################
 
 st.markdown("""
     <style>
-        /* Sidebar auf Handy schmaler machen */
         @media (max-width: 768px) {
             [data-testid="stSidebar"] {
                 width: 180px !important;
@@ -183,21 +89,126 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ---------------------------------------------------------
+# Eigene Sidebar (Logo → Sprache → Navigation)
+# ---------------------------------------------------------
+with st.sidebar:
 
+    # Logo ganz oben
+    image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
+    if os.path.exists(image_path):
+        logo = Image.open(image_path)
+        st.image(logo, width=250)
+
+    # Sprache auswählen
+    lang = st.selectbox(
+        "Sprache / Language / Langue / 语言",
+        ["de", "en", "fr", "cn"],
+        format_func=lambda x: {
+            "de": "Deutsch",
+            "en": "English",
+            "fr": "Français",
+            "cn": "中文"
+        }[x],
+        index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "de"))
+    )
+
+    st.session_state["lang"] = lang
+    t = translations[lang]
+
+    st.markdown("---")
+
+    # Navigation
+    page = st.radio(
+        t["navigation"],
+        [t["nav_home"], t["nav_customers"], t["nav_waiting"], t["nav_agent"]]
+    )
+
+# ---------------------------------------------------------
+# Navigation Logik
+# ---------------------------------------------------------
+if page == t["nav_home"]:
+    st.switch_page("app.py")
+
+elif page == t["nav_customers"]:
+    pass  # wir sind bereits hier
+
+elif page == t["nav_waiting"]:
+    st.switch_page("pages/2_Warteraum.py")
+
+elif page == t["nav_agent"]:
+    st.switch_page("pages/3_Sachbearbeiter.py")
+
+# ---------------------------------------------------------
+# Sprache laden
+# ---------------------------------------------------------
+lang = st.session_state.get("lang", "de")
+t = translations[lang]
+
+BASE_URL = "https://revolution-ticketsystem.streamlit.app"
+
+# ---------------------------------------------------------
+# EINHEITLICHES DUNKELBLAUES DESIGN
+# ---------------------------------------------------------
 st.markdown("""
     <style>
-        /* Dropdown Text schwarz machen */
-        div[data-baseweb="select"] * {
-            color: black !important;
+        body { background-color: #f5f7fa; }
+
+        .main-card {
+            background-color: #003A78 !important;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .main-title {
+            font-size: 45px;
+            font-weight: bold;
+            color: white !important;
+            margin-bottom: 10px;
+        }
+
+        .main-text {
+            font-size: 22px;
+            color: white !important;
+            margin-bottom: 20px;
+        }
+
+        .ticket-card {
+            background-color: #003A78 !important;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .ticket-number {
+            font-size: 70px;
+            font-weight: bold;
+            color: white !important;
+        }
+
+        .stButton>button {
+            background-color: #003A78 !important;
+            color: white !important;
+            border-radius: 12px;
+            padding: 16px 25px;
+            font-size: 24px;
+            border: none;
+            width: 100% !important;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        textarea {
+            font-size: 20px !important;
         }
     </style>
 """, unsafe_allow_html=True)
-# ---------------------------------------------------------
-# Logo
-# ---------------------------------------------------------
-image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
-logo = Image.open(image_path)
-st.sidebar.image(logo, width=250)
 
 # ---------------------------------------------------------
 # Hauptkarte
@@ -215,17 +226,14 @@ st.markdown(
 # ---------------------------------------------------------
 # Beschreibung + Button
 # ---------------------------------------------------------
-# Abstand zur oberen Karte
 st.markdown("<div style='margin-top:25px;'></div>", unsafe_allow_html=True)
 
-# Schöne Überschrift + Eingabefeld
 st.markdown(f"""
 <div style="
     font-size:20px;
     font-weight:600;
     margin-bottom:8px;
-    color:#003A78;"> 📝{t['description_title']}
-    
+    color:#003A78;"> 📝 {t['description_title']}
 </div>
 """, unsafe_allow_html=True)
 
@@ -235,7 +243,6 @@ beschreibung = st.text_area(
     height=120
 )
 
-# Eingabefeld schöner machen
 st.markdown("""
 <style>
 textarea {
@@ -244,15 +251,8 @@ textarea {
     padding: 12px !important;
     font-size: 16px !important;
 }
-@media (max-width: 768px) {
-    textarea {
-        font-size: 15px !important;
-        padding: 10px !important;
-    }
-}
 </style>
 """, unsafe_allow_html=True)
-
 
 if st.button(t["pull_button"]):
 
@@ -266,8 +266,8 @@ if st.button(t["pull_button"]):
     buffer = BytesIO()
     qr.save(buffer, format="PNG")
     qr_bytes = buffer.getvalue()
+    qr_base64 = base64.b64encode(qr_bytes).decode()
 
-    # Ticketkarte – jetzt dunkelblau
     st.markdown(
         f"""
         <div class="ticket-card" style="margin-bottom:40px;">
@@ -280,10 +280,6 @@ if st.button(t["pull_button"]):
         unsafe_allow_html=True
     )
 
-    # QR-Code zentriert + Abstand
-    import base64
-    qr_base64 = base64.b64encode(qr_bytes).decode()
-
     st.markdown(
         f"""
         <div style="text-align:center; margin-top:40px;">
@@ -294,7 +290,6 @@ if st.button(t["pull_button"]):
         unsafe_allow_html=True
     )
 
-    # Weiterleitung
     st.markdown(
         f"""
         <script>
