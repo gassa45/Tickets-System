@@ -153,10 +153,10 @@ if page == t["nav_home"]:
     st.switch_page("app.py")
 
 elif page == t["nav_customers"]:
-    st.switch_page("pages/1_Kunden.py")
+    st.switch_page("my_pages/1_Kunden.py")
 
 elif page == t["nav_waiting"]:
-    st.switch_page("pages/2_Warteraum.py")
+    st.switch_page("my_pages/2_Warteraum.py")
 
 elif page == t["nav_agent"]:
     pass  # wir sind bereits hier

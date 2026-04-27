@@ -116,13 +116,13 @@ if page == t["nav_home"]:
     pass  # wir sind bereits auf der Startseite
 
 elif page == t["nav_customers"]:
-    st.switch_page("pages/1_Kunden.py")
+    st.switch_page("my_pages/1_Kunden.py")
 
 elif page == t["nav_waiting"]:
-    st.switch_page("pages/2_Warteraum.py")
+    st.switch_page("my_pages/2_Warteraum.py")
 
 elif page == t["nav_agent"]:
-    st.switch_page("pages/3_Sachbearbeiter.py")
+    st.switch_page("my_pages/3_Sachbearbeiter.py")
 
 # ---------------------------------------------------------
 # CSS für Animationen + Layout (DEIN DESIGN)

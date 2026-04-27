@@ -123,10 +123,10 @@ elif page == t["nav_customers"]:
     pass  # wir sind bereits hier
 
 elif page == t["nav_waiting"]:
-    st.switch_page("pages/2_Warteraum.py")
+    st.switch_page("my_pages/2_Warteraum.py")
 
 elif page == t["nav_agent"]:
-    st.switch_page("pages/3_Sachbearbeiter.py")
+    st.switch_page("my_pages/3_Sachbearbeiter.py")
 
 # ---------------------------------------------------------
 # Sprache laden
