@@ -13,7 +13,7 @@ from database import (
 # ---------------------------------------------------------
 # Page Config
 # ---------------------------------------------------------
-st.set_page_config(page_title="Sachbearbeiter", layout="centered")
+st.set_page_config(page_title="Revolution Ticket System", layout="centered")
 
 # ---------------------------------------------------------
 # Global Styling (Desktop + Mobile)
@@ -128,6 +128,7 @@ with st.sidebar:
         index=["de", "en", "fr", "cn"].index(st.session_state.get("lang", "fr"))
     )
 
+
     # Logo
     image_path = os.path.join(os.path.dirname(__file__), "..", "revolution.png")
     logo = Image.open(image_path)
@@ -146,26 +147,26 @@ t = translations[lang]
 # Login-Schutz
 # ---------------------------------------------------------
 if not st.session_state.get("logged_in", False):
-    st.title("Sachbearbeiter Login")
+    st.title(t["login_title"])
 
-    username = st.text_input("Benutzername")
-    password = st.text_input("Passwort", type="password")
+    username = st.text_input(t["username"])
+    password = st.text_input(t["password"], type="password")
 
-    if st.button("Login"):
+    if st.button(t["login"]):
         # Platzhalter-Login – hier kannst du später echte Prüfung einbauen
         if username == "admin" and password == "1234":
             st.session_state["logged_in"] = True
             st.success("Erfolgreich eingeloggt!")
             st.rerun()
         else:
-            st.error("Falsche Zugangsdaten")
+            st.error(t["login_error"])
 
     st.stop()
 
 # ---------------------------------------------------------
 # Inhalt – nur sichtbar, wenn eingeloggt
 # ---------------------------------------------------------
-st.title("🧑‍💼 Sachbearbeiter")
+st.title(t["agent_title"])
 
 if "just_finished" not in st.session_state:
     st.session_state.just_finished = False
@@ -173,7 +174,7 @@ if "just_finished" not in st.session_state:
 # ---------------------------------------------------------
 # Wartende Tickets
 # ---------------------------------------------------------
-st.subheader("Wartende Tickets")
+st.subheader(t["waiting_tickets"])
 
 waiting = get_waiting_tickets()
 
@@ -188,17 +189,16 @@ if waiting:
             unsafe_allow_html=True
         )
 else:
-    st.write("Keine wartenden Tickets.")
-
+    st.write(t["no_waiting"])
 # ---------------------------------------------------------
 # Nächstes Ticket aufrufen (mit schöner Anzeige)
 # ---------------------------------------------------------
-if st.button("Nächstes Ticket aufrufen"):
+if st.button(t["call_next"]):
     nummer = call_next_ticket()
     if nummer:
 
         # Fallback, falls keine Beschreibung eingegeben wurde
-        beschreibung = nummer["beschreibung"] or "Keine Beschreibung angegeben"
+        beschreibung = nummer["beschreibung"] or ({t['description_tino_description']})
 
         st.markdown(f"""
         <div style="
@@ -218,12 +218,12 @@ if st.button("Nächstes Ticket aufrufen"):
         </div>
         """, unsafe_allow_html=True)
     else:
-        st.warning("Keine Tickets mehr vorhanden.")
+        st.warning(t["no_tickets_left"])
 
 # ---------------------------------------------------------
 # Aktuell in Bearbeitung
 # ---------------------------------------------------------
-st.subheader("Aktuell in Bearbeitung")
+st.subheader(t["in_progress"])
 
 in_progress = get_in_progress_tickets()
 
@@ -239,18 +239,18 @@ if in_progress and not st.session_state.just_finished:
         unsafe_allow_html=True
     )
 else:
-    st.write("Kein Ticket in Bearbeitung.")
+    st.write(t["none_in_progress"])
 
 # ---------------------------------------------------------
 # Ticket fertig
 # ---------------------------------------------------------
-if st.button("Fertig"):
+if st.button(t["finish"]):
     nummer = finish_current_ticket()
     if nummer:
         st.session_state.just_finished = True
-        st.success(f"Ticket {nummer} abgeschlossen.")
+        st.success(f" {t["ticket_word"]} {nummer} {t["finished_word"]}")
         time.sleep(2)
         st.session_state.just_finished = False
         st.rerun()
     else:
-        st.error("Kein Ticket in Bearbeitung.")
+        st.error(t["no_ticket_in_progress"])

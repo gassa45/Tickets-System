@@ -5,6 +5,10 @@ from PIL import Image
 import os
 from languages import translations
 
+# ---------------------------------------------------------
+# Page Config
+# ---------------------------------------------------------
+st.set_page_config(page_title="Revolution Ticket System", layout="centered")
 
 # ---------------------------------------------------------
 # AUTOMATISCHER BROWSER-MÜLL-SCHUTZ

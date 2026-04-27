@@ -7,6 +7,10 @@ from io import BytesIO
 from languages import translations
 
 
+# ---------------------------------------------------------
+# Page Config
+# ---------------------------------------------------------
+st.set_page_config(page_title="Revolution Ticket System", layout="centered")
 
 # ---------------------------------------------------------
 # AUTOMATISCHER BROWSER-MÜLL-SCHUTZ
@@ -55,6 +59,11 @@ lang = st.session_state.get("lang", "fr")
 t = translations[lang]
 
 BASE_URL = "https://revolution-ticketsystem.streamlit.app"
+
+# ---------------------------------------------------------
+# Page Config
+# ---------------------------------------------------------
+st.set_page_config(page_title="Kunden", layout="centered")
 
 # ---------------------------------------------------------
 # EINHEITLICHES DUNKELBLAUES DESIGN

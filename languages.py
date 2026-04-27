@@ -62,8 +62,10 @@ translations = {
         "contact_location": "📍 Standort: Hessen, Deutschland",
         "description_title": "Kurzbeschreibung (optional)",
         "description_placeholder": "Bitte geben Sie kurz Ihr Anliegen ein (optional)…",
-
-
+        "no_tickets_left": "Keine Tickets mehr vorhanden.",
+        "login_success": "Erfolgreich eingeloggt!",
+        "ticket_word": "Ticket",
+        "finished_word": "abgeschlossen.",
 
     },
 
@@ -130,8 +132,10 @@ translations = {
         "contact_location": "📍 Location: Hesse, Germany",
         "description_title": "Short description (optional)",
         "description_placeholder": "Please briefly describe your request (optional)…",
-
-
+        "no_tickets_left": "No more tickets available.",
+        "login_success": "Successfully logged in!",
+        "ticket_word": "Ticket",
+        "finished_word": "completed.",
 
     },
 
@@ -198,8 +202,10 @@ translations = {
         "contact_location": "📍 Localisation : Hesse, Allemagne",
         "description_title": "Brève description (optionnel)",
         "description_placeholder": "Veuillez décrire brièvement votre demande (optionnel)…",
-
-
+        "no_tickets_left": "Plus de tickets disponibles.",
+        "login_success": "Connexion réussie !",
+        "ticket_word": "Ticket",
+        "finished_word": "terminé.",
 
     },
 
@@ -266,6 +272,11 @@ translations = {
         "contact_location": "📍 地址：德国黑森州",
         "description_title": "简短说明（可选）",
         "description_placeholder": "请简要描述您的需求（可选）…",
+        "no_tickets_left": "没有更多可用的号码。",
+        "login_success": "登录成功！",
+        "ticket_word": "票号",
+        "finished_word": "已完成。",
+
 
 
 
